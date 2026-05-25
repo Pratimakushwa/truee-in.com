@@ -1,0 +1,81 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap');
+@import "tailwindcss";
+
+/* ── 1. Global Font Setup ───────────────────────────────────────── */
+html, body {
+  font-family: 'Inter', sans-serif !important;
+}
+
+/* ── 2. Hide Scrollbar Utilities (For Categories & Sliders) ─────── */
+.hide-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* 1. Body aur HTML ko horizontal scroll se rokne ke liye */
+html, body {
+  max-width: 100%;
+  overflow-x: hidden;
+  margin: 0;
+  padding: 0;
+  /* Smooth scrolling ke liye (Optional) */
+  scroll-behavior: smooth;
+}
+
+/* 2. Sabhi elements ko border-box mein rakhne ke liye taaki padding width na badhaye */
+* {
+  box-sizing: border-box;
+}
+
+/* 3. Root container ko bhi fix karein */
+#root {
+  max-width: 100%;
+  overflow-x: hidden;
+}
+/* ── 2. Helper Classes & Components ── */
+
+/* Hero Gradient ke liye class */
+.theme-gradient-bg {
+  background: var(--theme-gradient);
+}
+
+/* body {
+  cursor: none;
+} */
+
+.cursor-dot {
+  width: 8px;
+  height: 8px;
+  background: var(--theme-primary); 
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9999;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.5s ease;
+}
+
+.trail-dot {
+  width: 5px;
+  height: 5px;
+  background: var(--theme-primary); 
+  opacity: 0.5;
+  border-radius: 50%;
+  position: fixed;
+  pointer-events: none;
+  z-index: 9998;
+  transform: translate(-50%, -50%);
+  transition: background-color 0.5s ease;
+}
+
+/* Browser Autofill Fix */
+input:-webkit-autofill ~ label,
+input:-webkit-autofill:hover ~ label,
+input:-webkit-autofill:focus ~ label {
+  top: 0.5rem !important;
+  font-size: 0.625rem !important;
+  font-weight: 600 !important;
+  color: var(--theme-primary) !important;
+}
+
+/* Scrollbar Hide */
+.hide-scrollbar::-webkit-scrollbar { display: none; }
+.hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
