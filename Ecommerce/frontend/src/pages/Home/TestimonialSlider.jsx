@@ -71,6 +71,9 @@ const testimonials = [
 export default function App() {
   const [activeIndex, setActiveIndex] = useState(1);
 
+  // ⚡ Default Avatar for error handling
+  const defaultAvatar = "https://api.dicebear.com/7.x/adventurer/svg?seed=User&backgroundColor=F2F2F2";
+
   useEffect(() => {
     const interval = setInterval(() => {
       setActiveIndex((prev) => (prev + 1) % testimonials.length);
@@ -92,7 +95,6 @@ export default function App() {
     const isLeft = index === (activeIndex - 1 + length) % length;
     const isRight = index === (activeIndex + 1) % length;
 
-    // Mobile layout fixes: 'w-[92%]' for better fit, 'h-fit' to wrap content
     let baseClass = "absolute transition-all duration-500 ease-in-out w-[92%] md:w-[650px] bg-[#f2f2f2] shadow-xl p-6 md:p-8 flex flex-col md:flex-row gap-4 md:gap-8 items-center rounded-sm h-fit top-0";
 
     if (isCenter) {
@@ -109,7 +111,6 @@ export default function App() {
   return (
     <div className="bg-[#e5e5e5] flex flex-col items-center justify-start py-6 md:py-16 overflow-hidden">
       
-      {/* Header Section - Margin further reduced for mobile */}
       <div className="text-center mb-6 md:mb-12 px-6">
         <h2 className="text-2xl md:text-5xl font-serif text-gray-800 mb-2 tracking-tight">
           This Is What Our Customers Say
@@ -119,23 +120,22 @@ export default function App() {
         </p>
       </div>
 
-      {/* Carousel Container - Height is now dynamic based on content */}
       <div className="relative w-full max-w-7xl flex flex-col items-center px-4">
         <div className="relative w-full flex justify-center min-h-[400px] md:min-h-[280px]">
           {testimonials.map((testimonial, index) => (
             <div key={testimonial.id} className={getCardClassName(index)}>
               
-              {/* Image Section */}
               <div className="relative w-28 h-28 md:w-56 md:h-48 shrink-0">
                 <div className="absolute top-2 -left-2 md:top-4 md:-left-6 w-full h-full bg-[#d4d4d4] -z-10"></div>
                 <img 
                   src={testimonial.image} 
                   alt={testimonial.name} 
+                  // ⚡ Default Avatar Logic
+                  onError={(e) => { e.target.src = defaultAvatar; }}
                   className="w-full h-full object-cover shadow-md bg-white"
                 />
               </div>
 
-              {/* Content Section */}
               <div className="flex flex-col justify-center text-center md:text-left flex-1">
                 <p className="text-gray-700 text-sm md:text-base leading-relaxed mb-4 md:mb-6">
                   "{testimonial.quote}"
@@ -159,13 +159,11 @@ export default function App() {
                   </p>
                 </div>
               </div>
-
             </div>
           ))}
         </div>
       </div>
 
-      {/* Navigation Arrows - Margin adjusted for mobile */}
       <div className="flex gap-6 mt-4 md:mt-10 z-30 relative">
         <button 
           onClick={prevSlide}

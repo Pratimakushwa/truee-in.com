@@ -121,6 +121,7 @@
 //     </section>
 //   );
 // }
+
 import React, { useState, useEffect, useRef } from 'react';
 import ProductCard from './ProductCard'; 
 import productViewModel from './ProductDetailModel'; 
