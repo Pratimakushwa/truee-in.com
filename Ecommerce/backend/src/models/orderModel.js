@@ -18,7 +18,10 @@ const orderSchema = new mongoose.Schema({
   user: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
-    required: true // Hum maan kar chal rahe hain ki checkout ke liye login zaroori hai
+    required: false // Guest checkout allow karne ke liye optional kiya
+  },
+  guestEmail: { 
+    type: String // Guest customers ka email store karenge
   },
   orderItems: [orderItemSchema], // Upar wala schema yahan use kiya
   

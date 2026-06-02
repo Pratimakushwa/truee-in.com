@@ -9,6 +9,7 @@ const CheckoutPage = () => {
   const [loading, setLoading] = useState(true);
   const [paymentProcessing, setPaymentProcessing] = useState(false); 
   const [toastMessage, setToastMessage] = useState(null);
+  const [paymentMethod, setPaymentMethod] = useState('razorpay');
   
   // ⚡ FIX 1: Naye fields add kiye hain taaki DB Validation pass ho sake
   const [userDetails, setUserDetails] = useState({
@@ -86,14 +87,19 @@ const CheckoutPage = () => {
       });
   };
 
-  const handlePayment = async () => {
+  const handlePayment = async (e) => {
+    console.log('✅ handlePayment called!', e);
+    if (e) {
+      e.preventDefault();
+      console.log('✅ preventDefault() called');
+    }
     if (cartItems.length === 0) {
+      console.log('❌ Cart empty');
       return showToast("error", "Your cart is empty!");
     }
 
     const { email, firstName, lastName, phone, country, state, address, city, postalCode } = userDetails;
     
-    // ⚡ FIX 2: Added State and Phone to Validation
     if (!email || !firstName || !lastName || !phone || !country || !state || !address || !city || !postalCode) {
         return showToast("error", "Please fill in all delivery and contact details!");
     }
@@ -105,6 +111,53 @@ const CheckoutPage = () => {
 
     setPaymentProcessing(true);
 
+    // If COD - create order directly
+    if (paymentMethod === 'cod') {
+        try {
+            const formattedItems = cartItems.map(item => ({
+                product: item.product,
+                name: item.productDetails.name,
+                image: item.productDetails.images?.[0]?.url || "",
+                price: getItemPrice(item),
+                quantity: item.quantity
+            }));
+
+            const { data: orderData } = await axiosInstance.post("/payment/create-order", {
+                amount: subtotal,
+                paymentMethod: 'cod',
+                orderDetails: {
+                    email: email,
+                    items: formattedItems,
+                    totalAmount: subtotal,
+                    shippingAddress: {
+                        fullName: `${firstName} ${lastName}`.trim(),
+                        phone: phone,
+                        addressLine1: address,
+                        city: city,
+                        state: state,
+                        pincode: postalCode
+                    }
+                }
+            });
+
+            if (orderData.success) {
+                showToast("success", "Order Placed Successfully!");
+                setCartItems([]);
+                window.dispatchEvent(new Event('cartUpdated'));
+                setTimeout(() => navigate('/order-success', { state: { orderId: orderData.orderId, paymentMethod: 'cod' } }), 1500);
+            } else {
+                showToast("error", "Failed to place order. Please try again.");
+                setPaymentProcessing(false);
+            }
+        } catch (error) {
+            console.error("COD order error:", error);
+            showToast("error", "Failed to place order. Please try again.");
+            setPaymentProcessing(false);
+        }
+        return;
+    }
+
+    // Razorpay payment flow
     try {
         const isScriptLoaded = await loadRazorpayScript();
         if (!isScriptLoaded) {
@@ -140,15 +193,14 @@ const CheckoutPage = () => {
             order_id: orderData.order.id,
             handler: async function (response) {
                 try {
-                    // ⚡ FIX 3: MAP FRONTEND DATA TO EXACT SCHEMA NAMES
                     const verifyRes = await axiosInstance.post('/payment/verify-payment', {
                         razorpay_order_id: response.razorpay_order_id,
                         razorpay_payment_id: response.razorpay_payment_id,
                         razorpay_signature: response.razorpay_signature,
                         orderDetails: { 
+                            email: email,
                             items: formattedItems, 
                             totalAmount: subtotal,
-                            // Exact mapping per DB Error
                             shippingAddress: {
                                 fullName: `${firstName} ${lastName}`.trim(),
                                 phone: phone,
@@ -164,7 +216,7 @@ const CheckoutPage = () => {
                         showToast("success", "Payment Successful! Order Placed.");
                         setCartItems([]);
                         window.dispatchEvent(new Event('cartUpdated')); 
-                        setTimeout(() => navigate('/order-success'), 1500); 
+                        setTimeout(() => navigate('/order-success', { state: { orderId: verifyRes.data.orderId, paymentMethod: 'razorpay' } }), 1500); 
                     }
                 } catch (error) {
                     console.error("Verification failed:", error);
@@ -224,6 +276,7 @@ const CheckoutPage = () => {
               placeholder="Email Address"
               value={userDetails.email}
               onChange={(e) => setUserDetails({...userDetails, email: e.target.value})}
+              onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
               className="w-full p-4 border border-gray-300 rounded-t bg-transparent focus:outline-none focus:ring-1 focus:ring-black"
             />
             {/* Added Phone Input */}
@@ -232,6 +285,7 @@ const CheckoutPage = () => {
               placeholder="Phone Number"
               value={userDetails.phone}
               onChange={(e) => setUserDetails({...userDetails, phone: e.target.value})}
+              onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
               className="w-full p-4 border border-gray-300 border-t-0 rounded-b bg-transparent focus:outline-none focus:ring-1 focus:ring-black"
             />
           </section>
@@ -263,6 +317,7 @@ const CheckoutPage = () => {
                     placeholder="First Name" 
                     value={userDetails.firstName}
                     onChange={(e) => setUserDetails({...userDetails, firstName: e.target.value})}
+                    onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
                     className="p-4 border border-t-0 border-gray-300 focus:outline-none" 
                 />
                 <input 
@@ -270,6 +325,7 @@ const CheckoutPage = () => {
                     placeholder="Last Name" 
                     value={userDetails.lastName}
                     onChange={(e) => setUserDetails({...userDetails, lastName: e.target.value})}
+                    onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
                     className="p-4 border border-t-0 border-l-0 border-gray-300 focus:outline-none" 
                 />
               </div>
@@ -278,6 +334,7 @@ const CheckoutPage = () => {
                 placeholder="Address Line 1" 
                 value={userDetails.address}
                 onChange={(e) => setUserDetails({...userDetails, address: e.target.value})}
+                onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
                 className="w-full p-4 border border-t-0 border-gray-300 focus:outline-none" 
               />
               <div className="grid grid-cols-3">
@@ -286,6 +343,7 @@ const CheckoutPage = () => {
                     placeholder="City" 
                     value={userDetails.city}
                     onChange={(e) => setUserDetails({...userDetails, city: e.target.value})}
+                    onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
                     className="p-4 border border-t-0 border-gray-300 rounded-bl focus:outline-none" 
                 />
                 {/* Added State Input */}
@@ -294,6 +352,7 @@ const CheckoutPage = () => {
                     placeholder="State" 
                     value={userDetails.state}
                     onChange={(e) => setUserDetails({...userDetails, state: e.target.value})}
+                    onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
                     className="p-4 border border-t-0 border-l-0 border-gray-300 focus:outline-none" 
                 />
                 <input 
@@ -301,6 +360,7 @@ const CheckoutPage = () => {
                     placeholder="Postal Code (Pincode)" 
                     value={userDetails.postalCode}
                     onChange={(e) => setUserDetails({...userDetails, postalCode: e.target.value})}
+                    onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
                     className="p-4 border border-t-0 border-l-0 border-gray-300 rounded-br focus:outline-none" 
                 />
               </div>
@@ -316,7 +376,11 @@ const CheckoutPage = () => {
             <h2 className="text-3xl font-serif mb-4">Payment</h2>
             <div className="border border-gray-300 rounded overflow-hidden">
               <div className="relative border-b border-gray-300 flex justify-between items-center bg-white p-0">
-                <select className="w-full p-4 bg-transparent outline-none appearance-none text-gray-600 font-medium cursor-pointer relative z-10" defaultValue="razorpay">
+                <select 
+                  value={paymentMethod}
+                  onChange={(e) => setPaymentMethod(e.target.value)}
+                  className="w-full p-4 bg-transparent outline-none appearance-none text-gray-600 font-medium cursor-pointer relative z-10"
+                >
                   <option value="razorpay">Razorpay (Cards / UPI / Netbanking)</option>
                   <option value="cod">Cash on Delivery (COD)</option>
                 </select>
@@ -326,17 +390,23 @@ const CheckoutPage = () => {
               </div>
               
               <div className="p-4 space-y-0 bg-gray-50 text-gray-500 text-sm text-center">
-                 Secure payment processing via Razorpay gateway.
+                 {paymentMethod === 'razorpay' ? 'Secure payment processing via Razorpay gateway.' : 'Pay when your order is delivered'}
               </div>
             </div>
           </section>
 
           <button 
-            onClick={handlePayment} 
+            type="button"
+            onClick={(e) => {
+              e.preventDefault();
+              e.stopPropagation();
+              handlePayment(e);
+            }}
+            onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
             disabled={paymentProcessing || loading || cartItems.length === 0}
             className="w-full bg-black text-white py-4 rounded font-medium tracking-widest hover:bg-gray-900 transition-colors uppercase text-sm disabled:opacity-50 disabled:cursor-not-allowed"
           >
-            {paymentProcessing ? "Processing Payment..." : "Pay Now"}
+            {paymentProcessing ? "Processing..." : (paymentMethod === 'razorpay' ? "Pay Now" : "Place Order")}
           </button>
         </div>
 
@@ -410,11 +480,17 @@ const CheckoutPage = () => {
 
                 <div className="space-y-4 pt-4">
                   <button 
-                    onClick={handlePayment} 
+                    type="button"
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                      handlePayment(e);
+                    }}
+                    onKeyPress={(e) => e.key === 'Enter' && e.preventDefault()}
                     disabled={paymentProcessing}
                     className="w-full bg-black text-white py-5 rounded-md text-sm sm:text-lg font-bold shadow-lg active:scale-95 transition-transform tracking-widest uppercase disabled:opacity-50"
                   >
-                    {paymentProcessing ? "Processing..." : "Checkout with Razorpay"}
+                    {paymentProcessing ? "Processing..." : (paymentMethod === 'razorpay' ? "Checkout with Razorpay" : "Place Order (COD)")}
                   </button>
                   <button onClick={() => window.history.back()} className="w-full text-center underline text-sm font-medium text-black hover:text-gray-500 transition-colors uppercase tracking-widest">
                     Back to Cart

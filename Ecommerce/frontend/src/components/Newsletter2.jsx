@@ -147,7 +147,7 @@ export default function Newsletter() {
     }
   };
 
-  const leftImageUrl = "https://images.ctfassets.net/javen7msabdh/5rFG7lcddhUj1hR8DSCeaK/55f28130a2ceeca6f0f8bd69120a489e/stanmore_iii-lifestyle-mobile-8.jpeg";
+  const leftImageUrl = "https://sg.tcacoustic.asia/cdn/shop/files/Stanmore3_1_800x.jpg?v=1776842756";
 
   return (
     <section className="w-full h-auto overflow-x-hidden bg-white px-4 sm:px-8 md:px-12 lg:px-16 flex flex-col justify-center items-center py-12 md:py-16 lg:py-24 transition-colors duration-500">

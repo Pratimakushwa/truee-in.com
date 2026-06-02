@@ -20,13 +20,6 @@ const Deals = () => {
         </div>
         
       </div>
-      
-      <style jsx global>{`
-        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
-        .font-serif {
-          font-family: 'Playfair Display', serif;
-        }
-      `}</style>
     </section>
   );
 };

@@ -9,26 +9,59 @@ const razorpayInstance = new Razorpay({
 });
 
 // -------------------------------------------------------------------
-// API 1: Naya Order Create Karna
+// API 1: Naya Order Create Karna (Razorpay + COD)
 // -------------------------------------------------------------------
 exports.createOrder = async (req, res) => {
     try {
-        const { amount } = req.body; // Frontend se amount aayega
+        const { amount, paymentMethod, orderDetails } = req.body;
 
         if (!amount) {
             return res.status(400).json({ success: false, message: 'Amount is required' });
         }
 
+        // ✅ COD ORDER - Direct DB save karenge
+        if (paymentMethod === 'cod') {
+            try {
+                const userId = req.user ? req.user._id : null;
+
+                const newOrder = new Order({
+                    user: userId,
+                    guestEmail: orderDetails?.email,
+                    orderItems: orderDetails?.items || [],
+                    totalAmount: amount,
+                    shippingAddress: orderDetails?.shippingAddress || {},
+                    paymentInfo: {
+                        method: 'COD',
+                        paymentStatus: 'Pending'
+                    },
+                    orderStatus: 'Processing'
+                });
+
+                const savedOrder = await newOrder.save();
+
+                return res.status(200).json({
+                    success: true,
+                    message: 'COD Order created successfully',
+                    orderId: savedOrder._id
+                });
+            } catch (dbError) {
+                console.error("❌ COD Order Save Error:", dbError.message);
+                return res.status(500).json({
+                    success: false,
+                    message: "Failed to create order: " + dbError.message
+                });
+            }
+        }
+
+        // ✅ RAZORPAY ORDER - Razorpay order create karenge
         const options = {
-            amount: amount * 100, // Razorpay hamesha paise (paisa) mein amount leta hai
+            amount: amount * 100,
             currency: 'INR',
             receipt: `receipt_order_${Date.now()}`,
         };
 
-        // Razorpay se order create karwao
         const order = await razorpayInstance.orders.create(options);
         
-        // Frontend ko order details bhej do
         res.status(200).json({ 
             success: true, 
             order,
@@ -62,23 +95,29 @@ exports.verifyPayment = async (req, res) => {
             try {
                 // ⚡ FIX: Fallback for req.user if middleware is missing
                 const userId = req.user ? req.user._id : null;
+                const guestEmail = orderDetails?.email;
 
                 // ⚡ FIX: Matching Exact Mongoose Schema
                 const newOrder = new Order({
-                    user: userId, 
-                    items: orderDetails.items, // frontend se 'items' aa raha hai
+                    user: userId,
+                    guestEmail: guestEmail,
+                    orderItems: orderDetails.items,
                     totalAmount: orderDetails.totalAmount,
-                    shippingAddress: orderDetails.shippingAddress, // frontend ne poora object bheja hai
-                    paymentMethod: 'Razorpay',
-                    paymentStatus: 'Paid',
-                    transactionId: razorpay_payment_id
+                    shippingAddress: orderDetails.shippingAddress,
+                    paymentInfo: {
+                        method: 'Razorpay',
+                        transactionId: razorpay_payment_id,
+                        paymentStatus: 'Paid'
+                    },
+                    orderStatus: 'Processing'
                 });
                 
-                await newOrder.save();
+                const savedOrder = await newOrder.save();
 
                 return res.status(200).json({ 
                     success: true, 
-                    message: "Payment verified successfully & Order Saved!" 
+                    message: "Payment verified successfully & Order Saved!",
+                    orderId: savedOrder._id
                 });
 
             } catch (dbError) {

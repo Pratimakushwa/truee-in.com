@@ -1,58 +1,65 @@
 import React, { useEffect } from 'react';
-import { useLocation, Link, useNavigate } from 'react-router-dom';
+import { useLocation, Link } from 'react-router-dom';
+import { CheckCircle, Package } from 'lucide-react';
 
 export default function OrderSuccess() {
   const location = useLocation();
-  const navigate = useNavigate();
   
-  // Checkout page se orderId pass karenge hum
   const orderId = location.state?.orderId || "ORD-" + Math.floor(Math.random() * 1000000);
-
-  // Agar bina order ke is page par aaya hai koi, toh home pe bhej do
-  useEffect(() => {
-    if (!location.state?.orderId) {
-       // Commenting this out for testing, but in production you'd redirect
-       // navigate('/'); 
-    }
-  }, []);
+  const paymentMethod = location.state?.paymentMethod || 'razorpay';
+  const paymentStatus = paymentMethod === 'cod' ? 'Awaiting Payment' : 'Paid';
+  const statusColor = paymentMethod === 'cod' ? 'text-yellow-500' : 'text-green-500';
 
   return (
-    <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
-      <div className="bg-zinc-900 border border-zinc-800 rounded-2xl p-8 max-w-md w-full text-center shadow-2xl">
+    <div className="min-h-screen bg-black flex items-center justify-center p-4">
+      <div className="bg-gray-900 border border-gray-700 rounded-2xl p-6 md:p-8 max-w-md w-full">
         
-        {/* Success Icon */}
-        <div className="w-20 h-20 bg-green-500/10 rounded-full flex items-center justify-center mx-auto mb-6">
-          <svg className="w-10 h-10 text-green-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M5 13l4 4L19 7" />
-          </svg>
+        {/* Icon */}
+        <div className="flex justify-center mb-6">
+          <div className="w-16 h-16 bg-green-500/10 rounded-full flex items-center justify-center border border-green-500">
+            <CheckCircle className="w-8 h-8 text-green-500" strokeWidth={2} />
+          </div>
         </div>
 
-        <h1 className="text-3xl font-serif text-white mb-2">Thank You!</h1>
-        <p className="text-gray-400 text-sm tracking-widest uppercase mb-6">Order Confirmed</p>
+        {/* Title */}
+        <h1 className="text-3xl font-serif text-center text-white mb-1">Thank You!</h1>
+        <p className="text-center text-gray-400 text-sm tracking-widest uppercase mb-6">Order Confirmed</p>
 
-        <div className="bg-[#111] rounded-lg p-4 mb-8 border border-zinc-800 text-left">
-          <div className="flex justify-between mb-2">
-            <span className="text-zinc-500 text-sm">Order ID:</span>
-            <span className="text-white font-mono text-sm">{orderId.slice(-8).toUpperCase()}</span>
-          </div>
-          <div className="flex justify-between mb-2">
-            <span className="text-zinc-500 text-sm">Payment Status:</span>
-            <span className="text-green-500 text-sm font-medium flex items-center gap-1">
-               <span className="w-2 h-2 rounded-full bg-green-500 animate-pulse"></span> Paid
-            </span>
-          </div>
+        {/* Details */}
+        <div className="bg-gray-800/50 border border-gray-700 rounded-lg p-4 mb-6 space-y-3">
           <div className="flex justify-between">
-            <span className="text-zinc-500 text-sm">Estimated Delivery:</span>
-            <span className="text-white text-sm">3-5 Business Days</span>
+            <span className="text-gray-400 text-sm">Order ID:</span>
+            <span className="text-white font-mono text-sm font-bold">{orderId.toString().slice(-8).toUpperCase()}</span>
+          </div>
+          <div className="border-t border-gray-700 pt-3 flex justify-between">
+            <span className="text-gray-400 text-sm flex items-center gap-1">
+              <Package className="w-4 h-4" />
+              Status:
+            </span>
+            <span className={`${statusColor} text-sm font-semibold`}>{paymentStatus}</span>
+          </div>
+          <div className="border-t border-gray-700 pt-3 flex justify-between">
+            <span className="text-gray-400 text-sm">Delivery:</span>
+            <span className="text-white text-sm">3-5 Days</span>
           </div>
         </div>
 
-        <Link 
-          to="/shop"
-          className="block w-full py-3 rounded-xl bg-white text-black text-sm font-bold tracking-widest uppercase hover:bg-gray-200 transition-all duration-300"
-        >
-          Continue Shopping
-        </Link>
+        {/* Buttons */}
+        <div className="grid grid-cols-1 gap-3">
+          <Link 
+            to="/shop"
+            className="w-full py-3 px-4 rounded-lg bg-white text-black text-sm font-bold text-center hover:bg-gray-200 transition-all"
+          >
+            Continue Shopping
+          </Link>
+          <Link 
+            to="/profile"
+            className="w-full py-3 px-4 rounded-lg bg-gray-700 text-white text-sm font-bold text-center hover:bg-gray-600 transition-all border border-gray-600"
+          >
+            View Orders
+          </Link>
+        </div>
+
       </div>
     </div>
   );

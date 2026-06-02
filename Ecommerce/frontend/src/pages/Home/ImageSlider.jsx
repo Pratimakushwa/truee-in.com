@@ -402,7 +402,7 @@ const ImageSlider = () => {
     <div className="w-full relative flex flex-col md:flex-row gap-12 md:gap-[30px] m-0 p-0 md:px-6 xl:px-12 py-10">
 
       {/* 1. Main Image Box */}
-      <div className="relative w-full md:w-[58%] shrink-0 flex-none h-[300px] md:h-[500px] xl:h-[500px]">
+      <div className="relative w-full md:w-[58%] shrink-0 flex-none h-[300px] md:h-[470px] xl:h-[470px]">
         <div className="relative overflow-hidden w-full h-full bg-[#f9f9f9]">
           <Swiper modules={[Navigation, EffectFade]} effect="fade" fadeEffect={{ crossFade: true }} speed={600} onSwiper={(swiper) => setSwiperInstance(swiper)} loop={true} allowTouchMove={false} className="w-full h-full">
             {slidesMain.map((slide) => {
