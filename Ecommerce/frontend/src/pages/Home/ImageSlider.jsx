@@ -321,6 +321,7 @@
 // };
 
 // export default ImageSlider;
+
 import React, { useState, useEffect } from 'react';
 import { Swiper, SwiperSlide } from 'swiper/react';
 import { Navigation, Autoplay, EffectFade } from 'swiper/modules';
@@ -385,7 +386,7 @@ const ImageSlider = () => {
   ];
 
   const slidesSide = [
-    { id: 1, img: "https://www.shopyvision.com/wp-content/uploads/2025/12/1.jpg", productKey: "side1" },
+    { id: 1, img: "https://shop.ash-asia.com/cdn/shop/files/TH_B_Content_Bromley_450_without_tab_4.jpg?v=1773305770&width=1000", productKey: "side1" },
     { id: 2, img: "https://images.ctfassets.net/javen7msabdh/1WddBSbrhC3KCAM6MgDVkF/0d191ac9fac416d2bffbee03c274e5a2/stockwell-ii-front-desktop-1.jpeg?w=1920&fm=avif&q=100", productKey: "side2" },
     { id: 3, img: "https://images.ctfassets.net/javen7msabdh/2jExiZ90H4brA24S1BdgrJ/b6a944ecbfba10f0d64ec796253c3e76/willen-10-hybrid.png?w=960&fm=avif&q=100", productKey: "side3" }
   ];

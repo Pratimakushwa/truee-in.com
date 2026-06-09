@@ -1,3 +1,105 @@
+// const mongoose = require('mongoose');
+
+// const userSchema = new mongoose.Schema({
+//   name: { 
+//     type: String, 
+//     required: [true, 'Please provide a name'],
+//     trim: true
+//   },
+//   email: { 
+//     type: String, 
+//     required: [true, 'Please provide an email'], 
+//     unique: true, 
+//     lowercase: true,
+//     trim: true
+//   },
+//   password: { 
+//     type: String, 
+//     required: [true, 'Please provide a password'],
+//     minlength: 8
+//   },
+  
+//   // Access Control Gateway
+//   role: { 
+//     type: String, 
+//     enum: ['customer', 'admin', 'super-admin'], 
+//     default: 'customer' 
+//   },
+
+//   // Triggers the "Force Password Change" screen
+//   isFirstLogin: {
+//     type: Boolean,
+//     default: true 
+//   },
+
+//   // Allows you to suspend users without deleting their data
+//   isActive: {
+//     type: Boolean,
+//     default: true
+//   }
+// }, { 
+//   timestamps: true 
+// });
+
+// module.exports = mongoose.model('User', userSchema);
+
+// const mongoose = require('mongoose');
+
+// const userSchema = new mongoose.Schema({
+//   name: { 
+//     type: String, 
+//     required: [true, 'Please provide a name'],
+//     trim: true
+//   },
+//   email: { 
+//     type: String, 
+//     required: [true, 'Please provide an email'], 
+//     unique: true, 
+//     lowercase: true,
+//     trim: true
+//   },
+//   password: { 
+//     type: String, 
+//     required: [true, 'Please provide a password'],
+//     minlength: 8
+//   },
+  
+//   // ⚡ FIX: Ye dono fields add karni zaroori hain!
+//   phone: {
+//     type: String,
+//     trim: true,
+//     default: "" // Shuru mein khali rahega jab tak user add na kare
+//   },
+//   gender: {
+//     type: String,
+//     enum: ['Male', 'Female', 'Other'], // Options set kar diye
+//     default: 'Female'
+//   },
+
+//   // Access Control Gateway
+//   role: { 
+//     type: String, 
+//     enum: ['customer', 'admin', 'super-admin'], 
+//     default: 'customer' 
+//   },
+
+//   // Triggers the "Force Password Change" screen
+//   isFirstLogin: {
+//     type: Boolean,
+//     default: true 
+//   },
+
+//   // Allows you to suspend users without deleting their data
+//   isActive: {
+//     type: Boolean,
+//     default: true
+//   }
+// }, { 
+//   timestamps: true 
+// });
+
+// module.exports = mongoose.model('User', userSchema);
+
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -19,6 +121,28 @@ const userSchema = new mongoose.Schema({
     minlength: 8
   },
   
+  // ⚡ PROFILE DETAILS (Phone & Gender)
+  phone: {
+    type: String,
+    trim: true,
+    default: "" 
+  },
+  gender: {
+    type: String,
+    enum: ['Male', 'Female', 'Other'], 
+    default: 'Female'
+  },
+
+  // ⚡ ADDRESSES ARRAY (Address form ke liye zaroori)
+  addresses: [{
+    name: String,
+    phone: String,
+    pincode: String,
+    locality: String,
+    address: String,
+    type: { type: String, default: 'Home' }
+  }],
+
   // Access Control Gateway
   role: { 
     type: String, 

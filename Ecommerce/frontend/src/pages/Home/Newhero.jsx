@@ -1,23 +1,126 @@
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import axiosInstance from '../../utils/axiosInstance';
+// import heroImage from './truee-001-banner (1).png';
+
+// export default function Hero() {
+//   const navigate = useNavigate();
+//   const [targetProductId, setTargetProductId] = useState(null);
+
+//   useEffect(() => {
+//     // API integration to fetch a product for the Buy Now button
+//     const fetchHeroProduct = async () => {
+//       try {
+//         const response = await axiosInstance.get('/products');
+//         if (response.data && response.data.length > 0) {
+//           // Selecting the first product
+//           setTargetProductId(response.data[0]._id);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching product for hero section:", error);       
+//       }
+//     };
+//     fetchHeroProduct();
+//   }, []);
+
+//   const handleShopNow = () => {
+//     if (targetProductId) {
+//       // API se fetched product ke details page pe le jayega
+//       navigate(`/product/${targetProductId}`);
+//     } else {
+//       // Fallback
+//       navigate('/shop');
+//     }
+//   };
+
+//   return (
+//     <main
+//       className="w-full overflow-x-hidden relative bg-white flex flex-col justify-center items-center pt-0 px-0 cursor-pointer mt-0"
+//       onClick={handleShopNow}
+//     >
+//       <div className="w-full m-0 p-0">
+//         <img
+//           src={heroImage}
+//           alt="True 001 Banner"
+//           className="w-full h-auto block m-0 p-0"
+//         />
+//       </div>
+//     </main>
+//   );
+// }
+
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import axiosInstance from '../../utils/axiosInstance';
+// import heroImage from './truee-001-banner (1).png';
+
+// export default function Hero() {
+//   const navigate = useNavigate();
+//   const [targetProductId, setTargetProductId] = useState(null);
+
+//   useEffect(() => {
+//     // API integration to fetch a product for the Buy Now button
+//     const fetchHeroProduct = async () => {
+//       try {
+//         const response = await axiosInstance.get('/products');
+//         if (response.data && response.data.length > 0) {
+//           // Selecting the first product
+//           setTargetProductId(response.data[0]._id);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching product for hero section:", error);       
+//       }
+//     };
+//     fetchHeroProduct();
+//   }, []);
+
+//   const handleShopNow = () => {
+//     if (targetProductId) {
+//       // API se fetched product ke details page pe le jayega
+//       navigate(`/product/${targetProductId}`);
+//     } else {
+//       // Fallback
+//       navigate('/shop');
+//     }
+//   };
+
+//   return (
+//     <main
+//       // ⚡ FIX 1: 'min-h-[50vh] md:min-h-[85vh]' aur 'bg-[#f8f8f8]' lagaya taaki Deals section upar na aaye
+//       className="w-full min-h-[50vh] md:min-h-[85vh] bg-[#f8f8f8] relative flex flex-col justify-center items-center pt-0 px-0 cursor-pointer mt-0 overflow-hidden"
+//       onClick={handleShopNow}
+//     >
+//       <div className="w-full h-full flex items-center justify-center m-0 p-0">
+//         <img
+//           src={heroImage}
+//           alt="True 001 Banner"
+//           // ⚡ FIX 2: Browser ko order diya ki is image ko VIP priority de aur sabse pehle load kare
+//           fetchPriority="high" 
+//           className="w-full h-auto object-cover block m-0 p-0"
+//         />
+//       </div>
+//     </main>
+//   );
+// }
+
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
-import heroImage from './truee-001-banner (1).png';
+import heroImage from './hero-banner.jpg'; 
 
 export default function Hero() {
   const navigate = useNavigate();
   const [targetProductId, setTargetProductId] = useState(null);
 
   useEffect(() => {
-    // API integration to fetch a product for the Buy Now button
     const fetchHeroProduct = async () => {
       try {
         const response = await axiosInstance.get('/products');
         if (response.data && response.data.length > 0) {
-          // Selecting the first product
           setTargetProductId(response.data[0]._id);
         }
       } catch (error) {
-        console.error("Error fetching product for hero section:", error);       
+        console.error("Error fetching product:", error);       
       }
     };
     fetchHeroProduct();
@@ -25,24 +128,26 @@ export default function Hero() {
 
   const handleShopNow = () => {
     if (targetProductId) {
-      // API se fetched product ke details page pe le jayega
       navigate(`/product/${targetProductId}`);
     } else {
-      // Fallback
       navigate('/shop');
     }
   };
 
   return (
     <main
-      className="w-full overflow-x-hidden relative bg-white flex flex-col justify-center items-center pt-0 px-0 cursor-pointer mt-0"
+      // ⚡ FIX: 'pt-0 mt-0' hatakar zeroed out kar diya taaki upar koi gap na rahe
+      className="w-full static flex flex-col justify-start items-center cursor-pointer overflow-hidden bg-[#f8f8f8] pt-0 mt-0"
       onClick={handleShopNow}
     >
-      <div className="w-full m-0 p-0">
+      {/* ⚡ FIX: 'w-full' aur 'h-[auto]' set kiya taaki banner apni natural size le aur top se chipka rahe */}
+      <div className="w-full h-auto relative leading-none">
         <img
           src={heroImage}
           alt="True 001 Banner"
-          className="w-full h-auto block m-0 p-0"
+          fetchPriority="high"
+          // ⚡ FIX: 'w-full h-auto block' se image bina kisi extra space ke top par fix ho jayegi
+          className="w-full h-auto block object-cover"
         />
       </div>
     </main>
