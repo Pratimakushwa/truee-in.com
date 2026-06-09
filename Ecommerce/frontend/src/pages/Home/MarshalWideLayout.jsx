@@ -391,3 +391,99 @@ const MarshallWideLayout = () => {
 };
 
 export default MarshallWideLayout;
+
+// import React, { useState, useEffect } from 'react';
+// import axiosInstance from '../../utils/axiosInstance';
+// import QuickModel from '../Product/ProductDetailModel';
+
+// const MarshallWideLayout = () => {
+//   const [product, setProduct] = useState(null); 
+//   const [leftProduct, setLeftProduct] = useState(null); 
+//   const [quickViewProduct, setQuickViewProduct] = useState(null);
+
+//   useEffect(() => {
+//     const fetchProduct = async () => {
+//       try {
+//         const { data } = await axiosInstance.get('/products');
+//         if (data.success && data.products.length > 0) {
+//           const minorIV = data.products.find(p => p.name?.toLowerCase().includes('minor iv') || p.name?.toLowerCase().includes('minor 4'));
+//           setProduct(minorIV || data.products[0]);
+//           const middletonSpeaker = data.products.find(p => {
+//             const name = p.name?.toLowerCase().trim() || '';
+//             return name.includes('middleton') && !name.includes('ii') && !name.includes(' 2');
+//           });
+//           setLeftProduct(middletonSpeaker || data.products[0]);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching wide layout product:", error);
+//       }
+//     };
+//     fetchProduct();
+//   }, []);
+
+//   const imgSet1 = {
+//     left: "https://static0.anpoimages.com/wordpress/wp-content/uploads/2025/01/marshall-middleton-lifestyle.jpg?w=1600&h=1200&fit=crop",
+//     right: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEgnpw_PdZG52JMN2JsH2j8peuJQB3M6QhZqIyP8o__LHl8odlJSn7UgO0XxqyeHT6NvV9UBvebQ3xtFAGYMCNqwvcfdPgdajUbqkDxJvT3r4WyhbAbAvwuZt69Wlya4VA56sXVGkwVZv9HI7KVTO3F7dtIZrkq86nv9KDxdEiZQk0nfjwKjpk0s2e0YS-Y/s800/marshall-minor-iv-banner.png"
+//   };
+
+//   return (
+//     <div className="w-full bg-white flex flex-col items-center justify-center pt-10 pb-10 px-2 md:px-4 font-sans">
+      
+//       {/* 1. MARSHALL LAYOUT (Rounded Images) */}
+//       <div className="relative w-[98%] mx-auto flex flex-col md:flex-row items-center justify-center gap-6 md:gap-[70px]">
+//         {/* Left Image */}
+//         <div className="relative w-full flex-1 h-[400px] rounded-2xl overflow-hidden shadow-sm group">
+//           <img src={imgSet1.left} alt="Model Portrait" className="w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105" />
+//           <div className="absolute bottom-5 md:bottom-10 left-1/2 -translate-x-1/2 z-10">
+//             <button onClick={() => leftProduct && setQuickViewProduct(leftProduct)} className="bg-black text-white px-9 py-4 text-[11px] rounded-lg font-bold tracking-[0.5em] uppercase hover:bg-zinc-800 transition-all shadow-xl active:scale-95 cursor-pointer whitespace-nowrap">BUY NOW</button>
+//           </div>
+//         </div>
+//         {/* Right Image */}
+//         <div className="relative w-full flex-1 h-[400px] rounded-2xl overflow-hidden shadow-sm group">
+//           <img src={imgSet1.right} alt="Audio Product" className="w-full h-full object-cover object-center transition-all duration-500 group-hover:scale-105" />
+//           <div className="absolute bottom-5 md:bottom-10 left-1/2 -translate-x-1/2 z-10">
+//             <button onClick={() => product && setQuickViewProduct(product)} className="bg-black text-white px-9 py-4 text-[11px] rounded-lg font-bold tracking-[0.5em] uppercase hover:bg-zinc-800 transition-all shadow-xl active:scale-95 cursor-pointer whitespace-nowrap">BUY NOW</button>
+//           </div>
+//         </div>
+//       </div>
+
+//       {/* 2. DUAL VIDEO SECTION (Cover Fixed) */}
+//       <section className="w-[98%] mx-auto mt-16 mb-20">
+//         <h3 className="text-center text-[15px] uppercase tracking-[0.4em] font-bold mb-8 text-black opacity-60">
+//           Unboxing & Review
+//         </h3>
+//         <div className="flex flex-col md:flex-row gap-6">
+//           {/* Left Video */}
+//           {/* Left Video - Perfect Fit (No scale, No cut) */}
+// <div className="w-full md:w-1/2 aspect-video rounded-2xl overflow-hidden shadow-2xl bg-black flex items-center justify-center">
+//   <iframe 
+//     className="w-full h-full" 
+//     src="https://www.youtube.com/embed/C6Mx6BWcSMo" 
+//     title="Video 1" 
+//     frameBorder="0" 
+//     allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+//     allowFullScreen
+//   ></iframe>
+// </div>
+//           {/* Right Video */}
+//           <div className="relative w-full md:w-1/2 h-[300px] md:h-[400px] rounded-2xl overflow-hidden shadow-2xl bg-black">
+//             <iframe 
+//               className="absolute top-0 left-0 w-full h-full object-cover" 
+//               src="https://www.youtube.com/embed/baITH2OP6tk" 
+//               title="Video 2" 
+//               frameBorder="0" 
+//               allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+//               allowFullScreen
+//             ></iframe>
+//           </div>
+//         </div>
+//       </section>
+
+//       {quickViewProduct && (
+//         <QuickModel isOpen={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} product={quickViewProduct} />
+//       )}
+//     </div>
+//   );
+// };
+
+// export default MarshallWideLayout;

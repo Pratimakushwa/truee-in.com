@@ -102,7 +102,6 @@
 //     </main>
 //   );
 // }
-
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
@@ -111,6 +110,7 @@ import heroImage from './hero-banner.jpg';
 export default function Hero() {
   const navigate = useNavigate();
   const [targetProductId, setTargetProductId] = useState(null);
+  const [isLoaded, setIsLoaded] = useState(false); // ⚡ Load hone ka state
 
   useEffect(() => {
     const fetchHeroProduct = async () => {
@@ -120,7 +120,7 @@ export default function Hero() {
           setTargetProductId(response.data[0]._id);
         }
       } catch (error) {
-        console.error("Error fetching product:", error);       
+        console.error("Error fetching product:", error);        
       }
     };
     fetchHeroProduct();
@@ -136,17 +136,21 @@ export default function Hero() {
 
   return (
     <main
-      // ⚡ FIX: 'pt-0 mt-0' hatakar zeroed out kar diya taaki upar koi gap na rahe
       className="w-full static flex flex-col justify-start items-center cursor-pointer overflow-hidden bg-[#f8f8f8] pt-0 mt-0"
       onClick={handleShopNow}
+      // ⚡ Jab tak image load na ho, section ko hidden rakho
+      style={{ 
+        opacity: isLoaded ? 1 : 0, 
+        transition: 'opacity 0.6s ease-in',
+        minHeight: '500px' // Placeholder height taaki jump na ho
+      }}
     >
-      {/* ⚡ FIX: 'w-full' aur 'h-[auto]' set kiya taaki banner apni natural size le aur top se chipka rahe */}
       <div className="w-full h-auto relative leading-none">
         <img
           src={heroImage}
           alt="True 001 Banner"
           fetchPriority="high"
-          // ⚡ FIX: 'w-full h-auto block' se image bina kisi extra space ke top par fix ho jayegi
+          onLoad={() => setIsLoaded(true)} // ⚡ Image load hote hi show hoga
           className="w-full h-auto block object-cover"
         />
       </div>
