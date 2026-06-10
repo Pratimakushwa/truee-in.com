@@ -140,20 +140,20 @@ import axiosInstance from "../utils/axiosInstance"
 const Sidebar = ({ activeTab, setActiveTab }) => {
   const navigate = useNavigate()
   
-  // Database se naam lane ke liye state
-  const [userData, setUserData] = useState({ firstName: "Luxury", lastName: "Member" })
+  // ⚡ FIX: Default naam sirf 'User' rakha hai, 'Member' hata diya
+  const [userData, setUserData] = useState({ firstName: "User", lastName: "" })
 
-  // API Call: Backend se user ka real naam fetch karne ke liye
   useEffect(() => {
     const fetchUser = async () => {
       try {
         const { data } = await axiosInstance.get('/auth/profile');
         if (data.success && data.user) {
-          const fullName = data.user.name || "";
+          const fullName = data.user.name || "User";
           const nameParts = fullName.trim().split(" ");
           setUserData({
-            firstName: nameParts[0] || "Luxury",
-            lastName: nameParts.slice(1).join(" ") || "Member"
+            firstName: nameParts[0],
+            // ⚡ FIX: Agar last name nahi hai toh empty string aayega, 'Member' nahi judega
+            lastName: nameParts.slice(1).join(" ") 
           });
         }
       } catch (error) {
@@ -176,7 +176,8 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
       <div className="p-6 flex items-center gap-4 border-b border-gray-200 bg-white  text-black">
         {/* User Avatar (Initials) */}
         <div className="w-12 h-12 rounded-full bg-[#D4AF37] flex items-center justify-center text-black font-bold text-xl uppercase">
-          {userData.firstName.charAt(0)}{userData.lastName.charAt(0)}
+          {/* ⚡ FIX: Agar last name nahi hai toh sirf first letter dikhega */}
+          {userData.firstName.charAt(0)}{userData.lastName ? userData.lastName.charAt(0) : ""}
         </div>
         
         {/* User Name */}
@@ -188,7 +189,6 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         </div>
       </div>
 
-      {/* ⚡ FIX: Yahan se <Link> hata diya aur baaki tabs jaisa bana diya */}
       <div className="border-b border-gray-200 bg-gray-50">
         <Sidebaritem 
           icon={ShoppingBag} 
@@ -293,7 +293,7 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         className="flex items-center gap-3 p-4 text-black hover:text-black hover:bg-gray-100 transition w-full"
       >
         <Power size={18}/>
-        <span>Logout</span>
+        <span className="text-red-600">Logout</span>
       </button>
 
     </div>

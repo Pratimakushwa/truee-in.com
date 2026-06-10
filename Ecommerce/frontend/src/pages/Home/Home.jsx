@@ -169,11 +169,11 @@ export default function Home() {
         ) : (
           <>
             {/* ⚡ FIX 2: Purane Newhero ko comment kar diya hai. */}
-            <Newhero featuredProducts={homeData.featured || []} />
+            {/* <Newhero featuredProducts={homeData.featured || []} /> */}
             
             {/* ⚡ Naya Hero component yahan add kar diya */}
             {/* <Hero featuredProducts={homeData.featured || []} /> */}
-            {/* <Hero1 featuredProducts={homeData.featured || []} /> */}
+            <Hero1 featuredProducts={homeData.featured || []} />
             {/* <Hero2 featuredProducts={homeData.featured || []} /> */}
           </>
         )}
@@ -192,13 +192,14 @@ export default function Home() {
           <Deals />
           <CategoryShowcase />
           <MarshallDesign />
-          <FeatureBar />
+       
           <MarshallWideLayout />
           <TestimonialSlider />
         </>
       )}
 
       <Newsletter2 />
+      <FeatureBar />
       <Footer /> 
     </div>
   );

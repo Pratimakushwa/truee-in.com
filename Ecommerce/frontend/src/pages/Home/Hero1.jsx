@@ -204,6 +204,7 @@ export default function Hero() {
     { id: 1, image: "img4.jpg", title: "MONITOR III A.N.C.", subtitle: "A SOUND ABOVE", key: "monitor" },
     { id: 2, image: "B_Content_Mode_USE-C_3.webp", title: "Marshall Mode C", subtitle: "MARSHALL MODE USB-C", key: "mode" },
     { id: 3, image: "marshall_acton-III_midnight-blue_lifestyle-product_1.jpg", title: "Marshall Action III", subtitle: "PORTABLE POWER", key: "acton" },
+    { id: 3, image: "eRAfpPgkCXYDy5vrBRPXEE.png", title: "", subtitle: "", key: "" },
   ];
 
   const handleOpen = (key) => {

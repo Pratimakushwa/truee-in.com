@@ -282,7 +282,7 @@ export default function Footer() {
             <h4 className="footer-heading">Connect</h4>
             <ul style={{ listStyle: "none", padding: 0, margin: 0, display: "flex", flexDirection: "column", gap: "12px" }}>
               <li><a href="https://www.instagram.com/truee_luxury?igsh=eTllajVlbGNhZm96" target="_blank" rel="noopener noreferrer" className="footer-link">Instagram</a></li>
-              <li><a href="https://facebook.com/your-link" target="_blank" rel="noopener noreferrer" className="footer-link">Facebook</a></li>
+              <li><a href="https://www.facebook.com/share/17m6mtmfnb/?mibextid=wwXIfr" target="_blank" rel="noopener noreferrer" className="footer-link">Facebook</a></li>
               <li><a href="https://youtube.com/your-link" target="_blank" rel="noopener noreferrer" className="footer-link">YouTube</a></li>
             </ul>
           </div>
