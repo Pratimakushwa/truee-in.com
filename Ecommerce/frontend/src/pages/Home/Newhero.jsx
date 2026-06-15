@@ -102,6 +102,62 @@
 //     </main>
 //   );
 // }
+
+// import React, { useState, useEffect } from 'react';
+// import { useNavigate } from 'react-router-dom';
+// import axiosInstance from '../../utils/axiosInstance';
+// import heroImage from './hero-banner.jpg'; 
+
+// export default function Hero() {
+//   const navigate = useNavigate();
+//   const [targetProductId, setTargetProductId] = useState(null);
+//   const [isLoaded, setIsLoaded] = useState(false); // ⚡ Load hone ka state
+
+//   useEffect(() => {
+//     const fetchHeroProduct = async () => {
+//       try {
+//         const response = await axiosInstance.get('/products');
+//         if (response.data && response.data.length > 0) {
+//           setTargetProductId(response.data[0]._id);
+//         }
+//       } catch (error) {
+//         console.error("Error fetching product:", error);        
+//       }
+//     };
+//     fetchHeroProduct();
+//   }, []);
+
+//   const handleShopNow = () => {
+//     if (targetProductId) {
+//       navigate(`/product/${targetProductId}`);
+//     } else {
+//       navigate('/shop');
+//     }
+//   };
+
+//   return (
+//     <main
+//       className="w-full static flex flex-col justify-start items-center cursor-pointer overflow-hidden bg-[#f8f8f8] pt-0 mt-0"
+//       onClick={handleShopNow}
+//       // ⚡ Jab tak image load na ho, section ko hidden rakho
+//       style={{ 
+//         opacity: isLoaded ? 1 : 0, 
+//         transition: 'opacity 0.6s ease-in',
+//         minHeight: '500px' // Placeholder height taaki jump na ho
+//       }}
+//     >
+//       <div className="w-full h-auto relative leading-none">
+//         <img
+//           src={heroImage}
+//           alt="True 001 Banner"
+//           fetchPriority="high"
+//           onLoad={() => setIsLoaded(true)} // ⚡ Image load hote hi show hoga
+//           className="w-full h-auto block object-cover"
+//         />
+//       </div>
+//     </main>
+//   );
+// }
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axiosInstance from '../../utils/axiosInstance';
@@ -136,13 +192,14 @@ export default function Hero() {
 
   return (
     <main
-      className="w-full static flex flex-col justify-start items-center cursor-pointer overflow-hidden bg-[#f8f8f8] pt-0 mt-0"
+      // Maine yahan min-h-[200px] (mobile ke liye) aur md:min-h-[500px] (desktop ke liye) add kiya hai
+      className="w-full static flex flex-col justify-start items-center cursor-pointer overflow-hidden bg-[#f8f8f8] pt-0 mt-0 min-h-[200px] md:min-h-[500px]"
       onClick={handleShopNow}
       // ⚡ Jab tak image load na ho, section ko hidden rakho
       style={{ 
         opacity: isLoaded ? 1 : 0, 
-        transition: 'opacity 0.6s ease-in',
-        minHeight: '500px' // Placeholder height taaki jump na ho
+        transition: 'opacity 0.6s ease-in'
+        // minHeight ko yahan se hata diya hai taaki mobile par layout kharab na ho
       }}
     >
       <div className="w-full h-auto relative leading-none">
