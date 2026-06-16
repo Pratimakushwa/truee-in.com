@@ -94,13 +94,14 @@
 //   );
 // }
 
+
 import React, { useState, useEffect, Suspense } from 'react';
 import axiosInstance from '../../utils/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 
 // Components
 import Header1 from './Header1';
-import BrandStrip from '../../components/BrandStrip';
+import BrandsMarquee from './BrandsMarquee';
 import Footer from './Footer';
 import Cursor from './Cursor';
 import Newsletter2 from '../../components/Newsletter2';
@@ -177,7 +178,7 @@ export default function Home() {
             {/* <Hero2 featuredProducts={homeData.featured || []} /> */}
           </>
         )}
-        <BrandStrip />
+        <BrandsMarquee />
       </div>
 
       {/* ⚡ Sections ko condition ke hisaab se render karein */}

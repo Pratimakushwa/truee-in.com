@@ -168,6 +168,7 @@
 //     </div>
 //   );
 // }
+
 import React, { useState, useEffect } from 'react';
 import QuickModel from '../Product/ProductDetailModel';
 import axiosInstance from '../../utils/axiosInstance';
@@ -183,10 +184,14 @@ export default function Hero() {
       try {
         const res = await axiosInstance.get('/products');
         const list = res.data.products || res.data;
+        
+        // ⚡ YAHAN FIX KIYA: Sonos aur Therabody ko database se match karne ka logic lagaya
         setMatchedProducts({
           monitor: list.find(p => p.name?.toLowerCase().includes('monitor')),
           mode: list.find(p => p.name?.toLowerCase().includes('mode')),
-          acton: list.find(p => p.name?.toLowerCase().includes('acton'))
+          acton: list.find(p => p.name?.toLowerCase().includes('acton')),
+          sonos: list.find(p => p.name?.toLowerCase().includes('sonos move')), // Sonos ko match karega
+          therabody: list.find(p => p.name?.toLowerCase().includes('theragun')) // Therabody ko match karega
         });
       } catch (err) { console.error("Error fetching hero products:", err); }
     };
@@ -200,11 +205,13 @@ export default function Hero() {
     return () => clearInterval(timer);
   }, []);
 
+  // ⚡ YAHAN FIX KIYA: IDs theek kiye, aur "sonos" aur "therabody" keys lagaye
   const slides = [
     { id: 1, image: "img4.jpg", title: "MONITOR III A.N.C.", subtitle: "A SOUND ABOVE", key: "monitor" },
     { id: 2, image: "B_Content_Mode_USE-C_3.webp", title: "Marshall Mode C", subtitle: "MARSHALL MODE USB-C", key: "mode" },
     { id: 3, image: "marshall_acton-III_midnight-blue_lifestyle-product_1.jpg", title: "Marshall Action III", subtitle: "PORTABLE POWER", key: "acton" },
-    { id: 3, image: "eRAfpPgkCXYDy5vrBRPXEE.png", title: "", subtitle: "", key: "" },
+    { id: 4, image: "eRAfpPgkCXYDy5vrBRPXEE.png", title: "Sonos Move II", subtitle: "Portable Smart Speaker", key: "sonos" },
+    // { id: 5, image: "theragun_banner.jpg", title: "Theragun Pro", subtitle: "Deep Muscle Treatment", key: "therabody" } // ⚡ Apni asli image ka naam yahan likhna
   ];
 
   const handleOpen = (key) => {
@@ -212,6 +219,8 @@ export default function Hero() {
     if (product) {
       setSelectedProduct(product);
       setIsModalOpen(true);
+    } else {
+      console.log(`Product not found for key: ${key}`); // Agar click kaam na kare toh console check karna
     }
   };
 
