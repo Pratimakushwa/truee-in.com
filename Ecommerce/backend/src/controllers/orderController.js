@@ -148,9 +148,85 @@
 //   });
 // });
 
+// const Order = require('../models/orderModel'); 
+// const Product = require('../models/ProductModel'); 
+// const wrapAsync = require('../utils/wrapAsync');
+// const mongoose = require('mongoose');
+
+// // ==========================================
+// // 1. ORDER CREATE KARNA
+// // ==========================================
+// exports.instantCheckout = wrapAsync(async (req, res) => {
+//   const { cartItems, totalAmount } = req.body;
+
+//   const userId = req.user ? req.user._id : new mongoose.Types.ObjectId();
+
+//   if (!cartItems || cartItems.length === 0) {
+//     return res.status(400).json({ success: false, error: "Cart is empty" });
+//   }
+
+//   const formattedOrderItems = cartItems.map(item => ({
+//     product: item.productId || item.product, 
+//     name: item.name,
+//     image: item.image || 'default-image.jpg',
+//     price: item.price,
+//     quantity: item.quantity
+//   }));
+
+//   const newOrder = await Order.create({
+//     user: userId,
+//     orderItems: formattedOrderItems,
+//     itemsPrice: totalAmount,
+//     totalAmount: totalAmount,
+//     paymentInfo: {
+//       method: 'COD',
+//       paymentStatus: 'Paid' 
+//     },
+//     shippingAddress: {
+//       fullName: req.user ? req.user.name : "Luxury VIP Guest",
+//       phone: "9876543210",
+//       addressLine1: "123 Truee Luxury Avenue",
+//       city: "Mumbai",
+//       state: "Maharashtra",
+//       pincode: "400001" 
+//     }
+//   });
+
+//   for (let item of cartItems) {
+//     if(item.productId || item.product) {
+//        await Product.findByIdAndUpdate(item.productId || item.product, {
+//          $inc: { soldCount: item.quantity }
+//        });
+//     }
+//   }
+
+//   res.status(200).json({ 
+//     success: true, 
+//     message: "Order placed successfully!",
+//     orderId: newOrder._id 
+//   });
+// });
+
+// // ==========================================
+// // 2. ORDERS FETCH KARNA (My Orders ke liye)
+// // ==========================================
+// exports.getMyOrders = wrapAsync(async (req, res) => {
+//   if (!req.user || !req.user._id) {
+//     return res.status(401).json({ success: false, message: "Please login to view orders." });
+//   }
+
+//   const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+
+//   res.status(200).json({
+//     success: true,
+//     orders: orders
+//   });
+// });
+
 const Order = require('../models/orderModel'); 
 const Product = require('../models/ProductModel'); 
 const wrapAsync = require('../utils/wrapAsync');
+const ExpressError = require('../utils/expressError'); // Error handling ke liye
 const mongoose = require('mongoose');
 
 // ==========================================
@@ -158,11 +234,10 @@ const mongoose = require('mongoose');
 // ==========================================
 exports.instantCheckout = wrapAsync(async (req, res) => {
   const { cartItems, totalAmount } = req.body;
-
   const userId = req.user ? req.user._id : new mongoose.Types.ObjectId();
 
   if (!cartItems || cartItems.length === 0) {
-    return res.status(400).json({ success: false, error: "Cart is empty" });
+    throw new ExpressError(400, "Cart is empty");
   }
 
   const formattedOrderItems = cartItems.map(item => ({
@@ -178,10 +253,7 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     orderItems: formattedOrderItems,
     itemsPrice: totalAmount,
     totalAmount: totalAmount,
-    paymentInfo: {
-      method: 'COD',
-      paymentStatus: 'Paid' 
-    },
+    paymentInfo: { method: 'COD', paymentStatus: 'Paid' },
     shippingAddress: {
       fullName: req.user ? req.user.name : "Luxury VIP Guest",
       phone: "9876543210",
@@ -195,7 +267,7 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
   for (let item of cartItems) {
     if(item.productId || item.product) {
        await Product.findByIdAndUpdate(item.productId || item.product, {
-         $inc: { soldCount: item.quantity }
+          $inc: { soldCount: item.quantity }
        });
     }
   }
@@ -208,17 +280,30 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
 });
 
 // ==========================================
-// 2. ORDERS FETCH KARNA (My Orders ke liye)
+// 2. MY ORDERS FETCH KARNA (User Dashboard)
 // ==========================================
 exports.getMyOrders = wrapAsync(async (req, res) => {
-  if (!req.user || !req.user._id) {
-    return res.status(401).json({ success: false, message: "Please login to view orders." });
+  if (!req.user) {
+    throw new ExpressError(401, "Please login to view orders.");
+  }
+  const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+  res.status(200).json({ success: true, orders });
+});
+
+// ==========================================
+// 3. GET ORDER BY ID (Premium Tracking Page ke liye)
+// ==========================================
+exports.getOrderById = wrapAsync(async (req, res) => {
+  const order = await Order.findById(req.params.id);
+  
+  if (!order) {
+    throw new ExpressError(404, "Order not found");
+  }
+  
+  // Security Check: Kya ye order usi user ka hai jo login hai?
+  if (req.user && order.user.toString() !== req.user._id.toString()) {
+    throw new ExpressError(403, "You are not authorized to view this order");
   }
 
-  const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
-
-  res.status(200).json({
-    success: true,
-    orders: orders
-  });
+  res.status(200).json({ success: true, data: order });
 });
