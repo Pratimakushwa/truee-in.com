@@ -167,9 +167,304 @@
 //     </div>
 //   );
 // }
-import React from 'react';
+
+// import React from 'react';
+
+// export default function ShopProductCard({ product, onQuickView }) {
+//   if (!product) return null;
+
+//   // ── Pricing & Discount Logic ──
+//   const isDealActive = product?.flashDeal?.isActive && new Date(product.flashDeal.endTime).getTime() > Date.now();
+//   const originalPrice = product.price || 0;
+//   const finalPrice = isDealActive ? product.flashDeal.dealPrice : originalPrice - (product.discountPrice || 0);
+  
+//   const hasDiscount = originalPrice > finalPrice && originalPrice > 0;
+//   const discountPercent = hasDiscount ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) : 0;
+
+//   // ── Stock Logic ──
+//   const isOutOfStock = product.stock <= 0 && (!product.variants || !product.variants.some(v => v.stock > 0));
+
+//   // ── Image Getter ──
+//   const getProductImg = (p) => {
+//     if (p?.variants?.[0]?.images?.[0]?.url) return p.variants[0].images[0].url;
+//     if (p?.images?.[0]?.url) return p.images[0].url;
+//     return 'https://placehold.co/400x400/f5f5f5/cccccc?text=No+Image'; 
+//   };
+
+//   // ── Price Formatter (No Decimals) ──
+//   const formatPrice = (price) => {
+//     if (price === undefined || price === null) return '';
+//     return new Intl.NumberFormat('en-IN', {
+//       style: 'currency',
+//       currency: 'INR',
+//       maximumFractionDigits: 0 
+//     }).format(price);
+//   };
+
+//   const imgSrc = getProductImg(product);
+
+//   return (
+//     <div
+//       className="w-full h-full flex flex-col items-center group cursor-pointer text-center mb-6"
+//       // ⚡ WAPAS SAHI KAR DIYA: Ab ye naye page par nahi jayega, balki tumhara Quick View Modal hi kholega!
+//       onClick={() => onQuickView(product)}
+//     >
+//       {/* 1. Image Container (Balanced Size) */}
+//       <div className="w-full h-[260px] min-h-[260px] max-h-[260px] shrink-0 bg-[#f8f8f8] flex items-center justify-center mb-4 relative overflow-hidden rounded-sm p-4">
+        
+//         {/* Badges */}
+//         {isOutOfStock ? (
+//           <span className="absolute top-2.5 left-2.5 bg-[#e42222] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">
+//             Sold out
+//           </span>
+//         ) : hasDiscount ? (
+//           <span className="absolute top-2.5 left-2.5 bg-[#3a8b76] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">
+//             Save {discountPercent}%
+//           </span>
+//         ) : null}
+
+//         {/* Removed forced scale, using natural w-full h-full */}
+//         <img
+//           src={imgSrc}
+//           alt={product?.name}
+//           className={`w-full h-full object-contain transition-transform duration-700 mix-blend-multiply ${!isOutOfStock ? 'group-hover:scale-110' : 'opacity-70'}`}
+//         />
+//       </div>
+
+//       {/* 2. Price Section */}
+//       <div className="flex items-center justify-center gap-2 mb-2 w-full mt-auto">
+//         <span className={`text-[14px] font-bold ${hasDiscount ? 'text-[#3a8b76]' : 'text-[#333]'}`}>
+//           {formatPrice(finalPrice)}
+//         </span>
+        
+//         {hasDiscount && (
+//           <span className="text-[12px] font-medium text-gray-400 line-through">
+//             {formatPrice(originalPrice)}
+//           </span>
+//         )}
+//       </div>
+
+//       {/* 3. Title Section */}
+//       <h3 className="text-[14px] font-medium text-[#111] leading-snug line-clamp-2 px-1">
+//         {product?.name || 'PRODUCT'}
+//       </h3>
+      
+//     </div>
+//   );
+// }
+
+// import React, { useState } from 'react';
+// import { Heart } from 'lucide-react';
+// import { useNavigate } from 'react-router-dom';
+// import axiosInstance from '../../utils/axiosInstance';
+// import { useAuth } from '../../context/AuthContext';
+
+// export default function ShopProductCard({ product, onQuickView }) {
+//   const { user } = useAuth();
+//   const navigate = useNavigate();
+//   const [isWishlisted, setIsWishlisted] = useState(false);
+
+//   if (!product) return null;
+
+//   // ── Pricing & Discount Logic ──
+//   const isDealActive = product?.flashDeal?.isActive && new Date(product.flashDeal.endTime).getTime() > Date.now();
+//   const originalPrice = product.price || 0;
+//   const finalPrice = isDealActive ? product.flashDeal.dealPrice : originalPrice - (product.discountPrice || 0);
+  
+//   const hasDiscount = originalPrice > finalPrice && originalPrice > 0;
+//   const discountPercent = hasDiscount ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) : 0;
+//   const isOutOfStock = product.stock <= 0 && (!product.variants || !product.variants.some(v => v.stock > 0));
+
+//   const getProductImg = (p) => {
+//     if (p?.variants?.[0]?.images?.[0]?.url) return p.variants[0].images[0].url;
+//     if (p?.images?.[0]?.url) return p.images[0].url;
+//     return 'https://placehold.co/400x400/f5f5f5/cccccc?text=No+Image'; 
+//   };
+
+//   const formatPrice = (price) => {
+//     if (price === undefined || price === null) return '';
+//     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price);
+//   };
+
+//   const imgSrc = getProductImg(product);
+
+//   const handleWishlistToggle = async (e) => {
+//     e.stopPropagation(); 
+//     if (!user) {
+//       navigate('/login');
+//       return;
+//     }
+//     setIsWishlisted(!isWishlisted);
+//     try {
+//       await axiosInstance.post('/wishlist/toggle', { productId: product._id });
+//     } catch (error) {
+//       console.error('Wishlist error', error);
+//       setIsWishlisted(!isWishlisted);
+//     }
+//   };
+
+//   return (
+//     <div
+//       className="w-full h-full flex flex-col items-center cursor-pointer text-center mb-6 relative group"
+//       onClick={() => onQuickView(product)}
+//     >
+//       <div className="w-full h-[260px] min-h-[260px] max-h-[260px] shrink-0 bg-[#f8f8f8] flex items-center justify-center mb-4 relative overflow-hidden rounded-sm p-4">
+        
+//         {/* Badges */}
+//         {isOutOfStock ? (
+//           <span className="absolute top-2.5 left-2.5 bg-[#e42222] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">Sold out</span>
+//         ) : hasDiscount ? (
+//           <span className="absolute top-2.5 left-2.5 bg-[#3a8b76] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">Save {discountPercent}%</span>
+//         ) : null}
+
+//         {/* ⚡ PERMANENTLY VISIBLE MINIMALIST HEART ICON */}
+//         <button 
+//           onClick={handleWishlistToggle}
+//           className="absolute top-2.5 right-2.5 z-30 p-1.5 bg-white/80 rounded-full shadow-sm transition-transform duration-200 active:scale-90"
+//           aria-label="Add to wishlist"
+//         >
+//           <Heart 
+//             size={14} 
+//             color={isWishlisted ? "#ef4444" : "#333"} 
+//             fill={isWishlisted ? "#ef4444" : "none"} 
+//             strokeWidth={2.5} 
+//           />
+//         </button>
+
+//         <img
+//           src={imgSrc}
+//           alt={product?.name}
+//           className={`w-full h-full object-contain transition-transform duration-700 mix-blend-multiply ${!isOutOfStock ? 'group-hover:scale-110' : 'opacity-70'}`}
+//         />
+//       </div>
+
+//       <div className="flex items-center justify-center gap-2 mb-2 w-full mt-auto">
+//         <span className={`text-[14px] font-bold ${hasDiscount ? 'text-[#3a8b76]' : 'text-[#333]'}`}>
+//           {formatPrice(finalPrice)}
+//         </span>
+//         {hasDiscount && (
+//           <span className="text-[12px] font-medium text-gray-400 line-through">{formatPrice(originalPrice)}</span>
+//         )}
+//       </div>
+
+//       <h3 className="text-[14px] font-medium text-[#111] leading-snug line-clamp-2 px-1">
+//         {product?.name || 'PRODUCT'}
+//       </h3>
+//     </div>
+//   );
+// }
+
+// import React, { useState } from 'react';
+// import { Heart } from 'lucide-react';
+// import { useNavigate } from 'react-router-dom';
+// import axiosInstance from '../../utils/axiosInstance';
+// import { useAuth } from '../../context/AuthContext';
+
+// export default function ShopProductCard({ product, onQuickView }) {
+//   const { user } = useAuth();
+//   const navigate = useNavigate();
+//   const [isWishlisted, setIsWishlisted] = useState(false);
+
+//   if (!product) return null;
+
+//   // ── Pricing & Discount Logic ──
+//   const isDealActive = product?.flashDeal?.isActive && new Date(product.flashDeal.endTime).getTime() > Date.now();
+//   const originalPrice = product.price || 0;
+//   const finalPrice = isDealActive ? product.flashDeal.dealPrice : originalPrice - (product.discountPrice || 0);
+  
+//   const hasDiscount = originalPrice > finalPrice && originalPrice > 0;
+//   const discountPercent = hasDiscount ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) : 0;
+//   const isOutOfStock = product.stock <= 0 && (!product.variants || !product.variants.some(v => v.stock > 0));
+
+//   const getProductImg = (p) => {
+//     if (p?.variants?.[0]?.images?.[0]?.url) return p.variants[0].images[0].url;
+//     if (p?.images?.[0]?.url) return p.images[0].url;
+//     return 'https://placehold.co/400x400/f5f5f5/cccccc?text=No+Image'; 
+//   };
+
+//   const formatPrice = (price) => {
+//     if (price === undefined || price === null) return '';
+//     return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price);
+//   };
+
+//   const imgSrc = getProductImg(product);
+
+//   const handleWishlistToggle = async (e) => {
+//     e.stopPropagation(); 
+//     if (!user) {
+//       navigate('/login');
+//       return;
+//     }
+//     setIsWishlisted(!isWishlisted);
+//     try {
+//       await axiosInstance.post('/wishlist/toggle', { productId: product._id });
+//     } catch (error) {
+//       console.error('Wishlist error', error);
+//       setIsWishlisted(!isWishlisted);
+//     }
+//   };
+
+//   return (
+//     <div
+//       className="w-full h-full flex flex-col items-center cursor-pointer text-center mb-6 relative group"
+//       onClick={() => onQuickView(product)}
+//     >
+//       <div className="w-full h-[260px] min-h-[260px] max-h-[260px] shrink-0 bg-[#f8f8f8] flex items-center justify-center mb-4 relative overflow-hidden rounded-sm p-4">
+        
+//         {/* Badges */}
+//         {isOutOfStock ? (
+//           <span className="absolute top-2.5 left-2.5 bg-[#e42222] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">Sold out</span>
+//         ) : hasDiscount ? (
+//           <span className="absolute top-2.5 left-2.5 bg-[#3a8b76] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">Save {discountPercent}%</span>
+//         ) : null}
+
+//         {/* ⚡ SIRF HOVER PE VISIBLE HEART ICON */}
+//         <button 
+//           onClick={handleWishlistToggle}
+//           className="absolute top-2.5 right-2.5 z-30 p-1.5 bg-white/80 rounded-full shadow-sm transition-all duration-200 active:scale-90 opacity-0 group-hover:opacity-100"
+//           aria-label="Add to wishlist"
+//         >
+//           <Heart 
+//             size={14} 
+//             color={isWishlisted ? "#ef4444" : "#333"} 
+//             fill={isWishlisted ? "#ef4444" : "none"} 
+//             strokeWidth={2.5} 
+//           />
+//         </button>
+
+//         <img
+//           src={imgSrc}
+//           alt={product?.name}
+//           className={`w-full h-full object-contain transition-transform duration-700 mix-blend-multiply ${!isOutOfStock ? 'group-hover:scale-110' : 'opacity-70'}`}
+//         />
+//       </div>
+
+//       <div className="flex items-center justify-center gap-2 mb-2 w-full mt-auto">
+//         <span className={`text-[14px] font-bold ${hasDiscount ? 'text-[#3a8b76]' : 'text-[#333]'}`}>
+//           {formatPrice(finalPrice)}
+//         </span>
+//         {hasDiscount && (
+//           <span className="text-[12px] font-medium text-gray-400 line-through">{formatPrice(originalPrice)}</span>
+//         )}
+//       </div>
+
+//       <h3 className="text-[14px] font-medium text-[#111] leading-snug line-clamp-2 px-1">
+//         {product?.name || 'PRODUCT'}
+//       </h3>
+//     </div>
+//   );
+// }
+import React, { useState } from 'react';
+import { Heart } from 'lucide-react';
+import { useNavigate } from 'react-router-dom';
+import axiosInstance from '../../utils/axiosInstance';
+import { useAuth } from '../../context/AuthContext';
 
 export default function ShopProductCard({ product, onQuickView }) {
+  const { user } = useAuth();
+  const navigate = useNavigate();
+  const [isWishlisted, setIsWishlisted] = useState(false);
+
   if (!product) return null;
 
   // ── Pricing & Discount Logic ──
@@ -179,50 +474,64 @@ export default function ShopProductCard({ product, onQuickView }) {
   
   const hasDiscount = originalPrice > finalPrice && originalPrice > 0;
   const discountPercent = hasDiscount ? Math.round(((originalPrice - finalPrice) / originalPrice) * 100) : 0;
-
-  // ── Stock Logic ──
   const isOutOfStock = product.stock <= 0 && (!product.variants || !product.variants.some(v => v.stock > 0));
 
-  // ── Image Getter ──
   const getProductImg = (p) => {
     if (p?.variants?.[0]?.images?.[0]?.url) return p.variants[0].images[0].url;
     if (p?.images?.[0]?.url) return p.images[0].url;
     return 'https://placehold.co/400x400/f5f5f5/cccccc?text=No+Image'; 
   };
 
-  // ── Price Formatter (No Decimals) ──
   const formatPrice = (price) => {
     if (price === undefined || price === null) return '';
-    return new Intl.NumberFormat('en-IN', {
-      style: 'currency',
-      currency: 'INR',
-      maximumFractionDigits: 0 
-    }).format(price);
+    return new Intl.NumberFormat('en-IN', { style: 'currency', currency: 'INR', maximumFractionDigits: 0 }).format(price);
   };
 
   const imgSrc = getProductImg(product);
 
+  const handleWishlistToggle = async (e) => {
+    e.stopPropagation(); 
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    setIsWishlisted(!isWishlisted);
+    try {
+      await axiosInstance.post('/wishlist/toggle', { productId: product._id });
+    } catch (error) {
+      console.error('Wishlist error', error);
+      setIsWishlisted(!isWishlisted);
+    }
+  };
+
   return (
     <div
-      className="w-full h-full flex flex-col items-center group cursor-pointer text-center mb-6"
-      // ⚡ WAPAS SAHI KAR DIYA: Ab ye naye page par nahi jayega, balki tumhara Quick View Modal hi kholega!
+      className="w-full h-full flex flex-col items-center cursor-pointer text-center mb-6 relative group"
       onClick={() => onQuickView(product)}
     >
-      {/* 1. Image Container (Balanced Size) */}
       <div className="w-full h-[260px] min-h-[260px] max-h-[260px] shrink-0 bg-[#f8f8f8] flex items-center justify-center mb-4 relative overflow-hidden rounded-sm p-4">
         
         {/* Badges */}
         {isOutOfStock ? (
-          <span className="absolute top-2.5 left-2.5 bg-[#e42222] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">
-            Sold out
-          </span>
+          <span className="absolute top-2.5 left-2.5 bg-[#e42222] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">Sold out</span>
         ) : hasDiscount ? (
-          <span className="absolute top-2.5 left-2.5 bg-[#3a8b76] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">
-            Save {discountPercent}%
-          </span>
+          <span className="absolute top-2.5 left-2.5 bg-[#3a8b76] text-white text-[10px] font-bold px-2.5 py-0.5 rounded-full z-10 tracking-wide">Save {discountPercent}%</span>
         ) : null}
 
-        {/* Removed forced scale, using natural w-full h-full */}
+        {/* ⚡ SMART HEART ICON: Mobile/iPad pe hamesha dikhega, Laptop pe hover karne pe aayega */}
+        <button 
+          onClick={handleWishlistToggle}
+          className="absolute top-2.5 right-2.5 z-30 p-1.5 bg-white/80 rounded-full shadow-sm transition-all duration-200 active:scale-90 opacity-100 lg:opacity-0 lg:group-hover:opacity-100"
+          aria-label="Add to wishlist"
+        >
+          <Heart 
+            size={14} 
+            color={isWishlisted ? "#ef4444" : "#333"} 
+            fill={isWishlisted ? "#ef4444" : "none"} 
+            strokeWidth={2.5} 
+          />
+        </button>
+
         <img
           src={imgSrc}
           alt={product?.name}
@@ -230,24 +539,18 @@ export default function ShopProductCard({ product, onQuickView }) {
         />
       </div>
 
-      {/* 2. Price Section */}
       <div className="flex items-center justify-center gap-2 mb-2 w-full mt-auto">
         <span className={`text-[14px] font-bold ${hasDiscount ? 'text-[#3a8b76]' : 'text-[#333]'}`}>
           {formatPrice(finalPrice)}
         </span>
-        
         {hasDiscount && (
-          <span className="text-[12px] font-medium text-gray-400 line-through">
-            {formatPrice(originalPrice)}
-          </span>
+          <span className="text-[12px] font-medium text-gray-400 line-through">{formatPrice(originalPrice)}</span>
         )}
       </div>
 
-      {/* 3. Title Section */}
       <h3 className="text-[14px] font-medium text-[#111] leading-snug line-clamp-2 px-1">
         {product?.name || 'PRODUCT'}
       </h3>
-      
     </div>
   );
 }

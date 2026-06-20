@@ -309,6 +309,7 @@
 // }
 
 // export default App;
+
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -333,6 +334,8 @@ import ShopHome from './pages/Shop/ShopHome';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import BrandsSection from './components/Brands';
+import Wishlist from './pages/Wishlist'; // Make sure the path is correct!
+
 
 // ── Customer Protected Pages
 import OrderSuccess from './pages/orderSuccess';
@@ -390,14 +393,12 @@ function App() {
             <Route path="/brands"           element={<PublicLayout><BrandsSection /></PublicLayout>} />
             <Route path="/cart"             element={<PublicLayout><Cart /></PublicLayout>} />
             <Route path="/checkout"         element={<PublicLayout><Checkout /></PublicLayout>} />
-            
             {/* ── Customer Private Routes ───────────────────────────── */}
             {/* ⚡ FIX: Yahan 'user' aur 'admin' ko bhi allow kar diya hai */}
-            <Route path="/profile" element={
-              <ProtectedRoute roles={['customer', 'user', 'admin', 'super-admin']}>
-                <PublicLayout><ProfilePage /></PublicLayout>
-              </ProtectedRoute>
+            <Route path="/profile" element={<ProtectedRoute roles={['customer', 'user', 'admin', 'super-admin']}><PublicLayout><ProfilePage /></PublicLayout> </ProtectedRoute>
             } /> 
+             <Route path="/wishlist" element={<PublicLayout><Wishlist /></PublicLayout>} />
+
 
             {/* ⚡ NAYA ROUTE: Single Order Details aur Track karne ke liye ⚡ */}
             <Route path="/profile/order/:id" element={
