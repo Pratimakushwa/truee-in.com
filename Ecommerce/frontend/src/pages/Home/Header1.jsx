@@ -1445,6 +1445,7 @@
 //     </>
 //   );
 // }
+
 import React, { useState, useEffect, useRef } from 'react';
 import { useNavigate, Link, useLocation } from 'react-router-dom';
 import { Search, User, Star, ShoppingBag, X, Menu, History, Clock, LogOut, Package, ChevronDown } from 'lucide-react';
@@ -1455,9 +1456,9 @@ import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 
 // 🚀 Full Static Brands List
 const staticBrands = [
-  "Noise", "Amazfit", "Marshall", "Devialet", "Sonos", "Bang & Olufsen", "Jlab", "Truee", 
+  "Noise", "Marshall", "Devialet", "Sonos", "Bang & Olufsen",  "Truee", 
   "Sony", "Shokz", "Withings", "Therabody", "Hurom", "Bowers & Wilkins", 
-  "JBL", "Bose", "Harman Kardon", "Arcam", "JVC", "Formovie", "ViewSonic"
+  "JBL", "Bose", "Harman Kardon", "polor","transparent"
 ];
 
 // ⚡ SMART CATEGORIES MAP
@@ -1495,8 +1496,10 @@ const NAV_CATEGORIES = [
     label: 'SMARTWATCHES', 
     keyword: 'Smartwatch',
     sub: [
-      { label: 'Budget', keyword: 'Budget' },
-      { label: 'Premium', keyword: 'Premium' }
+    { label: 'Luxury Edition ', keyword: 'Luxury' },
+      { label: 'Hybrid Smartwatches', keyword: 'Hybrid' },
+      { label: 'Active & Rugged', keyword: 'Rugged' },
+      { label: 'Health & Fitness', keyword: 'Health' }
     ] 
   },
   // ⚡ BEAUTY & WELLNESS WAPAS ADD KAR DIYA HAI
