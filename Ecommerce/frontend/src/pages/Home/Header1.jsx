@@ -1458,7 +1458,7 @@ import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
 const staticBrands = [
   "Noise", "Marshall", "Devialet", "Sonos", "Bang & Olufsen",  "Truee", 
   "Sony", "Shokz", "Withings", "Therabody", "Hurom", "Bowers & Wilkins", 
-  "JBL", "Bose", "Harman Kardon", "polor","transparent"
+  "JBL", "Bose", "Harman Kardon", "polar","transparent"
 ];
 
 // ⚡ SMART CATEGORIES MAP

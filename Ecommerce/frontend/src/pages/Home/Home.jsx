@@ -111,7 +111,8 @@ import Hero from './Hero';
 import Hero1 from './Hero1'; 
 import Hero2 from './Hero2'; 
 import Newhero from './Newhero';
-
+import HomeProductBlocks from "./HomeProductBlocks";
+import TrendingSection from "./TrendingSection";
 import CategoryShowcase from './Category';
 import Deals from './Deal';
 import MarshallDesign from './Views';
@@ -191,10 +192,11 @@ export default function Home() {
       ) : (
         <>
           <Deals />
+          <HomeProductBlocks products={[...(homeData.featured || []), ...(homeData.trending || []), ...(homeData.newArrivals || [])]} />          <MarshallWideLayout />
           <CategoryShowcase />
           <MarshallDesign />
-       
-          <MarshallWideLayout />
+          <TrendingSection products={[...homeData.trending, ...homeData.featured, ...homeData.newArrivals]} />
+
           <TestimonialSlider />
         </>
       )}

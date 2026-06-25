@@ -335,7 +335,13 @@ import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import BrandsSection from './components/Brands';
 import Wishlist from './pages/Wishlist'; // Make sure the path is correct!
-
+// about us
+import AboutUs from './pages/AboutUs';
+import PrivacyPolicy from './pages/PrivacyPolicy';
+import Terms from './pages/Terms';
+import RefundPolicy from './pages/RefundPolicy';
+import ContactUs from './pages/ContactUs';
+import ShippingPolicy from './pages/ShippingPolicy';
 
 // ── Customer Protected Pages
 import OrderSuccess from './pages/orderSuccess';
@@ -384,7 +390,14 @@ function App() {
             <Route path="/company/register" element={<CompanyRegistration />} />
             <Route path="/login"            element={<Login />} />
             <Route path="/register"         element={<CustomerRegister />} />
-            
+            {/* About page */}
+<Route path="/about"            element={<PublicLayout><AboutUs /></PublicLayout>} />     
+{/* ⚡ FUTURE FOOTER ROUTES (Inke aage se '//' hata dena jab ye pages bana lo) */}
+            <Route path="/privacy-policy" element={<PublicLayout><PrivacyPolicy /></PublicLayout>} />
+            <Route path="/terms"          element={<PublicLayout><Terms /></PublicLayout>} />
+            <Route path="/refund-policy"  element={<PublicLayout><RefundPolicy /></PublicLayout>} />
+            <Route path="/contact"        element={<PublicLayout><ContactUs /></PublicLayout>} />       
+            <Route path="/ShippingPolicy"        element={<PublicLayout><ShippingPolicy /></PublicLayout>} />       
             {/* ── Shop & Discovery ──────────────────────────────────── */}
             <Route path="/"                 element={<Home />} />
             <Route path="/shop"             element={<ShopHome />} />

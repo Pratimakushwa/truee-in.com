@@ -86,7 +86,6 @@ export default function SaleCategories() {
           CATEGORIES
         </h2>
 
-        {/* ⚡ THE FIX: Removed max-w-4xl and mx-auto, made it w-full to stretch edge-to-edge ⚡ */}
         <div className="relative group w-full mb-8 md:mb-16">
           
           {/* Left Arrow */}
