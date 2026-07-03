@@ -7,4 +7,5 @@ const contactSchema = new mongoose.Schema({
     message: { type: String, required: true }
 }, { timestamps: true });
 
-module.exports = mongoose.model('Contact', contactSchema);
+// ⚡ Bas is aakhri line mein badlaav kiya hai
+module.exports = mongoose.model('Contact', contactSchema, 'contact');

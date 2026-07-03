@@ -331,6 +331,7 @@ import Footer from './pages/Home/Footer';
 // ── Public Shop Pages
 import Home from './pages/Home/Home';
 import ShopHome from './pages/Shop/ShopHome';
+import NewCollection from './pages/Shop/NewCollection';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import BrandsSection from './components/Brands';
@@ -357,6 +358,8 @@ import Analytics from './pages/Admin/Analytics';
 
 // ── Admin Pages
 import AdminLayout from './layouts/AdminLayout';
+import CouponManager from './pages/Admin/CouponManager';
+import AdminReviews from './pages/Admin/AdminReviews';
 import AdminProducts from './pages/Admin/AdminProducts';
 import AdminOrders from './pages/Admin/AdminOrders';
 import AdminUsers from './pages/Admin/AdminUsers';
@@ -400,7 +403,8 @@ function App() {
             <Route path="/ShippingPolicy"        element={<PublicLayout><ShippingPolicy /></PublicLayout>} />       
             {/* ── Shop & Discovery ──────────────────────────────────── */}
             <Route path="/"                 element={<Home />} />
-            <Route path="/shop"             element={<ShopHome />} />
+            {/* <Route path="/shop"             element={<ShopHome />} /> */}
+            <Route path="/shop" element={<NewCollection />} />
             <Route path="/products"         element={<ShopHome />} />
             
             <Route path="/brands"           element={<PublicLayout><BrandsSection /></PublicLayout>} />
@@ -461,11 +465,13 @@ function App() {
               }
             >
               <Route path="dashboard" element={<AdminDashboard />} />
+              <Route path="/admin/coupons" element={<CouponManager />} />
               <Route path="profile"   element={<AdminProfile />} />
               <Route path="products"  element={<AdminProducts />} />
               <Route path="orders"    element={<AdminOrders />} />
               <Route path="users"     element={<AdminUsers />} />
               <Route path="theme"     element={<AdminThemeManager />} />
+              <Route path="/admin/reviews" element={<AdminReviews />} />
             </Route>
 
             {/* ── Error / Fallback ──────────────────────────────────── */}

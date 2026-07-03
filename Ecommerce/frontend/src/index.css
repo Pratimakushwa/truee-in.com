@@ -11,36 +11,30 @@ html, body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
-/* 1. Body aur HTML ko horizontal scroll se rokne ke liye */
+
+/* ✅ YAHAN FIX KIYA HAI: 'hidden' ki jagah 'clip' kar diya */
 html, body {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip; 
   margin: 0;
   padding: 0;
-  /* Smooth scrolling ke liye (Optional) */
   scroll-behavior: smooth;
 }
 
-/* 2. Sabhi elements ko border-box mein rakhne ke liye taaki padding width na badhaye */
 * {
   box-sizing: border-box;
 }
 
-/* 3. Root container ko bhi fix karein */
+/* ✅ YAHAN BHI 'clip' KAR DIYA */
 #root {
   max-width: 100%;
-  overflow-x: hidden;
+  overflow-x: clip;
 }
-/* ── 2. Helper Classes & Components ── */
 
-/* Hero Gradient ke liye class */
+/* ── 3. Helper Classes & Components ── */
 .theme-gradient-bg {
   background: var(--theme-gradient);
 }
-
-/* body {
-  cursor: none;
-} */
 
 .cursor-dot {
   width: 8px;

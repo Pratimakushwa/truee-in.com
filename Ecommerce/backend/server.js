@@ -178,6 +178,59 @@
 // app.listen(PORT, () => {
 //   console.log(`Server is running on port ${PORT}...`);
 // });
+
+// require('dotenv').config();
+
+// const app = require("./src/app"); 
+// const { connectDb } = require("./src/config/db");
+// const dns = require('dns');
+
+// // ⚡ Routes Import
+// const couponRoutes = require('./src/routes/couponRoutes');
+// const orderRoutes = require('./src/routes/orderRoutes'); 
+// const wishlistRoutes = require('./src/routes/wishlistRoutes'); 
+// const legalRoutes = require('./src/routes/legalRoutes'); // 👈 Ye add kiya naya Legal Route
+// const contactRoutes = require('./src/routes/contactRoutes'); // 👈 Import top par karo
+// // DNS configuration (Database connection stable rakhne ke liye)
+// dns.setServers(['8.8.8.8', '8.8.4.4']);
+
+// // Database connection
+// connectDb();
+
+// // Port setup (Tumhare pichle logs me port 8080 chal raha tha, toh env file se wo khud pick kar lega)
+// const PORT = process.env.PORT || 8080;
+
+// // ==========================================
+// // ⚡ ROUTES LINK
+// // ==========================================
+// // Yahan dhyan do: Sirf orderRoutes call ho raha hai, koi admin restriction nahi hai (Sahi setup)
+// app.use('/api/orders', orderRoutes);
+// app.use('/api/wishlist', wishlistRoutes);
+// app.use('/api/legal', legalRoutes); // 👈 Ye link kar diya API ko
+
+// app.use('/api/v1/contact', contactRoutes); // 👈 Form submission API route
+// // ==========================================
+// // ⚡ GLOBAL ERROR HANDLER
+// // ==========================================
+// app.use((err, req, res, next) => {
+//     console.error('GLOBAL ERROR HANDLER: ', err);
+//     res.status(500).json({
+//         success: false,
+//         message: 'Something is wrong on the server side.'
+//     });
+// });
+// app.use('/api/coupons', couponRoutes);// ==========================================
+
+// app.use((err, req, res, next) => {
+//     console.error('GLOBAL ERROR HANDLER: ', err);
+//     res.status(500).json({ success: false, message: 'Server side error.' });
+// });
+// // SERVER START
+// // ==========================================
+// app.listen(PORT, () => {
+//   console.log(`Server is running on port ${PORT}...`);
+// });
+
 require('dotenv').config();
 
 const app = require("./src/app"); 
@@ -185,42 +238,45 @@ const { connectDb } = require("./src/config/db");
 const dns = require('dns');
 
 // ⚡ Routes Import
+const couponRoutes = require('./src/routes/couponRoutes');
 const orderRoutes = require('./src/routes/orderRoutes'); 
 const wishlistRoutes = require('./src/routes/wishlistRoutes'); 
-const legalRoutes = require('./src/routes/legalRoutes'); // 👈 Ye add kiya naya Legal Route
-const contactRoutes = require('./src/routes/contactRoutes'); // 👈 Import top par karo
-// DNS configuration (Database connection stable rakhne ke liye)
+const legalRoutes = require('./src/routes/legalRoutes');
+const contactRoutes = require('./src/routes/contactRoutes');
+const reviewRoutes = require('./src/routes/reviewRoutes'); // ⚡ YE ADD KARO
+
+// DNS configuration
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
 // Database connection
 connectDb();
 
-// Port setup (Tumhare pichle logs me port 8080 chal raha tha, toh env file se wo khud pick kar lega)
 const PORT = process.env.PORT || 8080;
 
 // ==========================================
-// ⚡ ROUTES LINK
+// ⚡ ROUTES LINK (Sare routes yahan ek saath)
 // ==========================================
-// Yahan dhyan do: Sirf orderRoutes call ho raha hai, koi admin restriction nahi hai (Sahi setup)
 app.use('/api/orders', orderRoutes);
 app.use('/api/wishlist', wishlistRoutes);
-app.use('/api/legal', legalRoutes); // 👈 Ye link kar diya API ko
+app.use('/api/legal', legalRoutes);
+app.use('/api/v1/contact', contactRoutes);
+app.use('/api/coupons', couponRoutes);
+app.use('/api/reviews', reviewRoutes);
 
-app.use('/api/v1/contact', contactRoutes); // 👈 Form submission API route
-// ==========================================
-// ⚡ GLOBAL ERROR HANDLER
-// ==========================================
 app.use((err, req, res, next) => {
-    console.error('GLOBAL ERROR HANDLER: ', err);
-    res.status(500).json({
+    // Isse humein terminal mein exact error dikhega
+    console.log("Backend Error received:", err); 
+    
+    const statusCode = err.statusCode || 500;
+    const message = err.message || 'Something went wrong';
+
+    res.status(statusCode).json({
         success: false,
-        message: 'Something is wrong on the server side.'
+        message: message // Yahi message tumhare Toast mein jayega
     });
 });
 
-// ==========================================
 // SERVER START
-// ==========================================
 app.listen(PORT, () => {
   console.log(`Server is running on port ${PORT}...`);
 });

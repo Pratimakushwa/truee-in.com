@@ -571,15 +571,224 @@
 //   );
 // }
 
+// import React, { useState, useEffect } from 'react';
+// import { useParams, Link } from 'react-router-dom';
+// import axiosInstance from '../utils/axiosInstance';
+
+// export default function OrderDetails({ orderId }) { 
+//   const { id: urlId } = useParams();
+//   const id = orderId || urlId; 
+//   const [order, setOrder] = useState(null);
+//   const [loading, setLoading] = useState(true);
+
+//   useEffect(() => {
+//     if (!id) return;
+    
+//     const fetchOrderDetails = async () => {
+//       try {
+//         setLoading(true);
+//         const isAdmin = window.location.pathname.includes('/admin');
+//         const url = isAdmin ? `/admin/orders/${id}` : `/orders/${id}`;
+        
+//         const { data } = await axiosInstance.get(url); 
+//         setOrder(data.data || data.order);
+//       } catch (err) {
+//         console.error("Error fetching order details:", err);
+//       } finally {
+//         setLoading(false);
+//       }
+//     };
+//     fetchOrderDetails();
+//   }, [id]);
+
+//   if (loading) {
+//     return (
+//       <div className="min-h-screen bg-white flex items-center justify-center">
+//         <div className="w-10 h-10 border-4 border-[#C8A253] border-t-transparent rounded-full animate-spin"></div>
+//       </div>
+//     );
+//   }
+
+//   if (!order) {
+//     return (
+//       <div className="min-h-screen bg-white flex flex-col items-center justify-center text-gray-800">
+//         <h2 className="text-2xl font-serif text-[#C8A253] mb-4">Order Not Found</h2>
+//         {!orderId && <Link to="/profile" className="text-sm underline hover:text-[#C8A253]">Go Back to Profile</Link>}
+//       </div>
+//     );
+//   }
+
+//   const steps = ['Processing', 'Shipped', 'Out for Delivery', 'Delivered'];
+//   const isCancelled = order.orderStatus === 'Cancelled';
+//   let currentStepIndex = steps.indexOf(order.orderStatus);
+//   if (currentStepIndex === -1 && !isCancelled) currentStepIndex = 0;
+
+//   return (
+//     <div className="min-h-screen bg-gray-50 text-gray-800 py-12 px-4 md:px-8 font-sans">
+//       <div className="max-w-5xl mx-auto">
+        
+//         {/* Header Section */}
+//         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-gray-200 pb-6 gap-4">
+//           <div>
+//             {!orderId && (
+//               <Link to="/profile" className="text-gray-500 text-xs mb-4 inline-flex items-center hover:text-[#C8A253] transition">
+//                 ← Back to My Orders
+//               </Link>
+//             )}
+//             <h1 className="text-3xl font-serif text-gray-900">Order Details</h1>
+//             <p className="text-gray-500 mt-2 text-sm tracking-widest uppercase">Order ID: #{order._id.slice(-8).toUpperCase()}</p>
+//           </div>
+//           <div className="text-left md:text-right">
+//             <p className="text-sm text-gray-500">Order Date</p>
+//             <p className="text-lg font-medium">{new Date(order.createdAt).toLocaleDateString('en-IN', { day: 'numeric', month: 'long', year: 'numeric' })}</p>
+//           </div>
+//         </div>
+
+//         {/* 1. STATUS TIMELINE BAR */}
+//         <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-8 shadow-sm">
+//           <h2 className="text-lg font-serif mb-8 text-gray-900">Track Delivery Status</h2>
+          
+//           {isCancelled ? (
+//             <div className="text-red-600 font-semibold text-center py-4 bg-red-50 rounded-lg border border-red-200">
+//               This order has been Cancelled.
+//             </div>
+//           ) : (
+//             <div className="relative flex justify-between items-center w-full max-w-3xl mx-auto">
+//               <div className="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-gray-200 rounded-full z-0"></div>
+//               <div 
+//                 className="absolute left-0 top-1/2 -translate-y-1/2 h-1 bg-[#C8A253] transition-all duration-700 ease-out z-0"
+//                 style={{ width: `${(currentStepIndex / (steps.length - 1)) * 100}%` }}
+//               ></div>
+
+//               {steps.map((step, index) => {
+//                 const isActive = index <= currentStepIndex;
+//                 return (
+//                   <div key={step} className="relative z-10 flex flex-col items-center group">
+//                     <div className={`w-8 h-8 rounded-full flex items-center justify-center border-4 border-white transition-colors duration-500 ${isActive ? 'bg-[#C8A253] shadow-md' : 'bg-gray-300'}`}>
+//                       {isActive && (
+//                         <svg className="w-4 h-4 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth="3">
+//                           <path strokeLinecap="round" strokeLinejoin="round" d="M5 13l4 4L19 7" />
+//                         </svg>
+//                       )}
+//                     </div>
+//                     <p className={`mt-3 text-xs md:text-sm font-medium ${isActive ? 'text-[#C8A253]' : 'text-gray-400'}`}>
+//                       {step}
+//                     </p>
+//                   </div>
+//                 );
+//               })}
+//             </div>
+//           )}
+
+//           {/* AWB & COURIER TRACKING BOX */}
+//           {order.trackingDetails?.courierPartner && currentStepIndex >= 1 && (
+//             <div className="mt-10 bg-gray-50 rounded-xl p-5 border border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
+//               <div className="flex items-center gap-4">
+//                 <div className="w-12 h-12 bg-[#C8A253]/10 rounded-full flex items-center justify-center text-[#C8A253]">
+//                   <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+//                     <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
+//                   </svg>
+//                 </div>
+//                 <div>
+//                   <p className="text-xs text-gray-500">Courier Partner</p>
+//                   <p className="text-gray-900 font-medium text-lg">{order.trackingDetails.courierPartner}</p>
+//                 </div>
+//               </div>
+//               <div className="text-left md:text-right w-full md:w-auto">
+//                 <p className="text-xs text-gray-500">Tracking ID (AWB)</p>
+//                 <div className="flex items-center md:justify-end gap-2">
+//                   <p className="text-[#C8A253] font-mono font-bold text-xl">{order.trackingDetails.awbNumber}</p>
+//                 </div>
+//               </div>
+//             </div>
+//           )}
+//         </div>
+
+//         {/* 2. ORDER DETAILS GRIDS */}
+//         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
+//           <div className="lg:col-span-2 space-y-6">
+//             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+//               <h3 className="text-lg font-serif mb-6 border-b border-gray-100 pb-4">Items in your order</h3>
+//               <div className="space-y-6">
+//                 {order.orderItems.map((item, index) => (
+//                   <div key={index} className="flex items-center gap-6">
+//                     <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
+//                       <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+//                     </div>
+//                     <div className="flex-1">
+//                       <h4 className="text-base font-medium text-gray-900">{item.name}</h4>
+//                       <p className="text-sm text-gray-500 mt-1">Qty: {item.quantity}</p>
+//                     </div>
+//                     <div className="text-right">
+//                       <p className="text-lg font-semibold text-[#C8A253]">₹{item.price * item.quantity}</p>
+//                     </div>
+//                   </div>
+//                 ))}
+//               </div>
+//             </div>
+//           </div>
+
+//           <div className="space-y-8">
+//             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+//               <h3 className="text-lg font-serif mb-4 border-b border-gray-100 pb-4">Delivery Address</h3>
+//               <p className="font-medium text-gray-900">{order.shippingAddress.fullName}</p>
+//               <p className="text-sm text-gray-500 mt-2 leading-relaxed">
+//                 {order.shippingAddress.addressLine1}<br />
+//                 {order.shippingAddress.city}, {order.shippingAddress.state} {order.shippingAddress.pincode}<br />
+//                 {order.shippingAddress.country}
+//               </p>
+//               <p className="text-sm text-gray-500 mt-3 font-mono">📞 {order.shippingAddress.phone}</p>
+//             </div>
+
+//             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
+//               <h3 className="text-lg font-serif mb-4 border-b border-gray-100 pb-4">Payment Summary</h3>
+//               <div className="space-y-3 text-sm">
+//                 <div className="flex justify-between text-gray-500">
+//                   <span>Items Total</span>
+//                   {/* ⚡ YAHI FIX KIYA HAI: Agar itemsPrice nahi hai toh khud calculate kar lega */}
+//                   <span className="text-gray-900">
+//                     ₹{order.itemsPrice || order.orderItems?.reduce((total, item) => total + (item.price * item.quantity), 0)}
+//                   </span>
+//                 </div>
+//                 <div className="flex justify-between text-gray-500">
+//                   <span>Shipping Fee</span>
+//                   <span className="text-[#C8A253]">{order.shippingPrice === 0 ? 'FREE' : `₹${order.shippingPrice}`}</span>
+//                 </div>
+//                 <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-gray-100">
+//                   <span>Grand Total</span>
+//                   <span className="text-[#C8A253]">₹{order.totalAmount}</span>
+//                 </div>
+//               </div>
+//               <div className="mt-6 bg-gray-50 rounded-lg p-3 text-center text-xs text-gray-500 border border-gray-100">
+//                 Payment Method: <span className="text-gray-900 uppercase font-semibold">{order.paymentInfo?.method || 'N/A'}</span>
+//               </div>
+//             </div>
+//           </div>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
+import { Star, X } from 'lucide-react';
 import axiosInstance from '../utils/axiosInstance';
+import Toast from '../components/Toast';
 
 export default function OrderDetails({ orderId }) { 
   const { id: urlId } = useParams();
   const id = orderId || urlId; 
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+
+  // REVIEW STATES
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedProduct, setSelectedProduct] = useState(null);
+  const [rating, setRating] = useState(5);
+  const [comment, setComment] = useState('');
+  const [toastMessage, setToastMessage] = useState(null);
+
+  const showToast = (type, message) => setToastMessage({ type, message });
 
   useEffect(() => {
     if (!id) return;
@@ -600,6 +809,53 @@ export default function OrderDetails({ orderId }) {
     };
     fetchOrderDetails();
   }, [id]);
+
+  // ⚡ UPDATED & SMART: Review Submit Function
+  const handleReviewSubmit = async () => {
+    if (!comment) {
+      showToast("error", "Please write a comment");
+      return;
+    }
+    
+    try {
+      // ⚡ Safety Check: productId sahi se extract karna
+      const productId = selectedProduct.product?._id || selectedProduct.product;
+      
+      await axiosInstance.post(`/reviews/product/${productId}`, {
+        rating: Number(rating),
+        comment: comment,
+        productName: selectedProduct.name || 'Product'
+      });
+      
+      // Success hone par modal band karo aur message dikhao
+      setIsModalOpen(false);
+      showToast("success", "Review submitted for approval!");
+      setComment('');
+      setRating(5);
+      
+    } catch (err) {
+      console.error("REVIEW ERROR:", err.response);
+      
+      // ⚡ ERROR DETECTING LOGIC (Backend ka exact message nikalne ke liye)
+      let errorMessage = "Failed to submit review";
+      
+      if (err.response && err.response.data) {
+          if (err.response.data.message) {
+              errorMessage = err.response.data.message;
+          } else if (err.response.data.error) {
+              errorMessage = err.response.data.error;
+          } else if (typeof err.response.data === 'string' && err.response.data.includes('<html')) {
+              errorMessage = "Backend Server Error. Please check Node.js console.";
+          } else {
+              errorMessage = JSON.stringify(err.response.data);
+          }
+      }
+
+      setIsModalOpen(false); // Modal band
+      alert("🚨 SYSTEM MESSAGE: " + errorMessage); // Asli wajah alert me aayegi
+      showToast("error", errorMessage); // Custom toast me bhi dikhega
+    }
+  };
 
   if (loading) {
     return (
@@ -625,9 +881,10 @@ export default function OrderDetails({ orderId }) {
 
   return (
     <div className="min-h-screen bg-gray-50 text-gray-800 py-12 px-4 md:px-8 font-sans">
+      {/* Toast Message Component */}
+      {toastMessage && <Toast type={toastMessage.type} message={toastMessage.message} onClose={() => setToastMessage(null)} />}
+      
       <div className="max-w-5xl mx-auto">
-        
-        {/* Header Section */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-end mb-10 border-b border-gray-200 pb-6 gap-4">
           <div>
             {!orderId && (
@@ -644,7 +901,6 @@ export default function OrderDetails({ orderId }) {
           </div>
         </div>
 
-        {/* 1. STATUS TIMELINE BAR */}
         <div className="bg-white border border-gray-200 rounded-2xl p-8 mb-8 shadow-sm">
           <h2 className="text-lg font-serif mb-8 text-gray-900">Track Delivery Status</h2>
           
@@ -679,49 +935,37 @@ export default function OrderDetails({ orderId }) {
               })}
             </div>
           )}
-
-          {/* AWB & COURIER TRACKING BOX */}
-          {order.trackingDetails?.courierPartner && currentStepIndex >= 1 && (
-            <div className="mt-10 bg-gray-50 rounded-xl p-5 border border-gray-200 flex flex-col md:flex-row justify-between items-center gap-4">
-              <div className="flex items-center gap-4">
-                <div className="w-12 h-12 bg-[#C8A253]/10 rounded-full flex items-center justify-center text-[#C8A253]">
-                  <svg className="w-6 h-6" fill="none" viewBox="0 0 24 24" stroke="currentColor">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M8 7h12m0 0l-4-4m4 4l-4 4m0 6H4m0 0l4 4m-4-4l4-4" />
-                  </svg>
-                </div>
-                <div>
-                  <p className="text-xs text-gray-500">Courier Partner</p>
-                  <p className="text-gray-900 font-medium text-lg">{order.trackingDetails.courierPartner}</p>
-                </div>
-              </div>
-              <div className="text-left md:text-right w-full md:w-auto">
-                <p className="text-xs text-gray-500">Tracking ID (AWB)</p>
-                <div className="flex items-center md:justify-end gap-2">
-                  <p className="text-[#C8A253] font-mono font-bold text-xl">{order.trackingDetails.awbNumber}</p>
-                </div>
-              </div>
-            </div>
-          )}
         </div>
 
-        {/* 2. ORDER DETAILS GRIDS */}
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2 space-y-6">
             <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
               <h3 className="text-lg font-serif mb-6 border-b border-gray-100 pb-4">Items in your order</h3>
               <div className="space-y-6">
                 {order.orderItems.map((item, index) => (
-                  <div key={index} className="flex items-center gap-6">
-                    <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
-                      <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                  <div key={index} className="flex flex-col gap-4 border-b border-gray-100 pb-6 last:border-0 last:pb-0">
+                    <div className="flex items-center gap-6">
+                      <div className="w-24 h-24 bg-gray-100 rounded-xl overflow-hidden flex-shrink-0">
+                        <img src={item.image} alt={item.name} className="w-full h-full object-cover" />
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-base font-medium text-gray-900">{item.name}</h4>
+                        <p className="text-sm text-gray-500 mt-1">Qty: {item.quantity}</p>
+                      </div>
+                      <div className="text-right">
+                        <p className="text-lg font-semibold text-[#C8A253]">₹{item.price * item.quantity}</p>
+                      </div>
                     </div>
-                    <div className="flex-1">
-                      <h4 className="text-base font-medium text-gray-900">{item.name}</h4>
-                      <p className="text-sm text-gray-500 mt-1">Qty: {item.quantity}</p>
-                    </div>
-                    <div className="text-right">
-                      <p className="text-lg font-semibold text-[#C8A253]">₹{item.price * item.quantity}</p>
-                    </div>
+
+                    {/* TESTING MODE: Ye abhi testing ke liye true hai, baad mein isse Delivered check se replace kar dena */}
+                    {true && (
+                      <button 
+                        onClick={() => { setSelectedProduct(item); setIsModalOpen(true); }}
+                        className="w-max text-[11px] font-bold uppercase tracking-widest border border-black px-4 py-2 hover:bg-black hover:text-white transition-all ml-[120px]"
+                      >
+                        Write a Review
+                      </button>
+                    )}
                   </div>
                 ))}
               </div>
@@ -739,33 +983,32 @@ export default function OrderDetails({ orderId }) {
               </p>
               <p className="text-sm text-gray-500 mt-3 font-mono">📞 {order.shippingAddress.phone}</p>
             </div>
-
-            <div className="bg-white border border-gray-200 rounded-2xl p-6 shadow-sm">
-              <h3 className="text-lg font-serif mb-4 border-b border-gray-100 pb-4">Payment Summary</h3>
-              <div className="space-y-3 text-sm">
-                <div className="flex justify-between text-gray-500">
-                  <span>Items Total</span>
-                  {/* ⚡ YAHI FIX KIYA HAI: Agar itemsPrice nahi hai toh khud calculate kar lega */}
-                  <span className="text-gray-900">
-                    ₹{order.itemsPrice || order.orderItems?.reduce((total, item) => total + (item.price * item.quantity), 0)}
-                  </span>
-                </div>
-                <div className="flex justify-between text-gray-500">
-                  <span>Shipping Fee</span>
-                  <span className="text-[#C8A253]">{order.shippingPrice === 0 ? 'FREE' : `₹${order.shippingPrice}`}</span>
-                </div>
-                <div className="flex justify-between font-bold text-lg mt-4 pt-4 border-t border-gray-100">
-                  <span>Grand Total</span>
-                  <span className="text-[#C8A253]">₹{order.totalAmount}</span>
-                </div>
-              </div>
-              <div className="mt-6 bg-gray-50 rounded-lg p-3 text-center text-xs text-gray-500 border border-gray-100">
-                Payment Method: <span className="text-gray-900 uppercase font-semibold">{order.paymentInfo?.method || 'N/A'}</span>
-              </div>
-            </div>
           </div>
         </div>
       </div>
+
+      {/* ⚡ REVIEW MODAL */}
+      {isModalOpen && (
+        <div className="fixed inset-0 bg-black/60 flex items-center justify-center z-[999] p-4">
+          <div className="bg-white p-8 rounded-2xl w-full max-w-sm shadow-2xl relative">
+            <button onClick={() => setIsModalOpen(false)} className="absolute top-4 right-4 text-gray-500 hover:text-black"><X /></button>
+            <h2 className="text-xl font-serif mb-6 text-center">Rate your experience</h2>
+            <div className="flex justify-center gap-2 mb-6">
+              {[1, 2, 3, 4, 5].map((star) => (
+                <Star key={star} onClick={() => setRating(star)} className={`w-8 h-8 cursor-pointer transition-colors ${star <= rating ? 'fill-[#C8A253] text-[#C8A253]' : 'text-gray-300'}`} />
+              ))}
+            </div>
+            <textarea 
+              value={comment} onChange={(e) => setComment(e.target.value)}
+              className="w-full border border-gray-200 p-4 rounded-lg mb-6 focus:ring-1 focus:ring-black outline-none" 
+              placeholder="How was the product? Tell us your experience..." rows="4"
+            />
+            <button onClick={handleReviewSubmit} className="w-full bg-black text-white py-4 font-bold uppercase tracking-widest text-sm hover:bg-gray-800 transition-all">
+              Submit Review
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

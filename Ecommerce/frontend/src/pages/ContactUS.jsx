@@ -201,6 +201,8 @@
 //     </div>
 //   );
 // }
+
+
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { motion } from 'framer-motion';
@@ -274,7 +276,7 @@ export default function ContactUs() {
     { title: 'Email Us', text: 'concierge@trueeluxury.com' },
     { title: 'Call Support', text: '+91 98765 43210' },
     { title: 'Boutique', text: 'Bhopal, Madhya Pradesh, India' },
-    { title: 'Working Hours', text: 'Mon - Sat: 10:00 AM - 7:00 PM' }
+    { title: 'Working Hours', text: 'Mon - Sat: 10:00 AM - 6:30 PM' }
   ];
 
   const infoToShow = contactData?.sections?.length > 0 ? contactData.sections : defaultInfo;

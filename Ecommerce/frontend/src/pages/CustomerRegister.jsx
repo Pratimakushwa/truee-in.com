@@ -1,9 +1,411 @@
+// import React, { useState, useRef } from 'react';
+// import { useNavigate, Link } from 'react-router-dom';
+// import axiosInstance from '../utils/axiosInstance';
+// import Toast from '../components/Toast';
+// import { useAuth } from '../context/AuthContext';
+// import ReCAPTCHA from 'react-google-recaptcha';
+
+// const Field = ({ label, ...props }) => (
+//   <div className="relative mb-5">
+//     <input
+//       {...props}
+//       id={props.name}
+//       placeholder=" "
+//       className="peer w-full bg-transparent border border-zinc-700 rounded-lg px-4 pt-5 pb-2 text-white text-sm focus:outline-none focus:border-[#C8A253] transition-all duration-300 placeholder-transparent"
+//     />
+//     <label
+//       htmlFor={props.name}
+//       className="absolute left-4 top-2 text-[10px] font-semibold tracking-widest text-[#C8A253] uppercase transition-all duration-300 cursor-text peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-placeholder-shown:font-normal peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-[10px] peer-focus:font-semibold peer-focus:tracking-widest peer-focus:text-[#C8A253]"
+//     >
+//       {label}
+//     </label>
+//   </div>
+// );
+
+// export default function CustomerRegister() {
+//   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '' });
+//   const [toast, setToast] = useState(null);
+//   const [loading, setLoading] = useState(false);
+  
+//   // ⚡ FIX 1: Captcha Token ki state add kardi
+//   const [captchaToken, setCaptchaToken] = useState(null); 
+//   const recaptchaRef = useRef();
+
+//   const navigate = useNavigate();
+//   const { login } = useAuth(); 
+
+//   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     // ⚡ FIX 2: Check karein ki user ne captcha fill kiya hai ya nahi
+//     if (!captchaToken) {
+//       setToast({ type: 'error', message: 'Please complete the reCAPTCHA verification.' });
+//       return;
+//     }
+
+//     setLoading(true);
+//     try {
+//       // ⚡ FIX 3: Backend ko formData ke sath captchaToken bhi bhejna hai
+//       const response = await axiosInstance.post('/auth/register', {
+//         ...formData,
+//         captchaToken: captchaToken // Backend me ye key check kar lena (captchaToken ya token)
+//       });
+
+//       if (response.data.success) {
+//         login(response.data.token, response.data.user);
+//         setToast({ type: 'success', message: 'Registration successful! Welcome.' });
+//         setTimeout(() => navigate('/'), 1200); 
+//       }
+//     } catch (err) {
+//       setToast({ type: 'error', message: err.response?.data?.error || 'Registration failed.' });
+      
+//       // ⚡ FIX 4: Agar error aaye toh captcha reset kar do taaki user dobara bhar sake
+//       if (recaptchaRef.current) {
+//         recaptchaRef.current.reset();
+//         setCaptchaToken(null);
+//       }
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
+//       <Toast toast={toast} onClose={() => setToast(null)} />
+
+//       <div className="w-full max-w-md">
+//         {/* Header */}
+//         <div className="text-center mb-10">
+//           <p className="text-[#C8A253] text-xs tracking-[0.4em] uppercase mb-3">Join Us</p>
+//           <h1 className="text-4xl font-serif text-white">Truee <span className="text-[#C8A253]">Luxury</span></h1>
+//           <p className="text-zinc-500 text-sm mt-2">Create your customer account</p>
+//         </div>
+
+//         {/* Form */}
+//         <div className="bg-[#111] border border-zinc-800 rounded-2xl p-8 shadow-2xl">
+//           <form onSubmit={handleSubmit}>
+//             <Field label="Full Name" name="name" type="text" required value={formData.name} onChange={handleChange} />
+//             <Field label="Email Address" name="email" type="email" required value={formData.email} onChange={handleChange} />
+//             <Field label="Phone Number" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
+//             <Field label="Password" name="password" type="password" required value={formData.password} onChange={handleChange} />
+
+//             {/* ReCAPTCHA Form ke andar rakhna zyada better hai */}
+//             <div className="mb-5 flex justify-center">
+//               <ReCAPTCHA
+//                 ref={recaptchaRef}
+//                 sitekey={import.meta.env.VITE_GOOGLE_SITE_KEY}
+//                 onChange={(token) => setCaptchaToken(token)}
+//                 theme="dark"
+//               />
+//             </div>
+
+//             <button
+//               type="submit"
+//               disabled={loading}
+//               className="w-full bg-[#C8A253] hover:bg-[#b08d44] text-[#0A0A0A] font-bold py-3.5 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+//             >
+//               {loading ? 'Creating Account...' : 'Sign Up'}
+//             </button>
+//           </form>
+
+//           <p className="text-center text-sm text-zinc-500 mt-6">
+//             Already have an account?{' '}
+//             <Link to="/login" className="text-[#C8A253] hover:underline">
+//               Sign In
+//             </Link>
+//           </p>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
+
+// import React, { useState, useRef } from 'react';
+// import { useNavigate, Link } from 'react-router-dom';
+// import axiosInstance from '../utils/axiosInstance';
+// import Toast from '../components/Toast';
+// import { useAuth } from '../context/AuthContext';
+// import ReCAPTCHA from 'react-google-recaptcha';
+// // ⚡ ADD 1: Popup component ko import kiya
+// import WelcomeCouponPopup from '../components/WelcomeCouponPopup'; 
+
+// const Field = ({ label, ...props }) => (
+//   <div className="relative mb-5">
+//     <input
+//       {...props}
+//       id={props.name}
+//       placeholder=" "
+//       className="peer w-full bg-transparent border border-zinc-700 rounded-lg px-4 pt-5 pb-2 text-white text-sm focus:outline-none focus:border-[#C8A253] transition-all duration-300 placeholder-transparent"
+//     />
+//     <label
+//       htmlFor={props.name}
+//       className="absolute left-4 top-2 text-[10px] font-semibold tracking-widest text-[#C8A253] uppercase transition-all duration-300 cursor-text peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-placeholder-shown:font-normal peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-[10px] peer-focus:font-semibold peer-focus:tracking-widest peer-focus:text-[#C8A253]"
+//     >
+//       {label}
+//     </label>
+//   </div>
+// );
+
+// export default function CustomerRegister() {
+//   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '' });
+//   const [toast, setToast] = useState(null);
+//   const [loading, setLoading] = useState(false);
+  
+//   const [captchaToken, setCaptchaToken] = useState(null); 
+//   const recaptchaRef = useRef();
+
+//   // ⚡ ADD 2: Popup dikhane ke liye ek state banayi
+//   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+
+//   const navigate = useNavigate();
+//   const { login } = useAuth(); 
+
+//   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (!captchaToken) {
+//       setToast({ type: 'error', message: 'Please complete the reCAPTCHA verification.' });
+//       return;
+//     }
+
+//     setLoading(true);
+//     try {
+//       const response = await axiosInstance.post('/auth/register', {
+//         ...formData,
+//         captchaToken: captchaToken 
+//       });
+
+//       if (response.data.success) {
+//         login(response.data.token, response.data.user);
+//         setToast({ type: 'success', message: 'Registration successful! Welcome.' });
+        
+//         // ⚡ UPDATE: Ab hum direct navigate nahi karenge, pehle popup dikhayenge
+//         setShowWelcomePopup(true); 
+//       }
+//     } catch (err) {
+//       setToast({ type: 'error', message: err.response?.data?.error || 'Registration failed.' });
+      
+//       if (recaptchaRef.current) {
+//         recaptchaRef.current.reset();
+//         setCaptchaToken(null);
+//       }
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // ⚡ ADD 3: Jab popup band ho, tab user ko Home pe bhej do
+//   const handleClosePopup = () => {
+//     setShowWelcomePopup(false);
+//     navigate('/'); 
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
+//       <Toast toast={toast} onClose={() => setToast(null)} />
+
+//       <div className="w-full max-w-md">
+//         {/* Header */}
+//         <div className="text-center mb-10">
+//           <p className="text-[#C8A253] text-xs tracking-[0.4em] uppercase mb-3">Join Us</p>
+//           <h1 className="text-4xl font-serif text-white">Truee <span className="text-[#C8A253]">Luxury</span></h1>
+//           <p className="text-zinc-500 text-sm mt-2">Create your customer account</p>
+//         </div>
+
+//         {/* Form */}
+//         <div className="bg-[#111] border border-zinc-800 rounded-2xl p-8 shadow-2xl">
+//           <form onSubmit={handleSubmit}>
+//             <Field label="Full Name" name="name" type="text" required value={formData.name} onChange={handleChange} />
+//             <Field label="Email Address" name="email" type="email" required value={formData.email} onChange={handleChange} />
+//             <Field label="Phone Number" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
+//             <Field label="Password" name="password" type="password" required value={formData.password} onChange={handleChange} />
+
+//             <div className="mb-5 flex justify-center">
+//               <ReCAPTCHA
+//                 ref={recaptchaRef}
+//                 sitekey={import.meta.env.VITE_GOOGLE_SITE_KEY}
+//                 onChange={(token) => setCaptchaToken(token)}
+//                 theme="dark"
+//               />
+//             </div>
+
+//             <button
+//               type="submit"
+//               disabled={loading}
+//               className="w-full bg-[#C8A253] hover:bg-[#b08d44] text-[#0A0A0A] font-bold py-3.5 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+//             >
+//               {loading ? 'Creating Account...' : 'Sign Up'}
+//             </button>
+//           </form>
+
+//           <p className="text-center text-sm text-zinc-500 mt-6">
+//             Already have an account?{' '}
+//             <Link to="/login" className="text-[#C8A253] hover:underline">
+//               Sign In
+//             </Link>
+//           </p>
+//         </div>
+//       </div>
+
+//       {/* ⚡ ADD 4: Yahan humne apna Magic Popup laga diya! */}
+//       <WelcomeCouponPopup 
+//         isOpen={showWelcomePopup} 
+//         onClose={handleClosePopup} 
+//       />
+//     </div>
+//   );
+// }
+
+// import React, { useState, useRef } from 'react';
+// import { useNavigate, Link } from 'react-router-dom';
+// import axiosInstance from '../utils/axiosInstance';
+// import Toast from '../components/Toast';
+// import { useAuth } from '../context/AuthContext';
+// import ReCAPTCHA from 'react-google-recaptcha';
+// // ⚡ ADD 1: Popup component ko import kiya
+// import WelcomeCouponPopup from '../components/WelcomeCouponPopup'; 
+
+// const Field = ({ label, ...props }) => (
+//   <div className="relative mb-5">
+//     <input
+//       {...props}
+//       id={props.name}
+//       placeholder=" "
+//       className="peer w-full bg-transparent border border-zinc-700 rounded-lg px-4 pt-5 pb-2 text-white text-sm focus:outline-none focus:border-[#C8A253] transition-all duration-300 placeholder-transparent"
+//     />
+//     <label
+//       htmlFor={props.name}
+//       className="absolute left-4 top-2 text-[10px] font-semibold tracking-widest text-[#C8A253] uppercase transition-all duration-300 cursor-text peer-placeholder-shown:top-3.5 peer-placeholder-shown:text-sm peer-placeholder-shown:text-zinc-500 peer-placeholder-shown:font-normal peer-placeholder-shown:tracking-normal peer-focus:top-2 peer-focus:text-[10px] peer-focus:font-semibold peer-focus:tracking-widest peer-focus:text-[#C8A253]"
+//     >
+//       {label}
+//     </label>
+//   </div>
+// );
+
+// export default function CustomerRegister() {
+//   const [formData, setFormData] = useState({ name: '', email: '', phone: '', password: '' });
+//   const [toast, setToast] = useState(null);
+//   const [loading, setLoading] = useState(false);
+  
+//   const [captchaToken, setCaptchaToken] = useState(null); 
+//   const recaptchaRef = useRef();
+
+//   // ⚡ ADD 2: Popup dikhane ke liye ek state banayi
+//   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+
+//   const navigate = useNavigate();
+//   const { login } = useAuth(); 
+
+//   const handleChange = (e) => setFormData({ ...formData, [e.target.name]: e.target.value });
+
+//   const handleSubmit = async (e) => {
+//     e.preventDefault();
+
+//     if (!captchaToken) {
+//       setToast({ type: 'error', message: 'Please complete the reCAPTCHA verification.' });
+//       return;
+//     }
+
+//     setLoading(true);
+//     try {
+//       const response = await axiosInstance.post('/auth/register', {
+//         ...formData,
+//         captchaToken: captchaToken 
+//       });
+
+//       if (response.data.success) {
+//         login(response.data.token, response.data.user);
+//         setToast({ type: 'success', message: 'Registration successful! Welcome.' });
+        
+//         // ⚡ UPDATE: Ab hum direct navigate nahi karenge, pehle popup dikhayenge
+//         setShowWelcomePopup(true); 
+//       }
+//     } catch (err) {
+//       setToast({ type: 'error', message: err.response?.data?.error || 'Registration failed.' });
+      
+//       if (recaptchaRef.current) {
+//         recaptchaRef.current.reset();
+//         setCaptchaToken(null);
+//       }
+//     } finally {
+//       setLoading(false);
+//     }
+//   };
+
+//   // ⚡ ADD 3: Jab popup band ho, tab user ko Home pe bhej do
+//   const handleClosePopup = () => {
+//     setShowWelcomePopup(false);
+//     navigate('/'); 
+//   };
+
+//   return (
+//     <div className="min-h-screen bg-[#0A0A0A] flex items-center justify-center p-4">
+//       <Toast toast={toast} onClose={() => setToast(null)} />
+
+//       <div className="w-full max-w-md">
+//         {/* Header */}
+//         <div className="text-center mb-10">
+//           <p className="text-[#C8A253] text-xs tracking-[0.4em] uppercase mb-3">Join Us</p>
+//           <h1 className="text-4xl font-serif text-white">Truee <span className="text-[#C8A253]">Luxury</span></h1>
+//           <p className="text-zinc-500 text-sm mt-2">Create your customer account</p>
+//         </div>
+
+//         {/* Form */}
+//         <div className="bg-[#111] border border-zinc-800 rounded-2xl p-8 shadow-2xl">
+//           <form onSubmit={handleSubmit}>
+//             <Field label="Full Name" name="name" type="text" required value={formData.name} onChange={handleChange} />
+//             <Field label="Email Address" name="email" type="email" required value={formData.email} onChange={handleChange} />
+//             <Field label="Phone Number" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
+//             <Field label="Password" name="password" type="password" required value={formData.password} onChange={handleChange} />
+
+//             <div className="mb-5 flex justify-center">
+//               <ReCAPTCHA
+//                 ref={recaptchaRef}
+//                 sitekey={import.meta.env.VITE_GOOGLE_SITE_KEY}
+//                 onChange={(token) => setCaptchaToken(token)}
+//                 theme="dark"
+//               />
+//             </div>
+
+//             <button
+//               type="submit"
+//               disabled={loading}
+//               className="w-full bg-[#C8A253] hover:bg-[#b08d44] text-[#0A0A0A] font-bold py-3.5 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest text-sm"
+//             >
+//               {loading ? 'Creating Account...' : 'Sign Up'}
+//             </button>
+//           </form>
+
+//           <p className="text-center text-sm text-zinc-500 mt-6">
+//             Already have an account?{' '}
+//             <Link to="/login" className="text-[#C8A253] hover:underline">
+//               Sign In
+//             </Link>
+//           </p>
+//         </div>
+//       </div>
+
+//       {/* ⚡ ADD 4: Yahan humne apna Magic Popup laga diya! */}
+//       <WelcomeCouponPopup 
+//         isOpen={showWelcomePopup} 
+//         onClose={handleClosePopup} 
+//       />
+//     </div>
+//   );
+// }
+
 import React, { useState, useRef } from 'react';
 import { useNavigate, Link } from 'react-router-dom';
 import axiosInstance from '../utils/axiosInstance';
 import Toast from '../components/Toast';
 import { useAuth } from '../context/AuthContext';
 import ReCAPTCHA from 'react-google-recaptcha';
+// ⚡ ADD 1: Popup component ko import kiya
+import WelcomeCouponPopup from '../components/WelcomeCouponPopup'; 
 
 const Field = ({ label, ...props }) => (
   <div className="relative mb-5">
@@ -27,9 +429,13 @@ export default function CustomerRegister() {
   const [toast, setToast] = useState(null);
   const [loading, setLoading] = useState(false);
   
-  // ⚡ FIX 1: Captcha Token ki state add kardi
   const [captchaToken, setCaptchaToken] = useState(null); 
   const recaptchaRef = useRef();
+
+  // ⚡ ADD 2: Popup dikhane ke liye ek state banayi
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
+  // ⚡ NAYA NAYA: Backend se aane wale coupon code ko save karne ke liye state
+  const [assignedCoupon, setAssignedCoupon] = useState('WELCOME500'); 
 
   const navigate = useNavigate();
   const { login } = useAuth(); 
@@ -39,7 +445,6 @@ export default function CustomerRegister() {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
-    // ⚡ FIX 2: Check karein ki user ne captcha fill kiya hai ya nahi
     if (!captchaToken) {
       setToast({ type: 'error', message: 'Please complete the reCAPTCHA verification.' });
       return;
@@ -47,21 +452,26 @@ export default function CustomerRegister() {
 
     setLoading(true);
     try {
-      // ⚡ FIX 3: Backend ko formData ke sath captchaToken bhi bhejna hai
       const response = await axiosInstance.post('/auth/register', {
         ...formData,
-        captchaToken: captchaToken // Backend me ye key check kar lena (captchaToken ya token)
+        captchaToken: captchaToken 
       });
 
       if (response.data.success) {
         login(response.data.token, response.data.user);
         setToast({ type: 'success', message: 'Registration successful! Welcome.' });
-        setTimeout(() => navigate('/'), 1200); 
+        
+        // ⚡ UPDATE: Backend se jo coupon assign hua hai, usko extract karke state mein daalo
+        if (response.data.user?.coupons?.length > 0) {
+            setAssignedCoupon(response.data.user.coupons[0].code);
+        }
+        
+        // Ab popup dikhayenge
+        setShowWelcomePopup(true); 
       }
     } catch (err) {
       setToast({ type: 'error', message: err.response?.data?.error || 'Registration failed.' });
       
-      // ⚡ FIX 4: Agar error aaye toh captcha reset kar do taaki user dobara bhar sake
       if (recaptchaRef.current) {
         recaptchaRef.current.reset();
         setCaptchaToken(null);
@@ -69,6 +479,12 @@ export default function CustomerRegister() {
     } finally {
       setLoading(false);
     }
+  };
+
+  // ⚡ ADD 3: Jab popup band ho, tab user ko Home pe bhej do
+  const handleClosePopup = () => {
+    setShowWelcomePopup(false);
+    navigate('/'); 
   };
 
   return (
@@ -91,7 +507,6 @@ export default function CustomerRegister() {
             <Field label="Phone Number" name="phone" type="tel" value={formData.phone} onChange={handleChange} />
             <Field label="Password" name="password" type="password" required value={formData.password} onChange={handleChange} />
 
-            {/* ReCAPTCHA Form ke andar rakhna zyada better hai */}
             <div className="mb-5 flex justify-center">
               <ReCAPTCHA
                 ref={recaptchaRef}
@@ -104,7 +519,7 @@ export default function CustomerRegister() {
             <button
               type="submit"
               disabled={loading}
-              className="w-full bg-[#C8A253] hover:bg-[#b08d44] text-[#0A0A0A] font-bold py-3.5 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed"
+              className="w-full bg-[#C8A253] hover:bg-[#b08d44] text-[#0A0A0A] font-bold py-3.5 rounded-lg transition-all duration-300 transform hover:-translate-y-0.5 mt-2 disabled:opacity-50 disabled:cursor-not-allowed uppercase tracking-widest text-sm"
             >
               {loading ? 'Creating Account...' : 'Sign Up'}
             </button>
@@ -118,6 +533,13 @@ export default function CustomerRegister() {
           </p>
         </div>
       </div>
+
+      {/* ⚡ ADD 4: Yahan humne apna Magic Popup laga diya aur coupon code bhej diya! */}
+      <WelcomeCouponPopup 
+        isOpen={showWelcomePopup} 
+        onClose={handleClosePopup} 
+        couponCode={assignedCoupon} 
+      />
     </div>
   );
 }

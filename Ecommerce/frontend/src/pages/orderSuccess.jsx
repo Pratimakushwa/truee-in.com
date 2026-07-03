@@ -212,10 +212,13 @@
 //     </div>
 //   );
 // }
+
+
+
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
 import { CheckCircle, Package, Calendar } from 'lucide-react';
-import ParticlesBackground from './ParticlesBackground'; 
+// import ParticlesBackground from './ParticlesBackground'; 
 
 export default function OrderSuccess() {
   const location = useLocation();
@@ -228,7 +231,7 @@ export default function OrderSuccess() {
   return (
     <div className="fixed inset-0 bg-gray-50 flex items-center justify-center p-4 font-sans overflow-hidden">
       
-      <ParticlesBackground />
+      {/* <ParticlesBackground /> */}
 
       {/* ⚡ YAHAN CHANGE KIYA HAI: "mt-24" (margin-top) add kiya hai taaki card navbar se niche aa jaye */}
       <div className="w-full max-w-md bg-white border border-gray-200 rounded-2xl p-8 shadow-sm text-center relative z-10 mt-20">
@@ -275,3 +278,4 @@ export default function OrderSuccess() {
     </div>
   );
 }
+

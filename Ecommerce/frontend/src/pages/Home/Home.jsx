@@ -112,6 +112,8 @@ import Hero1 from './Hero1';
 import Hero2 from './Hero2'; 
 import Newhero from './Newhero';
 import HomeProductBlocks from "./HomeProductBlocks";
+import CuratedPrivileges from "./CuratedPrivileges";
+import RecentlyViewed from "./RecentlyViewed";
 import TrendingSection from "./TrendingSection";
 import CategoryShowcase from './Category';
 import Deals from './Deal';
@@ -119,7 +121,8 @@ import MarshallDesign from './Views';
 import FeatureBar from './FeatureBar';
 import MarshallWideLayout from './MarshalWideLayout';
 import TestimonialSlider from './TestimonialSlider';
-
+import HomeCouponDisplay from './HomeCouponDisplay';
+import BrandCouponDisplay from './BrandCouponDisplay';
 const SkeletonCard = () => (
   <div className="w-full h-[300px] bg-gray-200 animate-pulse rounded-lg mb-4"></div>
 );
@@ -158,9 +161,10 @@ export default function Home() {
   return (
     <div className="bg-[var(--theme-bg-light)] min-h-screen selection:bg-[var(--theme-primary)] selection:text-[var(--theme-text-light)] transition-colors duration-500">
       <Cursor />
-      
       {/* ⚡ Header hamesha dikhega, ye data ka wait nahi karega */}
+
       <Header1 /> 
+      <HomeCouponDisplay displayLocation="Home Banner" />
 
       <div className="bg-white relative z-20">
         {/* ⚡ Agar data load ho raha hai toh Hero ka skeleton dikhao */}
@@ -179,6 +183,7 @@ export default function Home() {
             {/* <Hero2 featuredProducts={homeData.featured || []} /> */}
           </>
         )}
+
         <BrandsMarquee />
       </div>
 
@@ -196,12 +201,15 @@ export default function Home() {
           <CategoryShowcase />
           <MarshallDesign />
           <TrendingSection products={[...homeData.trending, ...homeData.featured, ...homeData.newArrivals]} />
-
+<BrandCouponDisplay  displayLocation="product page"/>
           <TestimonialSlider />
-        </>
+<CuratedPrivileges 
+             products={[...(homeData.featured || []), ...(homeData.trending || []), ...(homeData.newArrivals || [])]} 
+          />        </>
       )}
-
       <Newsletter2 />
+      <RecentlyViewed />
+
       <FeatureBar />
       <Footer /> 
     </div>
