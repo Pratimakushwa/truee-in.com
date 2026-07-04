@@ -2,7 +2,7 @@ import { NavLink, useLocation } from 'react-router-dom';
 import {
   LayoutDashboard, Package, ShoppingCart, Users, Palette, Ticket,
   Coins, Settings, Star, ChevronLeft, ChevronRight, LogOut, User,
-  HelpCircle, Plus,
+  FileText, HelpCircle, Plus,
 } from 'lucide-react';
 import AdminLogo from './AdminLogo';
 
@@ -34,6 +34,7 @@ const NAV_SECTIONS = [
     title: 'System',
     items: [
       { to: '/admin/theme', label: 'Theme', icon: Palette },
+      { to: '/admin/legal-policies', label: 'Legal & Policies', icon: FileText },
       { to: '/admin/profile', label: 'Profile', icon: User },
     ],
   },

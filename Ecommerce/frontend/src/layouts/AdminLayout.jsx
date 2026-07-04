@@ -30,7 +30,6 @@ export default function AdminLayout() {
 
   return (
     <div className="admin-shell min-h-screen">
-      {/* Desktop — fixed sticky sidebar */}
       <div className="hidden lg:block fixed inset-y-0 left-0 z-40">
         <AdminSidebar
           user={user}
@@ -41,7 +40,6 @@ export default function AdminLayout() {
         />
       </div>
 
-      {/* Mobile drawer */}
       {mobileOpen && (
         <div className="lg:hidden fixed inset-0 z-50 flex">
           <div className="absolute inset-0 bg-black/40 backdrop-blur-sm" onClick={() => setMobileOpen(false)} />
@@ -57,7 +55,6 @@ export default function AdminLayout() {
         </div>
       )}
 
-      {/* Main column */}
       <div className={`flex flex-col min-h-screen transition-all duration-300 ${sidebarPad}`}>
         <AdminHeader onMenuClick={() => setMobileOpen(true)} sidebarCollapsed={collapsed} />
 

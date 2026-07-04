@@ -57,6 +57,7 @@ import AdminThemeManager from './pages/Admin/AdminThemeManager';
 import AdminProfile from './pages/Admin/AdminProfile';
 import RewardSettings from './pages/Admin/RewardSettings';
 import RewardAnalytics from './pages/Admin/RewardAnalytics';
+import ManagePolicies from './pages/Admin/ManagePolicies';
 import ScrollToTop from './components/ScrollTop';
 
 // Layout wrapper for pages that DO NOT have their own header/footer (like Cart, Profile)
@@ -102,7 +103,10 @@ function App() {
             <Route path="/checkout" element={<PublicLayout><Checkout /></PublicLayout>} />
             {/* ── Customer Private Routes ───────────────────────────── */}
             {/* ⚡ FIX: Yahan 'user' aur 'admin' ko bhi allow kar diya hai */}
-            <Route path="/profile" element={<ProtectedRoute roles={['customer', 'user', 'admin', 'super-admin']}><PublicLayout><ProfilePage /></PublicLayout> </ProtectedRoute>
+            <Route path="/profile" element={
+              <ProtectedRoute roles={['customer', 'user', 'admin', 'super-admin']}>
+                <PublicLayout><ProfilePage /></PublicLayout>
+              </ProtectedRoute>
             } />
             <Route path="/wishlist" element={<PublicLayout><Wishlist /></PublicLayout>} />
 
@@ -154,6 +158,7 @@ function App() {
               </ProtectedRoute>
             }
             >
+              <Route index element={<AdminDashboard />} />
               <Route path="dashboard" element={<AdminDashboard />} />
               <Route path="coupons" element={<CouponManager />} />
               <Route path="profile" element={<AdminProfile />} />
@@ -164,6 +169,8 @@ function App() {
               <Route path="rewards" element={<RewardAnalytics />} />
               <Route path="rewards/settings" element={<RewardSettings />} />
               <Route path="reviews" element={<AdminReviews />} />
+              <Route path="legal-policies" element={<ManagePolicies />} />
+              <Route path="Legal & Policies" element={<ManagePolicies />} />
             </Route>
 
             {/* ── Error / Fallback ──────────────────────────────────── */}

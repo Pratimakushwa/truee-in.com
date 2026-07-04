@@ -392,7 +392,6 @@
 // });
 
 // module.exports = mongoose.model('User', userSchema);
-
 const mongoose = require('mongoose');
 
 const userSchema = new mongoose.Schema({
@@ -447,13 +446,13 @@ const userSchema = new mongoose.Schema({
     }
   ],
 
-  // ⚡ COUPON STORAGE
- // ⚡ COUPON STORAGE (Updated for Status)
+  // ⚡ COUPON STORAGE (Updated for Status)
   coupons: [{
     code: String,
     status: { type: String, enum: ['Available', 'Used', 'Expired'], default: 'Available' },
     usedAt: Date
   }],
+  
   // Access Control Gateway
   role: { 
     type: String, 
@@ -471,6 +470,16 @@ const userSchema = new mongoose.Schema({
   isActive: {
     type: Boolean,
     default: true
+  },
+
+  // ⚡ FORGOT PASSWORD (OTP Fields Added Here)
+  otp: {
+    type: String,
+    default: null
+  },
+  otpExpire: {
+    type: Date,
+    default: null
   }
 }, { 
   timestamps: true 
