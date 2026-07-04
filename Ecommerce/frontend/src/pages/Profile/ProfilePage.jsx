@@ -172,6 +172,7 @@ import AddressContent from "../../components/AddressContent"
 import UserOrders from "../../components/UserOrders" 
 import MyCoupons from '../../components/MyCoupons'; // ⚡ Tumne import kar hi liya tha!
 import MyReviews from '../../components/MyReviews';
+import RewardWallet from '../../components/rewards/RewardWallet';
 
 const Account = () => {
   const [activeTab, setActiveTab] = useState("profile")
@@ -191,8 +192,11 @@ const Account = () => {
       case "coupons": 
         return <MyCoupons />
         
-        case "reviews":
-  return <MyReviews />
+      case "reviews":
+        return <MyReviews />
+
+      case "wallet":
+        return <RewardWallet />
 
       default:
         return <div className="p-10 text-gray-600">Coming Soon</div>

@@ -1,217 +1,115 @@
-// import React, { useState, useEffect, Suspense } from 'react';
-// import axiosInstance from '../../utils/axiosInstance';
-// import { useAuth } from '../../context/AuthContext';
-
-// // Components
-// import Header1 from './Header1';
-// import BrandStrip from '../../components/BrandStrip';
-// import Footer from './Footer';
-// import Cursor from './Cursor';
-// import Newsletter2 from '../../components/Newsletter2';
-// import Newhero from './Newhero';
-// import CategoryShowcase from './Category';
-// import Deals from './Deal';
-// import MarshallDesign from './Views';
-// import FeatureBar from './FeatureBar';
-// import MarshallWideLayout from './MarshalWideLayout';
-// import TestimonialSlider from './TestimonialSlider';
-
-// const SkeletonCard = () => (
-//   <div className="w-full h-[300px] bg-gray-200 animate-pulse rounded-lg mb-4"></div>
-// );
-
-// export default function Home() {
-//   const { user } = useAuth();
-//   const [homeData, setHomeData] = useState({ 
-//     flashDeals: [], trending: [], recommended: [], recentlyViewed: [], featured: [], newArrivals: []
-//   });
-//   const [loading, setLoading] = useState(true);
-
-//   const fetchHomeData = async () => {
-//     try {
-//       let guestId = localStorage.getItem('guestId') || ('guest_' + Math.random().toString(36).substr(2, 9) + Date.now());
-//       localStorage.setItem('guestId', guestId);
-      
-//       const { data } = await axiosInstance.get(`/home?t=${Date.now()}`, {
-//         headers: { 'x-guest-id': guestId, 'Cache-Control': 'no-cache' }
-//       });
-      
-//       if (data.success) {
-//         setHomeData(data.data);
-//       }
-//     } catch (error) { 
-//       console.error("Home API Error:", error); 
-//     } finally { 
-//       setLoading(false); 
-//     }
-//   };
-
-//   useEffect(() => { 
-//     fetchHomeData(); 
-//     window.scrollTo(0, 0); 
-//   }, [user]);
-
-//   return (
-//     <div className="bg-[var(--theme-bg-light)] min-h-screen selection:bg-[var(--theme-primary)] selection:text-[var(--theme-text-light)] transition-colors duration-500">
-//       <Cursor />
-      
-//       {/* ⚡ Header hamesha dikhega, ye data ka wait nahi karega */}
-//       <Header1 /> 
-
-//       <div className="bg-white relative z-20">
-//         {/* ⚡ Agar data load ho raha hai toh Hero ka skeleton dikhao */}
-//         {loading ? (
-//           <div className="w-full h-[70vh] bg-gray-100 animate-pulse flex items-center justify-center">
-//              <p className="text-gray-400 font-serif animate-bounce">Loading Luxury...</p>
-//           </div>
-//         ) : (
-//           <Newhero featuredProducts={homeData.featured || []} />
-//         )}
-//         <BrandStrip />
-//       </div>
-
-//       {/* ⚡ Sections ko condition ke hisaab se render karein */}
-//       {loading ? (
-//         <div className="px-12 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-//           <SkeletonCard />
-//           <SkeletonCard />
-//           <SkeletonCard />
-//         </div>
-//       ) : (
-//         <>
-//           <Deals />
-//           <CategoryShowcase />
-//           <MarshallDesign />
-//           <FeatureBar />
-//           <MarshallWideLayout />
-//           <TestimonialSlider />
-//         </>
-//       )}
-
-//       <Newsletter2 />
-//       <Footer /> 
-//     </div>
-//   );
-// }
-
-
-import React, { useState, useEffect, Suspense } from 'react';
-import axiosInstance from '../../utils/axiosInstance';
-import { useAuth } from '../../context/AuthContext';
-
-// Components
-import Header1 from './Header1';
-import BrandsMarquee from './BrandsMarquee';
-import Footer from './Footer';
-import Cursor from './Cursor';
-import Newsletter2 from '../../components/Newsletter2';
-
-// ⚡ Tumhari nayi Hero file yahan import kar li
-import Hero from './Hero'; 
-import Hero1 from './Hero1'; 
-import Hero2 from './Hero2'; 
-import Newhero from './Newhero';
-import HomeProductBlocks from "./HomeProductBlocks";
-import CuratedPrivileges from "./CuratedPrivileges";
-import RecentlyViewed from "./RecentlyViewed";
-import TrendingSection from "./TrendingSection";
-import CategoryShowcase from './Category';
-import Deals from './Deal';
-import MarshallDesign from './Views';
-import FeatureBar from './FeatureBar';
-import MarshallWideLayout from './MarshalWideLayout';
-import TestimonialSlider from './TestimonialSlider';
-import HomeCouponDisplay from './HomeCouponDisplay';
-import BrandCouponDisplay from './BrandCouponDisplay';
-const SkeletonCard = () => (
-  <div className="w-full h-[300px] bg-gray-200 animate-pulse rounded-lg mb-4"></div>
-);
-
-export default function Home() {
-  const { user } = useAuth();
-  const [homeData, setHomeData] = useState({ 
-    flashDeals: [], trending: [], recommended: [], recentlyViewed: [], featured: [], newArrivals: []
-  });
-  const [loading, setLoading] = useState(true);
-
-  const fetchHomeData = async () => {
-    try {
-      let guestId = localStorage.getItem('guestId') || ('guest_' + Math.random().toString(36).substr(2, 9) + Date.now());
-      localStorage.setItem('guestId', guestId);
-      
-      const { data } = await axiosInstance.get(`/home?t=${Date.now()}`, {
-        headers: { 'x-guest-id': guestId, 'Cache-Control': 'no-cache' }
-      });
-      
-      if (data.success) {
-        setHomeData(data.data);
-      }
-    } catch (error) { 
-      console.error("Home API Error:", error); 
-    } finally { 
-      setLoading(false); 
-    }
-  };
-
-  useEffect(() => { 
-    fetchHomeData(); 
-    window.scrollTo(0, 0); 
-  }, [user]);
-
-  return (
-    <div className="bg-[var(--theme-bg-light)] min-h-screen selection:bg-[var(--theme-primary)] selection:text-[var(--theme-text-light)] transition-colors duration-500">
-      <Cursor />
-      {/* ⚡ Header hamesha dikhega, ye data ka wait nahi karega */}
-
-      <Header1 /> 
-      <HomeCouponDisplay displayLocation="Home Banner" />
-
-      <div className="bg-white relative z-20">
-        {/* ⚡ Agar data load ho raha hai toh Hero ka skeleton dikhao */}
-        {loading ? (
-          <div className="w-full h-[70vh] bg-gray-100 animate-pulse flex items-center justify-center">
-             <p className="text-gray-400 font-serif animate-bounce">Loading Luxury...</p>
-          </div>
-        ) : (
-          <>
-            {/* ⚡ FIX 2: Purane Newhero ko comment kar diya hai. */}
-            {/* <Newhero featuredProducts={homeData.featured || []} /> */}
-            
-            {/* ⚡ Naya Hero component yahan add kar diya */}
-            {/* <Hero featuredProducts={homeData.featured || []} /> */}
-            <Hero1 featuredProducts={homeData.featured || []} />
-            {/* <Hero2 featuredProducts={homeData.featured || []} /> */}
-          </>
-        )}
-
-        <BrandsMarquee />
-      </div>
-
-      {/* ⚡ Sections ko condition ke hisaab se render karein */}
-      {loading ? (
-        <div className="px-12 py-10 grid grid-cols-1 md:grid-cols-3 gap-6">
-          <SkeletonCard />
-          <SkeletonCard />
-          <SkeletonCard />
-        </div>
-      ) : (
-        <>
-          <Deals />
-          <HomeProductBlocks products={[...(homeData.featured || []), ...(homeData.trending || []), ...(homeData.newArrivals || [])]} />          <MarshallWideLayout />
-          <CategoryShowcase />
-          <MarshallDesign />
-          <TrendingSection products={[...homeData.trending, ...homeData.featured, ...homeData.newArrivals]} />
-<BrandCouponDisplay  displayLocation="product page"/>
-          <TestimonialSlider />
-<CuratedPrivileges 
-             products={[...(homeData.featured || []), ...(homeData.trending || []), ...(homeData.newArrivals || [])]} 
-          />        </>
-      )}
-      <Newsletter2 />
-      <RecentlyViewed />
-
-      <FeatureBar />
-      <Footer /> 
-    </div>
-  );
-}
+
+
+import React, { useState, useEffect } from 'react';
+import axiosInstance from '../../utils/axiosInstance';
+import { useAuth } from '../../context/AuthContext';
+
+import Header1 from './Header1';
+import BrandsMarquee from './BrandsMarquee';
+import Footer from './Footer';
+import Cursor from './Cursor';
+import Newsletter2 from '../../components/Newsletter2';
+import Hero1 from './Hero1';
+import HomeProductBlocks from "./HomeProductBlocks";
+import CuratedPrivileges from "./CuratedPrivileges";
+import RecentlyViewed from "./RecentlyViewed";
+import TrendingSection from "./TrendingSection";
+import CategoryShowcase from './Category';
+import Deals from './Deal';
+import MarshallDesign from './Views';
+import FeatureBar from './FeatureBar';
+import MarshallWideLayout from './MarshalWideLayout';
+import TestimonialSlider from './TestimonialSlider';
+import HomeCouponDisplay from './HomeCouponDisplay';
+import BrandCouponDisplay from './BrandCouponDisplay';
+import TrustBar from '../../components/trust/TrustBar';
+import TrustSection from '../../components/trust/TrustSection';
+import MobileStickyBar from '../../components/navigation/MobileStickyBar';
+import { SkeletonCard } from '../../components/ui/Skeleton';
+
+export default function Home() {
+  const { user } = useAuth();
+  const [homeData, setHomeData] = useState({ 
+    flashDeals: [], trending: [], recommended: [], recentlyViewed: [], featured: [], newArrivals: []
+  });
+  const [loading, setLoading] = useState(true);
+
+  const fetchHomeData = async () => {
+    try {
+      let guestId = localStorage.getItem('guestId') || ('guest_' + Math.random().toString(36).substr(2, 9) + Date.now());
+      localStorage.setItem('guestId', guestId);
+      
+      const { data } = await axiosInstance.get(`/home?t=${Date.now()}`, {
+        headers: { 'x-guest-id': guestId, 'Cache-Control': 'no-cache' }
+      });
+      
+      if (data.success) {
+        setHomeData(data.data);
+      }
+    } catch (error) { 
+      console.error("Home API Error:", error); 
+    } finally { 
+      setLoading(false); 
+    }
+  };
+
+  useEffect(() => { 
+    fetchHomeData(); 
+    window.scrollTo(0, 0); 
+  }, [user]);
+
+  const allProducts = [
+    ...(homeData.featured || []),
+    ...(homeData.trending || []),
+    ...(homeData.newArrivals || []),
+  ];
+
+  return (
+    <div className="bg-[var(--theme-bg-light)] min-h-screen pb-mobile-nav selection:bg-[var(--theme-primary)] selection:text-white transition-colors duration-500">
+      <Cursor />
+      <Header1 /> 
+      <HomeCouponDisplay displayLocation="Home Banner" />
+
+      <div className="bg-white relative z-20">
+        {loading ? (
+          <div className="w-full h-[70vh] bg-gradient-to-b from-gray-50 to-white animate-pulse flex items-center justify-center">
+             <p className="text-gray-400 font-serif animate-pulse tracking-widest text-sm uppercase">Loading TRUEE...</p>
+          </div>
+        ) : (
+          <Hero1 featuredProducts={homeData.featured || []} />
+        )}
+        <BrandsMarquee />
+      </div>
+
+      <TrustBar />
+
+      {loading ? (
+        <div className="px-6 md:px-12 py-10 grid grid-cols-1 md:grid-cols-3 gap-6 max-w-7xl mx-auto">
+          <SkeletonCard />
+          <SkeletonCard />
+          <SkeletonCard />
+        </div>
+      ) : (
+        <>
+          <Deals />
+          <HomeProductBlocks products={allProducts} />
+          <MarshallWideLayout />
+          <CategoryShowcase />
+          <MarshallDesign />
+          <TrendingSection products={allProducts} />
+          <BrandCouponDisplay displayLocation="product page"/>
+          <TrustSection />
+          <TestimonialSlider />
+          <CuratedPrivileges products={allProducts} />
+        </>
+      )}
+
+      <Newsletter2 />
+      <RecentlyViewed />
+      <FeatureBar />
+      <Footer />
+
+      <MobileStickyBar />
+    </div>
+  );
+}

@@ -1,335 +1,22 @@
-// import { useState, useEffect } from 'react';
-// import api from '../../utils/axiosInstance';
-// import Toast from '../../components/Toast';
-
-// export default function AdminOrders() {
-//   const [orders, setOrders] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [filter, setFilter] = useState('All');
-//   const [toast, setToast] = useState(null);
-
-//   const showToast = (message, type = 'success') => setToast({ message, type });
-
-//   useEffect(() => {
-//     fetchOrders();
-//   }, []);
-
-//   const fetchOrders = async () => {
-//     try {
-//       setLoading(true);
-//       const res = await api.get('/admin/orders');
-//       setOrders(res.data.data || []);
-//     } catch (err) {
-//       console.error('Error fetching orders:', err);
-//       showToast(err.response?.data?.error || 'Failed to load orders.', 'error');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   const handleStatusChange = async (orderId, newStatus) => {
-//     try {
-//       await api.put(`/admin/orders/${orderId}/status`, { orderStatus: newStatus });
-//       showToast('Order status updated successfully.');
-//       fetchOrders();
-//     } catch (err) {
-//       showToast(err.response?.data?.error || 'Failed to update status.', 'error');
-//     }
-//   };
-
-//   const filteredOrders = filter === 'All' ? orders : orders.filter((o) => o.orderStatus === filter);
-
-//   return (
-//     <div>
-//       {toast && <Toast toast={toast} onClose={() => setToast(null)} />}
-
-//       <div className="mb-8">
-//         <h1 className="text-2xl font-serif text-[#C8A253]">Orders</h1>
-//         <p className="text-gray-500 text-sm mt-1">Track and manage customer orders</p>
-//       </div>
-
-//       {/* Status tabs */}
-//       <div className="flex gap-2 mb-6">
-//         {['All', 'Processing', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'].map((tab) => (
-//           <button
-//             key={tab}
-//             onClick={() => setFilter(tab)}
-//             className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-//               tab === filter
-//                 ? 'bg-[#C8A253]/15 text-[#C8A253] border-[#C8A253]/30'
-//                 : 'text-gray-600 border-white/5 hover:border-[#C8A253]/20'
-//             }`}
-//           >
-//             {tab}
-//           </button>
-//         ))}
-//       </div>
-
-//       {/* Orders table */}
-//       {loading ? (
-//         <p className="text-gray-500 text-sm">Loading orders...</p>
-//       ) : filteredOrders.length === 0 ? (
-//         <div className="rounded-xl border border-dashed border-white/10 bg-[#111] p-16 flex flex-col items-center justify-center text-center">
-//           <p className="text-white font-semibold text-lg mb-2">No Orders Found</p>
-//           <p className="text-gray-500 text-sm">There are no orders matching your filter.</p>
-//         </div>
-//       ) : (
-//         <div className="rounded-xl border border-white/10 bg-[#111] overflow-hidden">
-//           <table className="w-full">
-//             <thead>
-//               <tr className="border-b border-white/10 bg-[#0A0A0A]">
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Order ID</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Customer</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Total</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Status</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Date</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {filteredOrders.map((order) => (
-//                 <tr key={order._id} className="border-b border-white/5 hover:bg-[#1A1A1A] transition-colors">
-//                   <td className="px-4 py-3 text-sm text-white font-mono">{order._id.slice(-8).toUpperCase()}</td>
-//                   <td className="px-4 py-3 text-sm text-white">{order.user?.name || 'Unknown'}</td>
-//                   <td className="px-4 py-3 text-sm text-white font-semibold">₹{order.totalAmount}</td>
-//                   <td className="px-4 py-3 text-sm">
-//                     <select
-//                       value={order.orderStatus}
-//                       onChange={(e) => handleStatusChange(order._id, e.target.value)}
-//                       className="bg-[#1A1A1A] border border-[#C8A253]/20 rounded px-2 py-1 text-xs text-white outline-none focus:border-[#C8A253]/60"
-//                     >
-//                       <option>Processing</option>
-//                       <option>Shipped</option>
-//                       <option>Out for Delivery</option>
-//                       <option>Delivered</option>
-//                       <option>Cancelled</option>
-//                     </select>
-//                   </td>
-//                   <td className="px-4 py-3 text-sm text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-// import { useState, useEffect } from 'react';
-// import api from '../../utils/axiosInstance';
-// import Toast from '../../components/Toast';
-
-// export default function AdminOrders() {
-//   const [orders, setOrders] = useState([]);
-//   const [loading, setLoading] = useState(true);
-//   const [filter, setFilter] = useState('All');
-//   const [toast, setToast] = useState(null);
-
-//   // ⚡ NAYE STATES MODAL KE LIYE ⚡
-//   const [shippingModal, setShippingModal] = useState({ isOpen: false, orderId: null });
-//   const [trackingInfo, setTrackingInfo] = useState({ courierPartner: '', awbNumber: '' });
-
-//   const showToast = (message, type = 'success') => setToast({ message, type });
-
-//   useEffect(() => {
-//     fetchOrders();
-//   }, []);
-
-//   const fetchOrders = async () => {
-//     try {
-//       setLoading(true);
-//       const res = await api.get('/admin/orders');
-//       setOrders(res.data.data || []);
-//     } catch (err) {
-//       console.error('Error fetching orders:', err);
-//       showToast(err.response?.data?.error || 'Failed to load orders.', 'error');
-//     } finally {
-//       setLoading(false);
-//     }
-//   };
-
-//   // ⚡ SMART STATUS HANDLER ⚡
-//   const handleStatusChange = async (orderId, newStatus) => {
-//     // Agar status Shipped hai, toh direct API call mat karo, Modal kholo
-//     if (newStatus === 'Shipped') {
-//       setShippingModal({ isOpen: true, orderId });
-//       setTrackingInfo({ courierPartner: '', awbNumber: '' }); // Purana data clear karo
-//       return; 
-//     }
-    
-//     // Baaki status (Processing, Delivered) ke liye normal API call
-//     updateOrderStatus(orderId, newStatus);
-//   };
-
-//   // ⚡ ASLI API CALL WALA FUNCTION ⚡
-//   const updateOrderStatus = async (orderId, status, trackingData = {}) => {
-//     try {
-//       // Backend ko status ke sath-sath tracking data bhi bhejenge
-//       await api.put(`/admin/orders/${orderId}/status`, { 
-//         orderStatus: status, 
-//         ...trackingData 
-//       });
-//       showToast('Order status updated successfully.');
-//       fetchOrders();
-//     } catch (err) {
-//       showToast(err.response?.data?.error || 'Failed to update status.', 'error');
-//     }
-//   };
-
-//   // ⚡ MODAL SUBMIT KARTA HAI YE FUNCTION ⚡
-//   const handleShippingSubmit = () => {
-//     if (!trackingInfo.courierPartner || !trackingInfo.awbNumber) {
-//       showToast('Please fill both Courier Name and AWB Number', 'error');
-//       return;
-//     }
-    
-//     updateOrderStatus(shippingModal.orderId, 'Shipped', {
-//       courierPartner: trackingInfo.courierPartner,
-//       awbNumber: trackingInfo.awbNumber
-//     });
-    
-//     // Modal band kar do
-//     setShippingModal({ isOpen: false, orderId: null });
-//   };
-
-//   const filteredOrders = filter === 'All' ? orders : orders.filter((o) => o.orderStatus === filter);
-
-//   return (
-//     <div>
-//       {toast && <Toast toast={toast} onClose={() => setToast(null)} />}
-
-//       <div className="mb-8">
-//         <h1 className="text-2xl font-serif text-[#C8A253]">Orders</h1>
-//         <p className="text-gray-500 text-sm mt-1">Track and manage customer orders</p>
-//       </div>
-
-//       {/* Status tabs */}
-//       <div className="flex gap-2 mb-6">
-//         {['All', 'Processing', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'].map((tab) => (
-//           <button
-//             key={tab}
-//             onClick={() => setFilter(tab)}
-//             className={`px-4 py-1.5 rounded-full text-xs font-medium border transition-colors ${
-//               tab === filter
-//                 ? 'bg-[#C8A253]/15 text-[#C8A253] border-[#C8A253]/30'
-//                 : 'text-gray-600 border-white/5 hover:border-[#C8A253]/20'
-//             }`}
-//           >
-//             {tab}
-//           </button>
-//         ))}
-//       </div>
-
-//       {/* Orders table */}
-//       {loading ? (
-//         <p className="text-gray-500 text-sm">Loading orders...</p>
-//       ) : filteredOrders.length === 0 ? (
-//         <div className="rounded-xl border border-dashed border-white/10 bg-[#111] p-16 flex flex-col items-center justify-center text-center">
-//           <p className="text-white font-semibold text-lg mb-2">No Orders Found</p>
-//           <p className="text-gray-500 text-sm">There are no orders matching your filter.</p>
-//         </div>
-//       ) : (
-//         <div className="rounded-xl border border-white/10 bg-[#111] overflow-hidden">
-//           <table className="w-full">
-//             <thead>
-//               <tr className="border-b border-white/10 bg-[#0A0A0A]">
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Order ID</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Customer</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Total</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Status</th>
-//                 <th className="px-4 py-3 text-left text-xs font-semibold text-[#C8A253] uppercase tracking-wider">Date</th>
-//               </tr>
-//             </thead>
-//             <tbody>
-//               {filteredOrders.map((order) => (
-//                 <tr key={order._id} className="border-b border-white/5 hover:bg-[#1A1A1A] transition-colors">
-//                   <td className="px-4 py-3 text-sm text-white font-mono">{order._id.slice(-8).toUpperCase()}</td>
-//                   <td className="px-4 py-3 text-sm text-white">{order.user?.name || order.shippingAddress?.fullName || 'Unknown'}</td>
-//                   <td className="px-4 py-3 text-sm text-white font-semibold">₹{order.totalAmount}</td>
-//                   <td className="px-4 py-3 text-sm">
-//                     <select
-//                       value={order.orderStatus}
-//                       onChange={(e) => handleStatusChange(order._id, e.target.value)}
-//                       className="bg-[#1A1A1A] border border-[#C8A253]/20 rounded px-2 py-1 text-xs text-white outline-none focus:border-[#C8A253]/60"
-//                     >
-//                       <option value="Processing">Processing</option>
-//                       <option value="Shipped">Shipped</option>
-//                       <option value="Out for Delivery">Out for Delivery</option>
-//                       <option value="Delivered">Delivered</option>
-//                       <option value="Cancelled">Cancelled</option>
-//                     </select>
-//                   </td>
-//                   <td className="px-4 py-3 text-sm text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</td>
-//                 </tr>
-//               ))}
-//             </tbody>
-//           </table>
-//         </div>
-//       )}
-
-//       {/* ⚡ SHIPPING POPUP MODAL ⚡ */}
-//       {shippingModal.isOpen && (
-//         <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-//           <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-[400px] shadow-2xl">
-//             <h2 className="text-[#C8A253] font-serif text-xl mb-4">Add Shipping Details</h2>
-//             <p className="text-gray-400 text-xs mb-4">Enter courier and tracking info to mark this order as shipped.</p>
-            
-//             <div className="space-y-4">
-//               <div>
-//                 <label className="block text-xs text-gray-400 mb-1">Courier Partner (e.g. Blue Dart, Delhivery)</label>
-//                 <input 
-//                   type="text" 
-//                   value={trackingInfo.courierPartner}
-//                   onChange={(e) => setTrackingInfo({...trackingInfo, courierPartner: e.target.value})}
-//                   className="w-full bg-[#1A1A1A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#C8A253]"
-//                   placeholder="Enter courier name"
-//                 />
-//               </div>
-//               <div>
-//                 <label className="block text-xs text-gray-400 mb-1">AWB / Tracking Number</label>
-//                 <input 
-//                   type="text" 
-//                   value={trackingInfo.awbNumber}
-//                   onChange={(e) => setTrackingInfo({...trackingInfo, awbNumber: e.target.value})}
-//                   className="w-full bg-[#1A1A1A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#C8A253]"
-//                   placeholder="Enter tracking ID"
-//                 />
-//               </div>
-//             </div>
-
-//             <div className="flex gap-3 mt-6">
-//               <button 
-//                 onClick={() => setShippingModal({ isOpen: false, orderId: null })}
-//                 className="flex-1 px-4 py-2 rounded-lg border border-white/10 text-white text-sm hover:bg-white/5 transition"
-//               >
-//                 Cancel
-//               </button>
-//               <button 
-//                 onClick={handleShippingSubmit}
-//                 className="flex-1 px-4 py-2 rounded-lg bg-[#C8A253] text-black font-semibold text-sm hover:bg-[#D4AF37] transition"
-//               >
-//                 Save & Ship
-//               </button>
-//             </div>
-//           </div>
-//         </div>
-//       )}
-//     </div>
-//   );
-// }
-
-import React, { useState, useEffect } from 'react';
-import { Eye, X } from 'lucide-react';
+import { useState, useEffect } from 'react';
+import { useLocation } from 'react-router-dom';
+import { Eye, X, Search, Download } from 'lucide-react';
 import api from '../../utils/axiosInstance';
 import Toast from '../../components/Toast';
 import OrderDetails from '../../components/OrderDetails';
+import { ORDER_STATUSES } from '../../constants/orderStatuses';
+import PageHeader from '../../components/admin/ui/PageHeader';
+import DataTable from '../../components/admin/ui/DataTable';
+import StatusBadge from '../../components/admin/ui/StatusBadge';
 
 export default function AdminOrders() {
+  const { state: routeState } = useLocation();
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const [filter, setFilter] = useState('All');
+  const [search, setSearch] = useState(routeState?.search || '');
   const [toast, setToast] = useState(null);
-  
+
   const [shippingModal, setShippingModal] = useState({ isOpen: false, orderId: null });
   const [trackingInfo, setTrackingInfo] = useState({ courierPartner: '', awbNumber: '' });
   const [trackingModal, setTrackingModal] = useState({ isOpen: false, orderId: null });
@@ -343,9 +30,11 @@ export default function AdminOrders() {
       setLoading(true);
       const res = await api.get('/admin/orders');
       setOrders(res.data.data || []);
-    } catch (err) {
+    } catch {
       showToast('Failed to load orders.', 'error');
-    } finally { setLoading(false); }
+    } finally {
+      setLoading(false);
+    }
   };
 
   const handleStatusChange = async (orderId, newStatus) => {
@@ -361,7 +50,7 @@ export default function AdminOrders() {
       await api.put(`/admin/orders/${orderId}/status`, { orderStatus: status, ...trackingData });
       showToast('Status updated successfully.');
       fetchOrders();
-    } catch (err) {
+    } catch {
       showToast('Failed to update status.', 'error');
     }
   };
@@ -369,111 +58,222 @@ export default function AdminOrders() {
   const handleShippingSubmit = () => {
     updateOrderStatus(shippingModal.orderId, 'Shipped', {
       courierPartner: trackingInfo.courierPartner,
-      awbNumber: trackingInfo.awbNumber
+      awbNumber: trackingInfo.awbNumber,
     });
     setShippingModal({ isOpen: false, orderId: null });
+    setTrackingInfo({ courierPartner: '', awbNumber: '' });
   };
 
-  const filteredOrders = filter === 'All' ? orders : orders.filter((o) => o.orderStatus === filter);
+  const filteredOrders = orders.filter((o) => {
+    const matchStatus = filter === 'All' || o.orderStatus === filter;
+    const q = search.toLowerCase();
+    const matchSearch = !q
+      || o._id?.toLowerCase().includes(q)
+      || o.shippingAddress?.fullName?.toLowerCase().includes(q)
+      || o.shippingAddress?.phone?.includes(q);
+    return matchStatus && matchSearch;
+  });
+
+  const columns = [
+    {
+      key: 'id',
+      label: 'Order ID',
+      render: (row) => (
+        <span className="font-mono text-xs font-semibold">#{row._id?.slice(-8).toUpperCase()}</span>
+      ),
+    },
+    {
+      key: 'customer',
+      label: 'Customer',
+      render: (row) => (
+        <div>
+          <p className="font-medium text-gray-900">{row.shippingAddress?.fullName || 'Guest'}</p>
+          <p className="text-[10px] text-gray-400">{row.shippingAddress?.phone}</p>
+        </div>
+      ),
+    },
+    {
+      key: 'amount',
+      label: 'Amount',
+      render: (row) => (
+        <span className="font-semibold">
+          ₹{(row.payableAmount || row.totalAmount || 0).toLocaleString('en-IN')}
+        </span>
+      ),
+    },
+    {
+      key: 'payment',
+      label: 'Payment',
+      render: (row) => (
+        <div className="flex flex-col gap-1">
+          <StatusBadge status={row.paymentInfo?.paymentStatus || 'Pending'} />
+          <span className="text-[10px] text-gray-400 capitalize">{row.paymentInfo?.method}</span>
+        </div>
+      ),
+    },
+    {
+      key: 'coins',
+      label: 'Coins',
+      render: (row) => (
+        <span className="text-xs text-gray-500">
+          {row.coinsEarned ? `+${row.coinsEarned}` : '—'}
+          {row.coinsRedeemed ? ` / -${row.coinsRedeemed}` : ''}
+        </span>
+      ),
+    },
+    {
+      key: 'status',
+      label: 'Status',
+      render: (row) => (
+        <select
+          value={row.orderStatus}
+          onChange={(e) => { e.stopPropagation(); handleStatusChange(row._id, e.target.value); }}
+          onClick={(e) => e.stopPropagation()}
+          className="text-xs border border-gray-200 rounded-lg px-2 py-1.5 bg-white focus:ring-2 focus:ring-[#C8A253]/30 outline-none max-w-[140px]"
+        >
+          {ORDER_STATUSES.map((s) => (
+            <option key={s} value={s}>{s}</option>
+          ))}
+        </select>
+      ),
+    },
+    {
+      key: 'date',
+      label: 'Date',
+      render: (row) => new Date(row.createdAt).toLocaleDateString('en-IN'),
+    },
+    {
+      key: 'actions',
+      label: '',
+      render: (row) => (
+        <button
+          type="button"
+          onClick={(e) => { e.stopPropagation(); setTrackingModal({ isOpen: true, orderId: row._id }); }}
+          className="p-2 rounded-lg text-gray-500 hover:bg-[#FCFAEF] hover:text-[#C8A253] transition-colors"
+          aria-label="View order"
+        >
+          <Eye size={16} />
+        </button>
+      ),
+    },
+  ];
 
   return (
-    <div className="p-4 md:p-6 w-full">
+    <div>
       {toast && <Toast toast={toast} onClose={() => setToast(null)} />}
-      <h1 className="text-2xl font-serif text-[#C8A253] mb-8">Orders Management</h1>
 
-      {/* Responsive Table Wrapper */}
-      <div className="rounded-xl border border-white/10 bg-[#111] overflow-x-auto">
-        <table className="w-full text-left min-w-[700px]">
-          <thead>
-            <tr className="border-b border-white/10 bg-[#0A0A0A]">
-              <th className="px-4 py-3 text-[#C8A253] text-xs uppercase">Order ID</th>
-              <th className="px-4 py-3 text-[#C8A253] text-xs uppercase">Customer</th>
-              <th className="px-4 py-3 text-[#C8A253] text-xs uppercase">Status</th>
-              <th className="px-4 py-3 text-[#C8A253] text-xs uppercase">Date</th>
-              <th className="px-4 py-3 text-[#C8A253] text-xs uppercase">Action</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredOrders.map((order) => (
-              <tr key={order._id} className="border-b border-white/5 hover:bg-[#1A1A1A]">
-                <td className="px-4 py-3 text-sm text-white font-mono">{order._id.slice(-8).toUpperCase()}</td>
-                <td className="px-4 py-3 text-sm text-white">{order.shippingAddress?.fullName || 'N/A'}</td>
-                <td className="px-4 py-3">
-                  <select value={order.orderStatus} onChange={(e) => handleStatusChange(order._id, e.target.value)} className="bg-[#1A1A1A] border border-[#C8A253]/20 rounded px-2 py-1 text-xs text-white">
-                    <option value="Processing">Processing</option>
-                    <option value="Shipped">Shipped</option>
-                    <option value="Delivered">Delivered</option>
-                  </select>
-                </td>
-                <td className="px-4 py-3 text-sm text-gray-400">{new Date(order.createdAt).toLocaleDateString()}</td>
-                <td className="px-4 py-3">
-                  <button onClick={() => setTrackingModal({ isOpen: true, orderId: order._id })} className="text-[#C8A253] hover:text-white transition">
-                    <Eye size={18} />
-                  </button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
+      <PageHeader
+        title="Orders"
+        description={`${orders.length} total orders · ${filteredOrders.length} shown`}
+        breadcrumb={<><span>Admin</span><span className="mx-1">/</span><span className="text-gray-600">Orders</span></>}
+      />
+
+      {/* Filters */}
+      <div className="admin-card p-4 mb-6 space-y-4">
+        <div className="flex flex-col sm:flex-row gap-3">
+          <div className="relative flex-1">
+            <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-gray-400" />
+            <input
+              type="search"
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+              placeholder="Search by ID, name, phone..."
+              className="w-full pl-9 pr-4 py-2 text-sm border border-gray-200 rounded-xl bg-gray-50 focus:outline-none focus:ring-2 focus:ring-[#C8A253]/30"
+            />
+          </div>
+          <button
+            type="button"
+            className="inline-flex items-center justify-center gap-2 px-4 py-2 rounded-xl border border-gray-200 text-sm font-medium text-gray-600 hover:bg-gray-50 transition-colors"
+          >
+            <Download size={14} /> Export
+          </button>
+        </div>
+
+        <div className="flex gap-2 overflow-x-auto pb-1 hide-scrollbar">
+          {['All', ...ORDER_STATUSES].map((tab) => (
+            <button
+              key={tab}
+              type="button"
+              onClick={() => setFilter(tab)}
+              className={`shrink-0 px-3 py-1.5 rounded-full text-xs font-medium border transition-colors ${
+                tab === filter
+                  ? 'bg-gray-900 text-white border-gray-900'
+                  : 'bg-white text-gray-600 border-gray-200 hover:border-gray-300'
+              }`}
+            >
+              {tab}
+            </button>
+          ))}
+        </div>
       </div>
 
-      {/* Tracking Modal */}
+      <DataTable
+        columns={columns}
+        data={filteredOrders}
+        loading={loading}
+        emptyTitle="No orders found"
+        emptyDescription="Try adjusting your filters or search query."
+        onRowClick={(row) => setTrackingModal({ isOpen: true, orderId: row._id })}
+      />
+
       {trackingModal.isOpen && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/90 p-2 md:p-4">
-          <div className="relative w-full max-w-4xl h-[90vh] bg-white rounded-xl overflow-hidden shadow-2xl flex flex-col">
-            <button 
-              onClick={() => setTrackingModal({ isOpen: false, orderId: null })} 
-              className="absolute top-2 right-2 z-[60] p-2 bg-black/50 text-white rounded-full hover:bg-black transition"
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-2 md:p-4">
+          <div className="relative w-full max-w-4xl h-[90vh] bg-white rounded-2xl overflow-hidden shadow-2xl flex flex-col">
+            <button
+              type="button"
+              onClick={() => setTrackingModal({ isOpen: false, orderId: null })}
+              className="absolute top-3 right-3 z-[60] p-2 bg-gray-900/80 text-white rounded-full hover:bg-gray-900 transition"
             >
-              <X size={20}/>
+              <X size={18} />
             </button>
-            <div className="flex-1 overflow-y-auto w-full h-full">
+            <div className="flex-1 overflow-y-auto admin-scrollbar">
               <OrderDetails orderId={trackingModal.orderId} />
             </div>
           </div>
         </div>
       )}
 
-      {/* Shipping Details Modal */}
-        {shippingModal.isOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-sm">
-          <div className="bg-[#111] border border-white/10 rounded-xl p-6 w-[400px] shadow-2xl">
-            <h2 className="text-[#C8A253] font-serif text-xl mb-4">Add Shipping Details</h2>
-            <p className="text-gray-400 text-xs mb-4">Enter courier and tracking info to mark this order as shipped.</p>
-            
+      {shippingModal.isOpen && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4">
+          <div className="admin-card p-6 w-full max-w-md shadow-2xl">
+            <h2 className="text-lg font-bold text-gray-900 mb-1">Shipping Details</h2>
+            <p className="text-xs text-gray-500 mb-5">Enter courier info to mark as shipped.</p>
+
             <div className="space-y-4">
               <div>
-                <label className="block text-xs text-gray-400 mb-1">Courier Partner (e.g. Blue Dart, Delhivery)</label>
-                <input 
-                  type="text" 
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">Courier Partner</label>
+                <input
+                  type="text"
                   value={trackingInfo.courierPartner}
-                  onChange={(e) => setTrackingInfo({...trackingInfo, courierPartner: e.target.value})}
-                  className="w-full bg-[#1A1A1A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#C8A253]"
-                  placeholder="Enter courier name"
+                  onChange={(e) => setTrackingInfo({ ...trackingInfo, courierPartner: e.target.value })}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-[#C8A253]/30 outline-none"
+                  placeholder="Blue Dart, Delhivery..."
                 />
               </div>
               <div>
-                <label className="block text-xs text-gray-400 mb-1">AWB / Tracking Number</label>
-                <input 
-                  type="text" 
+                <label className="block text-xs font-medium text-gray-600 mb-1.5">AWB / Tracking Number</label>
+                <input
+                  type="text"
                   value={trackingInfo.awbNumber}
-                  onChange={(e) => setTrackingInfo({...trackingInfo, awbNumber: e.target.value})}
-                  className="w-full bg-[#1A1A1A] border border-white/10 rounded-lg px-3 py-2 text-white text-sm outline-none focus:border-[#C8A253]"
-                  placeholder="Enter tracking ID"
+                  onChange={(e) => setTrackingInfo({ ...trackingInfo, awbNumber: e.target.value })}
+                  className="w-full border border-gray-200 rounded-xl px-3 py-2.5 text-sm focus:ring-2 focus:ring-[#C8A253]/30 outline-none"
+                  placeholder="Tracking ID"
                 />
               </div>
             </div>
 
             <div className="flex gap-3 mt-6">
-              <button 
+              <button
+                type="button"
                 onClick={() => setShippingModal({ isOpen: false, orderId: null })}
-                className="flex-1 px-4 py-2 rounded-lg border border-white/10 text-white text-sm hover:bg-white/5 transition"
+                className="flex-1 px-4 py-2.5 rounded-xl border border-gray-200 text-sm font-medium hover:bg-gray-50 transition"
               >
                 Cancel
               </button>
-              <button 
+              <button
+                type="button"
                 onClick={handleShippingSubmit}
-                className="flex-1 px-4 py-2 rounded-lg bg-[#C8A253] text-black font-semibold text-sm hover:bg-[#D4AF37] transition"
+                className="flex-1 px-4 py-2.5 rounded-xl bg-[#C8A253] text-black text-sm font-semibold hover:bg-[#d4b06a] transition"
               >
                 Save & Ship
               </button>

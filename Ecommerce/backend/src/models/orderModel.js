@@ -190,9 +190,20 @@ const orderSchema = new mongoose.Schema({
 
   orderStatus: {
     type: String,
-    enum: ['Processing', 'Shipped', 'Out for Delivery', 'Delivered', 'Cancelled'],
-    default: 'Processing'
+    enum: [
+      'Pending', 'Confirmed', 'Processing', 'Packed', 'Shipped',
+      'Out for Delivery', 'Delivered', 'Completed', 'Cancelled',
+      'Refund Initiated', 'Refunded', 'Returned',
+    ],
+    default: 'Pending',
   },
+
+  statusHistory: [{
+    status: { type: String, required: true },
+    note: { type: String, default: '' },
+    updatedAt: { type: Date, default: Date.now },
+    updatedBy: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  }],
 
   // ⚡ NAYA ADD KIYA: Courier aur AWB (Tracking) details ke liye
   trackingDetails: {
@@ -201,9 +212,21 @@ const orderSchema = new mongoose.Schema({
     shippedAt: { type: Date }
   },
 
-  itemsPrice: { type: Number, required: true, default: 0.0 }, // Sirf products ka total
-  shippingPrice: { type: Number, required: true, default: 0.0 }, // Delivery charge
-  totalAmount: { type: Number, required: true, default: 0.0 }, // Grand Total
+  itemsPrice: { type: Number, default: 0.0 },
+  shippingPrice: { type: Number, default: 0.0 },
+  totalAmount: { type: Number, required: true, default: 0.0 },
+  discountAmount: { type: Number, default: 0 },
+  couponApplied: { type: String, default: null },
+  coinsRedeemed: { type: Number, default: 0, min: 0 },
+  coinsEarned: { type: Number, default: 0, min: 0 },
+  payableAmount: { type: Number, default: 0 },
+  rewardStatus: {
+    type: String,
+    enum: ['NONE', 'PENDING', 'CREDITED', 'REVERSED'],
+    default: 'NONE',
+  },
+  rewardCreditedAt: { type: Date },
+  rewardIdempotencyKey: { type: String, sparse: true },
 
   deliveredAt: { type: Date }
   

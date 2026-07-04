@@ -232,6 +232,14 @@ const Sidebar = ({ activeTab, setActiveTab }) => {
         </div>
 
         <Sidebaritem
+          label="Reward Wallet"
+          id="wallet"
+          activeTab={activeTab}
+          setActiveTab={setActiveTab}
+          isSubItem
+        />
+
+        <Sidebaritem
           label="Gift Cards"
           id="gifts"
           activeTab={activeTab}

@@ -98,6 +98,16 @@ app.use("/api/payment",    require("./routes/paymentRoutes"));
 // ⚡ COUPON ROUTE YAHAN ADD HO GAYA HAI 👇
 app.use("/api/coupons",    require("./routes/couponRoutes"));
 
+// ⚡ REWARD & WALLET ROUTES
+app.use("/api/rewards",    require("./routes/rewardRoutes"));
+app.use("/api/wallet",     require("./routes/walletRoutes"));
+app.use("/api/notifications", require("./routes/notificationRoutes"));
+app.use("/api/admin/rewards", require("./routes/adminRewardRoutes"));
+
+// Initialize default reward settings on boot
+const { ensureDefaultSettings } = require("./services/rewardConfigService");
+ensureDefaultSettings().catch((err) => console.error("Reward settings init:", err.message));
+
 // ==========================================
 // ⚡ GLOBAL ERROR HANDLER
 // ==========================================

@@ -335,11 +335,94 @@ const crypto = require('crypto');
 const Order = require('../models/orderModel'); 
 const User = require('../models/userModel');
 const Coupon = require('../models/Coupon');
+const { validateRedeemAmount } = require('../services/rewardCalculationService');
+const { getOrCreateWallet } = require('../services/walletService');
+const { prepareOrderRewardFields, redeemCoinsForOrder } = require('../services/rewardOrderService');
+const { sendOrderPlacedEmail } = require('../services/orderEmailService');
 
 const razorpayInstance = new Razorpay({
     key_id: process.env.RAZORPAY_KEY_ID,
     key_secret: process.env.RAZORPAY_KEY_SECRET,
 });
+
+const buildOrderPayload = async (req, amount, orderDetails, paymentMethod) => {
+    const userId = req.user ? req.user._id : null;
+    const coinsToRedeem = Number(orderDetails?.coinsToRedeem) || 0;
+    const orderTotal = Number(orderDetails?.totalAmount ?? amount);
+    const itemsPrice = orderDetails?.itemsPrice ?? orderTotal;
+    const discountAmount = orderDetails?.discountAmount || 0;
+
+    let payableAmount = orderTotal;
+    let validatedCoins = 0;
+
+    if (userId && coinsToRedeem > 0) {
+        const wallet = await getOrCreateWallet(userId);
+        const validation = await validateRedeemAmount(coinsToRedeem, wallet.availableCoins, orderTotal);
+        if (!validation.valid) {
+            const err = new Error(validation.message);
+            err.statusCode = 400;
+            throw err;
+        }
+        validatedCoins = validation.coinsToRedeem;
+        payableAmount = validation.payableAmount;
+    }
+
+    const rewardFields = await prepareOrderRewardFields(itemsPrice, discountAmount);
+
+    const initialStatus = paymentMethod === 'cod' ? 'Pending' : 'Confirmed';
+
+    return {
+        userId,
+        payableAmount,
+        validatedCoins,
+        rewardFields,
+        orderData: {
+            user: userId,
+            guestEmail: orderDetails?.email,
+            orderItems: orderDetails?.items || [],
+            itemsPrice,
+            totalAmount: orderTotal,
+            payableAmount,
+            discountAmount,
+            couponApplied: orderDetails?.couponApplied || null,
+            coinsRedeemed: validatedCoins,
+            coinsEarned: rewardFields.coinsEarned,
+            rewardStatus: rewardFields.rewardStatus,
+            shippingAddress: orderDetails?.shippingAddress || {},
+            shippingPrice: orderDetails?.shippingPrice || 0,
+            paymentInfo: {
+                method: paymentMethod === 'cod' ? 'COD' : 'Razorpay',
+                paymentStatus: paymentMethod === 'cod' ? 'Pending' : 'Paid',
+            },
+            orderStatus: initialStatus,
+            statusHistory: [{
+                status: initialStatus,
+                note: paymentMethod === 'cod' ? 'Order placed — COD' : 'Payment successful',
+                updatedAt: new Date(),
+            }],
+        },
+    };
+};
+
+const notifyOrderPlaced = async (savedOrder, userId) => {
+    if (!userId) return;
+    const user = await User.findById(userId).select('name email');
+    if (user) sendOrderPlacedEmail(savedOrder, user).catch(() => {});
+};
+
+const applyCouponUsage = async (orderDetails, userId) => {
+    if (!orderDetails?.couponApplied) return;
+    await Coupon.findOneAndUpdate(
+        { code: orderDetails.couponApplied },
+        { $inc: { usedCount: 1 } },
+    );
+    if (userId) {
+        await User.findOneAndUpdate(
+            { _id: userId, 'coupons.code': orderDetails.couponApplied },
+            { $set: { 'coupons.$.status': 'Used', 'coupons.$.usedAt': new Date() } },
+        );
+    }
+};
 
 // -------------------------------------------------------------------
 // API 1: Naya Order Create Karna (Razorpay + COD)
@@ -352,68 +435,49 @@ exports.createOrder = async (req, res) => {
             return res.status(400).json({ success: false, message: 'Amount is required' });
         }
 
-        // ✅ COD ORDER 
         if (paymentMethod === 'cod') {
             try {
-                const userId = req.user ? req.user._id : null;
+                const { userId, payableAmount, validatedCoins, orderData } =
+                    await buildOrderPayload(req, amount, orderDetails, 'cod');
 
-                const newOrder = new Order({
-                    user: userId,
-                    guestEmail: orderDetails?.email,
-                    orderItems: orderDetails?.items || [],
-                    totalAmount: amount,
-                    discountAmount: orderDetails?.discountAmount || 0,
-                    couponApplied: orderDetails?.couponApplied || null, 
-                    shippingAddress: orderDetails?.shippingAddress || {},
-                    paymentInfo: {
-                        method: 'COD',
-                        paymentStatus: 'Pending'
-                    },
-                    orderStatus: 'Processing'
-                });
-
+                const newOrder = new Order(orderData);
                 const savedOrder = await newOrder.save();
 
-                // ⚡ COUPON USED LOGIC (COD)
-                if (orderDetails?.couponApplied) {
-                    await Coupon.findOneAndUpdate(
-                        { code: orderDetails.couponApplied }, 
-                        { $inc: { usedCount: 1 } }
-                    );
-
-                    if (userId) {
-                        // Mark as Used perfectly
-                        await User.findOneAndUpdate(
-                            { _id: userId, "coupons.code": orderDetails.couponApplied },
-                            { 
-                                $set: { 
-                                    "coupons.$.status": "Used", 
-                                    "coupons.$.usedAt": new Date() 
-                                } 
-                            }
-                        );
-                    }
+                if (validatedCoins > 0 && userId) {
+                    await redeemCoinsForOrder(userId, validatedCoins, savedOrder._id);
                 }
+
+                await applyCouponUsage(orderDetails, userId);
+                await notifyOrderPlaced(savedOrder, userId);
 
                 return res.status(200).json({
                     success: true,
                     message: 'COD Order created successfully',
-                    orderId: savedOrder._id
+                    orderId: savedOrder._id,
+                    coinsRedeemed: validatedCoins,
+                    payableAmount,
+                    coinsEarned: orderData.coinsEarned,
                 });
             } catch (dbError) {
-                console.error("❌ COD Order Save Error:", dbError.message);
-                return res.status(500).json({
+                console.error('❌ COD Order Save Error:', dbError.message);
+                return res.status(dbError.statusCode || 500).json({
                     success: false,
-                    message: "Failed to create order: " + dbError.message
+                    message: dbError.message || 'Failed to create order',
                 });
             }
         }
 
-        // ✅ RAZORPAY ORDER 
+        const { payableAmount, validatedCoins, orderData } =
+            await buildOrderPayload(req, amount, orderDetails, 'razorpay');
+
         const options = {
-            amount: amount * 100,
+            amount: Math.round(payableAmount * 100),
             currency: 'INR',
             receipt: `receipt_order_${Date.now()}`,
+            notes: {
+                coinsRedeemed: String(validatedCoins),
+                originalAmount: String(amount),
+            },
         };
 
         const order = await razorpayInstance.orders.create(options);
@@ -421,11 +485,17 @@ exports.createOrder = async (req, res) => {
         res.status(200).json({ 
             success: true, 
             order,
-            key_id: process.env.RAZORPAY_KEY_ID 
+            key_id: process.env.RAZORPAY_KEY_ID,
+            payableAmount,
+            coinsRedeemed: validatedCoins,
+            coinsEarned: orderData.coinsEarned,
         });
     } catch (error) {
-        console.error("Error creating order:", error);
-        res.status(500).json({ success: false, message: 'Error creating order' });
+        console.error('Error creating order:', error);
+        res.status(error.statusCode || 500).json({
+            success: false,
+            message: error.message || 'Error creating order',
+        });
     }
 };
 
@@ -443,61 +513,42 @@ exports.verifyPayment = async (req, res) => {
             .digest("hex");
 
         if (razorpay_signature === expectedSign) {
-            // ✅ PAYMENT 100% SUCCESSFUL
             try {
-                const userId = req.user ? req.user._id : null;
-                const guestEmail = orderDetails?.email;
+                const amount = orderDetails?.totalAmount || orderDetails?.amount;
+                const { userId, validatedCoins, orderData } =
+                    await buildOrderPayload(req, amount, orderDetails, 'razorpay');
 
                 const newOrder = new Order({
-                    user: userId,
-                    guestEmail: guestEmail,
-                    orderItems: orderDetails.items,
-                    totalAmount: orderDetails.totalAmount,
-                    discountAmount: orderDetails.discountAmount || 0,
-                    couponApplied: orderDetails.couponApplied || null, 
-                    shippingAddress: orderDetails.shippingAddress,
+                    ...orderData,
                     paymentInfo: {
                         method: 'Razorpay',
                         transactionId: razorpay_payment_id,
-                        paymentStatus: 'Paid'
+                        paymentStatus: 'Paid',
                     },
-                    orderStatus: 'Processing'
                 });
                 
                 const savedOrder = await newOrder.save();
 
-                // ⚡ MAIN FIX: COUPON USED LOGIC (Razorpay)
-                if (orderDetails?.couponApplied) {
-                    await Coupon.findOneAndUpdate(
-                        { code: orderDetails.couponApplied }, 
-                        { $inc: { usedCount: 1 } }
-                    );
-
-                    if (userId) {
-                        // $pull hata kar $set laga diya taaki status 'Used' ho jaye
-                        await User.findOneAndUpdate(
-                            { _id: userId, "coupons.code": orderDetails.couponApplied },
-                            { 
-                                $set: { 
-                                    "coupons.$.status": "Used", 
-                                    "coupons.$.usedAt": new Date() 
-                                } 
-                            }
-                        );
-                    }
+                if (validatedCoins > 0 && userId) {
+                    await redeemCoinsForOrder(userId, validatedCoins, savedOrder._id);
                 }
+
+                await applyCouponUsage(orderDetails, userId);
+                await notifyOrderPlaced(savedOrder, userId);
 
                 return res.status(200).json({ 
                     success: true, 
                     message: "Payment verified successfully & Order Saved!",
-                    orderId: savedOrder._id
+                    orderId: savedOrder._id,
+                    coinsRedeemed: validatedCoins,
+                    coinsEarned: orderData.coinsEarned,
                 });
 
             } catch (dbError) {
                 console.error("❌ Database Save Error:", dbError.message);
-                return res.status(500).json({ 
+                return res.status(dbError.statusCode || 500).json({ 
                     success: false, 
-                    message: "Payment successful but Database Error: " + dbError.message 
+                    message: dbError.message || "Payment successful but order save failed.",
                 });
             }
 

@@ -4368,7 +4368,8 @@ import {
   Heart, Share2, MessageCircle, Facebook, Twitter, Send, Mail, Link2 // ⚡ Naye icons add kiye
 } from 'lucide-react';
 import axiosInstance from '../../utils/axiosInstance';
-import { useAuth } from '../../context/AuthContext'; // ⚡ Auth context import kiya
+import { useAuth } from '../../context/AuthContext';
+import EarnCoinsBadge from '../../components/rewards/EarnCoinsBadge';
 
 const DEFAULT_IMG = "https://images.unsplash.com/photo-1523275335684-37898b6baf30?auto=format&fit=crop&q=80&w=600";
 
@@ -4777,6 +4778,8 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
                 {displayStock}
               </div>
             </div>
+
+            <EarnCoinsBadge amount={mainPrice} className="mb-6" />
 
             {rawDesc && (
               <div className="mb-8">

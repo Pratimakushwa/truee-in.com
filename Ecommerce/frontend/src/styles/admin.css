@@ -1,0 +1,56 @@
+/* TRUEE Admin Dashboard Design Tokens */
+:root {
+  --admin-sidebar-w: 260px;
+  --admin-sidebar-collapsed: 72px;
+  --admin-header-h: 64px;
+  --admin-bg: #F4F6F9;
+  --admin-surface: #FFFFFF;
+  --admin-sidebar: #0F1117;
+  --admin-sidebar-hover: #1A1D26;
+  --admin-border: #E5E7EB;
+  --admin-text: #111827;
+  --admin-muted: #6B7280;
+  --admin-accent: #C8A253;
+  --admin-accent-soft: #FCFAEF;
+}
+
+.admin-shell {
+  background: var(--admin-bg);
+  color: var(--admin-text);
+  min-height: 100vh;
+}
+
+.admin-card {
+  background: var(--admin-surface);
+  border: 1px solid var(--admin-border);
+  border-radius: 14px;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.admin-card:hover.admin-card-interactive {
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+  border-color: rgba(200, 162, 83, 0.25);
+  transform: translateY(-2px);
+}
+
+.admin-card-interactive {
+  transition: all 0.2s ease;
+  cursor: pointer;
+}
+
+.admin-scrollbar::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+.admin-scrollbar::-webkit-scrollbar-thumb {
+  background: #D1D5DB;
+  border-radius: 999px;
+}
+
+@keyframes admin-slide-in {
+  from { transform: translateX(-100%); }
+  to { transform: translateX(0); }
+}
+.admin-drawer-enter {
+  animation: admin-slide-in 0.22s ease-out;
+}

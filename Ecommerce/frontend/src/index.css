@@ -2,6 +2,28 @@
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 @import "tailwindcss";
 
+/* ── TRUEE Design System Tokens ─────────────────────────────────── */
+:root {
+  --truee-gold: #C8A253;
+  --truee-gold-light: #E8D5A3;
+  --truee-dark: #0A0A0A;
+  --truee-gray-50: #FAFAFA;
+  --truee-gray-100: #F4F4F5;
+  --truee-gray-500: #71717A;
+  --truee-gray-900: #18181B;
+  --truee-radius: 12px;
+  --truee-radius-lg: 16px;
+  --truee-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+  --truee-shadow-lg: 0 12px 40px rgba(0, 0, 0, 0.1);
+  /* Theme fallbacks when useServerTheme is off */
+  --theme-bg-light: #FFFFFF;
+  --theme-bg-dark: #0A0A0A;
+  --theme-primary: #C8A253;
+  --theme-text-main: #18181B;
+  --theme-text-light: #71717A;
+  --theme-gradient: linear-gradient(135deg, #C8A253 0%, #E8D5A3 100%);
+}
+
 /* ── 1. Global Font Setup ───────────────────────────────────────── */
 html, body {
   font-family: 'Inter', sans-serif !important;
@@ -74,3 +96,49 @@ input:-webkit-autofill:focus ~ label {
 /* Scrollbar Hide */
 .hide-scrollbar::-webkit-scrollbar { display: none; }
 .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+
+/* Premium button utility */
+.btn-truee-primary {
+  @apply inline-flex items-center justify-center px-6 py-3 bg-[#0A0A0A] text-white font-semibold rounded-xl
+    hover:bg-[#222] active:scale-[0.98] transition-all duration-200 shadow-md;
+}
+.btn-truee-gold {
+  @apply inline-flex items-center justify-center px-6 py-3 bg-[#C8A253] text-black font-semibold rounded-xl
+    hover:bg-[#d4b06a] active:scale-[0.98] transition-all duration-200;
+}
+
+/* Mobile bottom nav safe area */
+.pb-mobile-nav {
+  padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+}
+
+/* Premium section title */
+.truee-section-title {
+  font-family: 'Playfair Display', Georgia, serif;
+  @apply text-2xl md:text-3xl font-bold text-gray-900 tracking-tight;
+}
+
+/* Glass header */
+.truee-header-glass {
+  background: rgba(255, 255, 255, 0.92);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  box-shadow: 0 4px 24px rgba(0, 0, 0, 0.04);
+}
+
+/* Rounded section divider */
+.truee-divider-line {
+  height: 1px;
+  background: linear-gradient(90deg, transparent, var(--truee-gold), transparent);
+  border-radius: 999px;
+  opacity: 0.35;
+}
+
+/* Card hover lift */
+.truee-card-lift {
+  @apply transition-all duration-300;
+}
+.truee-card-lift:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--truee-shadow-lg);
+}

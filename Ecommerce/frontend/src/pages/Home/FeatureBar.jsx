@@ -1,51 +1,31 @@
 import React from 'react';
 import { Trophy, ShieldCheck, Truck, Headset } from 'lucide-react';
 
-const FeatureBar = () => {
-  return (
-    <section className="w-full bg-white py-10 px-8">
-      {/* Container to center and spread the items */}
-      <div className="max-w-[1250px] mx-auto flex flex-wrap justify-between items-center gap-10">
-        
-        {/* Item 1: High Quality */}
-        <div className="flex items-center gap-3">
-          <Trophy size={45} strokeWidth={1.2} className="text-black" />
-          <div className="flex flex-col">
-            <h3 className="text-[19px] font-bold text-[#242424] leading-tight">High Quality</h3>
-            <p className="text-[15px] text-[#898989] font-medium">crafted from top materials</p>
+const features = [
+  { icon: Trophy, title: 'Premium Quality', desc: 'Curated from top global brands' },
+  { icon: ShieldCheck, title: 'Official Warranty', desc: 'Manufacturer backed protection' },
+  { icon: Truck, title: 'Pan-India Shipping', desc: 'Fast & insured delivery' },
+  { icon: Headset, title: '24/7 Support', desc: 'Dedicated expert assistance' },
+];
+
+const FeatureBar = () => (
+  <section className="w-full bg-[#0A0A0A] py-12 px-4 md:px-8 relative overflow-hidden">
+    <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[#C8A253]/50 to-transparent rounded-full" />
+
+    <div className="max-w-[1250px] mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
+      {features.map(({ icon: Icon, title, desc }) => (
+        <div key={title} className="flex items-center gap-4 group">
+          <div className="shrink-0 w-12 h-12 rounded-2xl bg-[#C8A253]/10 border border-[#C8A253]/20 flex items-center justify-center group-hover:scale-105 transition-transform">
+            <Icon size={24} strokeWidth={1.5} className="text-[#C8A253]" />
+          </div>
+          <div className="min-w-0">
+            <h3 className="text-sm md:text-base font-semibold text-white leading-tight">{title}</h3>
+            <p className="text-xs text-gray-400 mt-0.5">{desc}</p>
           </div>
         </div>
-
-        {/* Item 2: Warranty Protection */}
-        <div className="flex items-center gap-3">
-          <ShieldCheck size={45} strokeWidth={1.2} className="text-black" />
-          <div className="flex flex-col">
-            <h3 className="text-[19px] font-bold text-[#242424] leading-tight">Warranty Protection</h3>
-            <p className="text-[15px] text-[#898989] font-medium">Over 2 years</p>
-          </div>
-        </div>
-
-        {/* Item 3: Free Shipping */}
-        <div className="flex items-center gap-3">
-          <Truck size={45} strokeWidth={1.2} className="text-black" />
-          <div className="flex flex-col">
-            <h3 className="text-[19px] font-bold text-[#242424] leading-tight">Free Shipping</h3>
-            <p className="text-[15px] text-[#898989] font-medium">All over India</p>
-          </div>
-        </div>
-
-        {/* Item 4: 24/7 Support */}
-        <div className="flex items-center gap-3">
-          <Headset size={45} strokeWidth={1.2} className="text-black" />
-          <div className="flex flex-col">
-            <h3 className="text-[19px] font-bold text-[#242424] leading-tight">24 / 7 Support</h3>
-            <p className="text-[15px] text-[#898989] font-medium">Dedicated support</p>
-          </div>
-        </div>
-
-      </div>
-    </section>
-  );
-};
+      ))}
+    </div>
+  </section>
+);
 
 export default FeatureBar;

@@ -1453,10 +1453,11 @@ import axiosInstance from '../../utils/axiosInstance';
 import { useAuth } from '../../context/AuthContext';
 import Cart from '../Cart';
 import { motion, useScroll, useMotionValueEvent } from 'framer-motion';
+import ScrollProgress from '../../components/ui/ScrollProgress';
 
 // 🚀 Full Static Brands List
 const staticBrands = [
-  "Noise", "Marshall", "Devialet", "Sonos", "Bang & Olufsen",  "Truee", 
+  "Noise", "Marshall", "Devialet", "Sonos", "Bang & Olufsen",  "Truee",
   "Sony", "Shokz", "Withings", "Therabody", "Hurom", "Bowers & Wilkins", 
   "JBL", "Bose", "Harman Kardon", "polar","transparent"
 ];
@@ -1676,13 +1677,11 @@ export default function Header1() {
   const [expandedCategoryId, setExpandedCategoryId] = useState(null);
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [cartCount, setCartCount] = useState(0);
+  const [scrolled, setScrolled] = useState(false);
 
-  const [hidden, setHidden] = useState(false);
   const { scrollY } = useScroll();
-  useMotionValueEvent(scrollY, "change", (latest) => {
-    const previous = scrollY.getPrevious();
-    if (latest > previous && latest > 150) setHidden(true);
-    else setHidden(false);
+  useMotionValueEvent(scrollY, 'change', (latest) => {
+    setScrolled(latest > 24);
   });
 
   useEffect(() => {
@@ -1709,7 +1708,12 @@ export default function Header1() {
     };
 
     window.addEventListener('cartUpdated', handleCartUpdate);
-    return () => window.removeEventListener('cartUpdated', handleCartUpdate);
+    const openCart = () => setIsCartOpen(true);
+    window.addEventListener('openCart', openCart);
+    return () => {
+      window.removeEventListener('cartUpdated', handleCartUpdate);
+      window.removeEventListener('openCart', openCart);
+    };
   }, []);
 
   const toggleCategory = (categoryId) => {
@@ -1734,16 +1738,15 @@ export default function Header1() {
 
   return (
     <>
+    <ScrollProgress />
     <div className="h-[100px] w-full" />
     
     <motion.header 
-      variants={{
-        visible: { y: 0, opacity: 1 },
-        hidden: { y: -20, opacity: 0 },
-      }}
-      animate={hidden ? "hidden" : "visible"}
-      transition={{ type: "spring", stiffness: 120, damping: 25, mass: 0.8 }}
-      className="fixed top-0 left-0 w-full bg-white flex items-center justify-between px-6 md:px-12 h-[100px] flex-shrink-0 z-[999] border-b border-gray-100"
+      initial={{ y: 0, opacity: 1 }}
+      animate={{ y: 0, opacity: 1 }}
+      className={`fixed top-[3px] left-0 w-full flex items-center justify-between px-6 md:px-12 h-[100px] flex-shrink-0 z-[999] border-b transition-all duration-300 ${
+        scrolled ? 'truee-header-glass border-gray-200/80' : 'bg-white border-gray-100'
+      }`}
     >
       
       <div className="flex-1 xl:hidden">

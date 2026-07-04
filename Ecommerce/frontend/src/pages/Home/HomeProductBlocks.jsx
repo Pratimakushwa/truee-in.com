@@ -20,7 +20,7 @@ const GridCard = ({ title, products, category, navigate, onProductClick }) => {
   const displayProducts = products.slice(0, 4);
 
   return (
-    <div className="bg-white p-5 flex flex-col h-full rounded-sm shadow-sm">
+    <div className="bg-white p-5 flex flex-col h-full rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       <h2 className="text-xl font-bold mb-4 text-[#0F1111]">{title}</h2>
       
       {displayProducts.length > 0 ? (
@@ -75,7 +75,7 @@ const VariantCard = ({ title, product, navigate, onProductClick }) => {
   const finalPrice = basePrice - (product.discountPrice || 0);
 
   return (
-    <div className="bg-white p-5 flex flex-col h-full rounded-sm shadow-sm">
+    <div className="bg-white p-5 flex flex-col h-full rounded-2xl shadow-sm border border-gray-100 hover:shadow-md transition-shadow">
       <h2 className="text-xl font-bold mb-4 text-[#0F1111]">{title}</h2>
       
       <div 
@@ -183,8 +183,10 @@ export default function HomeAmazonBlocks({ products }) {
   }
 
   return (
-    <div className="w-full bg-[#eaeded] py-8 px-4 md:px-6 relative">
+    <div className="w-full bg-gradient-to-b from-[#F5F5F5] to-white py-10 md:py-14 px-4 md:px-6 relative">
+      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 truee-divider-line" />
       <div className="max-w-[1500px] mx-auto">
+        <h2 className="truee-section-title mb-8 px-1">Shop by category</h2>
         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-5">
           
           <GridCard 

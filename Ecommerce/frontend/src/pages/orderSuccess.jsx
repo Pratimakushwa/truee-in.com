@@ -217,7 +217,7 @@
 
 import React from 'react';
 import { useLocation, Link } from 'react-router-dom';
-import { CheckCircle, Package, Calendar } from 'lucide-react';
+import { CheckCircle, Package, Calendar, Coins } from 'lucide-react';
 // import ParticlesBackground from './ParticlesBackground'; 
 
 export default function OrderSuccess() {
@@ -225,6 +225,7 @@ export default function OrderSuccess() {
   
   const orderId = location.state?.orderId || "ORD-" + Math.floor(100000 + Math.random() * 900000);
   const paymentMethod = location.state?.paymentMethod || 'cod';
+  const coinsEarned = location.state?.coinsEarned || 0;
   const paymentStatus = paymentMethod === 'cod' ? 'AWAITING PAYMENT' : 'PAID';
   const statusColor = paymentMethod === 'cod' ? 'text-yellow-700 bg-yellow-50 border-yellow-200' : 'text-green-700 bg-green-50 border-green-200';
 
@@ -264,6 +265,16 @@ export default function OrderSuccess() {
             </span>
             <span className="text-gray-900 font-semibold text-sm">3-5 Days</span>
           </div>
+          {coinsEarned > 0 && (
+            <div className="flex justify-between items-center border-t border-gray-200 pt-4 bg-[#FCFAEF] -mx-2 px-2 py-3 rounded-lg">
+              <span className="text-gray-600 font-medium text-sm flex items-center gap-2">
+                <Coins className="w-4 h-4 text-[#C8A253]" /> Reward Coins
+              </span>
+              <span className="text-[#8B6914] font-bold text-sm">
+                +{coinsEarned} coins after delivery
+              </span>
+            </div>
+          )}
         </div>
 
         <div className="space-y-3">
