@@ -94,6 +94,8 @@ app.use("/api/home",       require("./routes/homeroutes"));
 app.use("/api/theme",      require("./routes/ThemeRoutes"));
 app.use("/api/wishlist",   require("./routes/wishlistRoutes"));
 app.use("/api/payment",    require("./routes/paymentRoutes"));
+app.use("/api/legal",      require("./routes/legalRoutes"));
+app.use("/api/v1/legal",   require("./routes/legalRoutes"));
 
 // ⚡ COUPON ROUTE YAHAN ADD HO GAYA HAI 👇
 app.use("/api/coupons",    require("./routes/couponRoutes"));

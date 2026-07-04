@@ -4,13 +4,14 @@ import { useAuth } from '../context/AuthContext';
 
 const nav = [
   { to: '/admin/dashboard', label: 'Dashboard' },
-  { to: '/admin/profile',   label: 'My Profile' },
-  { to: '/admin/products',  label: 'Products' },
-  { to: '/admin/orders',    label: 'Orders' },
-  { to: '/admin/users',     label: 'Users' },
-  { to: '/admin/theme',     label: 'Theme Manager' },
-  { to: '/admin/coupons',   label: 'Coupons' },
-  { to: '/admin/Reviews',   label: 'reviews' },
+  { to: '/admin/profile', label: 'My Profile' },
+  { to: '/admin/products', label: 'Products' },
+  { to: '/admin/orders', label: 'Orders' },
+  { to: '/admin/users', label: 'Users' },
+  { to: '/admin/theme', label: 'Theme Manager' },
+  { to: '/admin/coupons', label: 'Coupons' },
+  { to: '/admin/reviews', label: 'Reviews' },
+  { to: '/admin/legal-policies', label: 'Legal & Policies' },
 ];
 
 function Sidebar({ user, onLogout, onClose }) {
@@ -43,7 +44,7 @@ function Sidebar({ user, onLogout, onClose }) {
       <nav className="flex-1 px-4 py-6 space-y-1">
         {nav.map(({ to, label }) => (
           <NavLink
-            key={to}
+            key={`${to}-${label}`}
             to={to}
             onClick={onClose}
             className={({ isActive }) =>
