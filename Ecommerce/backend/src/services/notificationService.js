@@ -13,16 +13,31 @@ const createInAppNotification = async (userId, type, { title, message, orderId, 
 };
 
 const sendCoinEmail = async (user, subject, htmlBody) => {
-  if (!user?.email || !process.env.EMAIL_USER) return;
+  if (!user?.email || !process.env.SMTP_FROM_EMAIL) return;
   try {
     await transporter.sendMail({
-      from: `"Truee Rewards" <${process.env.EMAIL_USER}>`,
+from: `"Truee Rewards" <${process.env.SMTP_FROM_EMAIL}>`,
       to: user.email,
       subject,
       html: htmlBody,
     });
   } catch (err) {
     console.error('Coin email failed:', err.message);
+  }
+};
+
+const sendAdminEmail = async (subject, htmlBody) => {
+  const adminEmail = process.env.ADMIN_EMAIL;
+  if (!adminEmail || !process.env.SMTP_FROM_EMAIL) return;
+  try {
+    await transporter.sendMail({
+      from: `"Truee Rewards" <${process.env.SMTP_FROM_EMAIL}>`,
+      to: adminEmail,
+      subject,
+      html: htmlBody,
+    });
+  } catch (err) {
+    console.error('Admin email failed:', err.message);
   }
 };
 
@@ -69,11 +84,20 @@ const sendCoinNotification = async (userId, type, { coins, orderId, message }) =
     coins,
   });
 
-  await sendCoinEmail(
-    user,
-    title,
-    emailTemplate(user.name, title, message),
-  );
+  const userHtml = emailTemplate(user.name, title, message);
+  await sendCoinEmail(user, title, userHtml);
+
+  // Send a copy to the admin so it appears in the admin mailbox with the same UI
+  const adminBody = `
+    <p><strong>User:</strong> ${user.name} &lt;${user.email}&gt;</p>
+    <p><strong>Type:</strong> ${type}</p>
+    <p><strong>Message:</strong></p>
+    <p>${message}</p>
+    <p><strong>Order ID:</strong> ${orderId || 'N/A'}</p>
+    <p><strong>Coins:</strong> ${coins || 0}</p>
+  `;
+  const adminHtml = emailTemplate(user.name, `${title} — User Notification`, adminBody);
+  await sendAdminEmail(title, adminHtml);
 };
 
 const getUserNotifications = async (userId, { page = 1, limit = 20 } = {}) => {
@@ -99,4 +123,5 @@ module.exports = {
   getUserNotifications,
   markNotificationRead,
   createInAppNotification,
+  sendAdminEmail,
 };

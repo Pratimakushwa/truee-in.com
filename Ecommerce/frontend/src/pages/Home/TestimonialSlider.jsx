@@ -129,7 +129,7 @@ export default function TestimonialSlider() {
       </div>
 
       {/* ⚡ RESPONSIVE CONTAINER: w-full max-w-[500px] ensure karega ki ye mobile pe bhi na toote */}
-      <div className="relative w-full max-w-[500px] px-4">
+      <div className="relative w-full max-w-[400px] px-4">
         <div className="relative w-full flex justify-center min-h-[350px] md:min-h-[300px]">
           {testimonials.map((testimonial, index) => (
             <div key={testimonial.id} className={getCardClassName(index)}>

@@ -283,6 +283,9 @@ exports.logout = wrapAsync(async (req, res) => {
 // ========================================================
 
 // --- FORGOT PASSWORD - GENERATE & SEND OTP ---
+// --- FORGOT PASSWORD - GENERATE & SEND PREMIUM OTP ---
+// --- FORGOT PASSWORD - GENERATE & SEND PREMIUM OTP ---
+// --- FORGOT PASSWORD - GENERATE & SEND PREMIUM OTP ---
 exports.forgotPassword = wrapAsync(async (req, res) => {
   const { email } = req.body;
   
@@ -301,13 +304,70 @@ exports.forgotPassword = wrapAsync(async (req, res) => {
   user.otpExpire = Date.now() + 10 * 60 * 1000; // 10 mins
   await user.save({ validateBeforeSave: false });
 
-  const message = `Hello ${user.name},\n\nYour Password Reset OTP is:\n\n${otp}\n\nThis OTP is valid for exactly 10 minutes.\n\nTeam Truee Luxury`;
+  // ⚡ PREMIUM HTML EMAIL TEMPLATE (Complete with all requirements)
+  const emailHTML = `
+    <div style="font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; background-color: #f4f4f4; padding: 40px 0; text-align: center; width: 100%;">
+      <div style="max-width: 600px; margin: 0 auto; background-color: #ffffff; border-radius: 12px; overflow: hidden; box-shadow: 0 10px 40px rgba(0,0,0,0.08);">
+        
+        <div style="background-color: #0a0a0a; padding: 40px 20px; text-align: center;">
+          <img src="YAHAN_APNA_LIVE_R2_LOGO_LINK_DAALNA" alt="TRUEE" style="max-width: 140px; height: auto; display: block; margin: 0 auto;" />
+          <p style="color: #888888; font-size: 12px; letter-spacing: 2px; margin-top: 15px; text-transform: uppercase;">Premium Experience</p>
+        </div>
+        
+        <div style="padding: 45px 40px; text-align: left; color: #333333;">
+          <h2 style="font-size: 24px; font-weight: 400; margin-top: 0; margin-bottom: 25px; color: #1a1a1a; letter-spacing: -0.5px;">Reset Your Password</h2>
+          
+          <p style="font-size: 15px; line-height: 1.6; margin-bottom: 20px; color: #444444;">Dear <strong>${user.name}</strong>,</p>
+          
+          <p style="font-size: 15px; line-height: 1.6; margin-bottom: 35px; color: #444444;">
+            We received a request to reset the password associated with your Truee Luxury account. Please use the One-Time Password (OTP) below to proceed securely.
+          </p>
+
+          <div style="background-color: #0a0a0a; border-radius: 8px; padding: 30px; text-align: center; margin-bottom: 30px;">
+            <span style="font-size: 42px; font-weight: 500; letter-spacing: 16px; color: #C8A253;">${otp}</span>
+          </div>
+
+          <p style="font-size: 14px; color: #444444; margin-bottom: 25px; font-weight: 500;">
+            This OTP is valid for exactly 10 minutes.
+          </p>
+
+          <div style="background-color: #fff9e6; border-left: 4px solid #C8A253; padding: 15px 20px; margin-bottom: 25px;">
+            <p style="font-size: 13px; color: #8a6d3b; margin: 0 0 8px 0; font-weight: bold;">Security Warning:</p>
+            <ul style="font-size: 13px; color: #666666; margin: 0; padding-left: 20px; line-height: 1.5;">
+                <li>Do not share this OTP with anyone.</li>
+                <li>Truee Luxury will never ask for your OTP via phone, email, or SMS.</li>
+            </ul>
+          </div>
+
+          <p style="font-size: 13px; color: #888888; line-height: 1.6; margin-bottom: 0;">
+            If you did not request a password reset, please ignore this email. Your account will remain secure.
+          </p>
+        </div>
+        
+        <div style="background-color: #fafafa; border-top: 1px solid #eeeeee; padding: 30px 40px; text-align: left;">
+          <h4 style="font-size: 14px; color: #1a1a1a; margin-top: 0; margin-bottom: 15px;">Need help?</h4>
+          <p style="font-size: 13px; color: #666666; margin: 0 0 8px 0;">
+            <strong>Email:</strong> <a href="mailto:support@trueeluxury.com" style="color: #C8A253; text-decoration: none;">support@trueeluxury.com</a>
+          </p>
+          <p style="font-size: 13px; color: #666666; margin: 0;">
+            <strong>Phone:</strong> <a href="tel:+91XXXXXXXXXX" style="color: #C8A253; text-decoration: none;">+91-XXXXXXXXXX</a>
+          </p>
+        </div>
+
+        <div style="background-color: #1a1a1a; padding: 20px; text-align: center;">
+          <p style="font-size: 11px; color: #888888; margin: 0; letter-spacing: 0.5px;">&copy; ${new Date().getFullYear()} TRUEE LUXURY. ALL RIGHTS RESERVED.</p>
+        </div>
+
+      </div>
+    </div>
+  `;
 
   try {
     await sendEmail({
       email: user.email,
-      subject: 'Truee Luxury - Password Reset OTP',
-      message: message,
+      subject: 'Action Required: Reset Your Truee Luxury Password', 
+      message: `Your OTP is ${otp}`, // Plain text fallback for old clients
+      html: emailHTML 
     });
 
     res.status(200).json({ success: true, message: `OTP sent to ${user.email}` });
@@ -319,7 +379,6 @@ exports.forgotPassword = wrapAsync(async (req, res) => {
     throw new ExpressError(500, 'Email could not be sent');
   }
 });
-
 // --- VERIFY OTP ---
 exports.verifyOTP = wrapAsync(async (req, res) => {
   const { email, otp } = req.body;

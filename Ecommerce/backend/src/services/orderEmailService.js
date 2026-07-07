@@ -3,16 +3,16 @@ const { baseLayout, ctaButton, FRONTEND_URL } = require('../templates/email/base
 
 const getSender = (type = 'orders') => {
   const map = {
-    orders: process.env.EMAIL_ORDERS_FROM || process.env.EMAIL_USER,
-    support: process.env.EMAIL_SUPPORT_FROM || process.env.EMAIL_USER,
-    help: process.env.EMAIL_HELP_FROM || process.env.EMAIL_USER,
-    admin: process.env.EMAIL_ADMIN_TO || process.env.EMAIL_USER,
+    orders: process.env.EMAIL_ORDERS_FROM || process.env.SMTP_FROM_EMAIL,
+    support: process.env.EMAIL_SUPPORT_FROM || process.env.SMTP_FROM_EMAIL,
+    help: process.env.EMAIL_HELP_FROM || process.env.SMTP_FROM_EMAIL,
+    admin: process.env.EMAIL_ADMIN_TO || process.env.SMTP_FROM_EMAIL,
   };
-  return map[type] || process.env.EMAIL_USER;
+  return map[type] || process.env.SMTP_FROM_EMAIL;
 };
 
 const sendMail = async ({ to, subject, html, fromType = 'orders', replyTo }) => {
-  if (!process.env.EMAIL_USER || !process.env.EMAIL_PASS || !to) return null;
+  if (!process.env.SMTP_FROM_EMAIL || !process.env.EMAIL_PASS || !to) return null;
   try {
     return await transporter.sendMail({
       from: `"TRUEE" <${getSender(fromType)}>`,

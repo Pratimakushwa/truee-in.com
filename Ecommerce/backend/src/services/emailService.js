@@ -1,7 +1,7 @@
 const transporter = require('../config/mailConfig');
 const sendWelcomeEmail = async (companyEmail, founderName, tempPassword) => {
   await transporter.sendMail({
-    from: `"Truee Luxury Support" <${process.env.EMAIL_USER}>`,
+    from: `"Truee Luxury Support" <${process.env.SMTP_FROM_EMAIL}>`,
     to: companyEmail,
     subject: 'Welcome to Truee Luxury – Your Admin Credentials',
     html: `
@@ -56,7 +56,7 @@ const sendWelcomeEmail = async (companyEmail, founderName, tempPassword) => {
 
 const sendAdminCreationEmail = async (email, name, tempPassword) => {
   await transporter.sendMail({
-    from:    `"Truee Luxury Support" <${process.env.EMAIL_USER}>`,
+    from: `"Truee Support" <${process.env.SMTP_FROM_EMAIL}>`,
     to:      email,
     subject: 'Your Truee Luxury Admin Account',
     html: `

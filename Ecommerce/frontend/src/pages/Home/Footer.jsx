@@ -465,7 +465,7 @@ export default function Footer() {
               <div className="flex flex-col gap-4 mt-4">
                 <Link to="/contact" className="flex items-center gap-4 text-zinc-600 hover:text-[#C8A253] transition-colors font-medium group">
                   <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-zinc-200 group-hover:border-[#C8A253] transition-colors shadow-sm"><Mail className="w-4 h-4" /></span>
-                  concierge@trueeluxury.com
+                  support@truee.in
                 </Link>
                 <p className="flex items-center gap-4 text-zinc-600 font-medium group cursor-default">
                   <span className="w-10 h-10 rounded-full bg-white flex items-center justify-center border border-zinc-200 group-hover:border-[#C8A253] transition-colors shadow-sm"><MapPin className="w-4 h-4" /></span>
