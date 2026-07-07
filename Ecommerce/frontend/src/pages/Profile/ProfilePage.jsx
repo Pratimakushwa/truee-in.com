@@ -164,6 +164,7 @@
 // }
 
 // export default Account
+
 import React, { useState } from "react"
 import { Menu } from "lucide-react"
 import Sidebar from "../../components/Sidebar"
@@ -173,7 +174,7 @@ import UserOrders from "../../components/UserOrders"
 import MyCoupons from '../../components/MyCoupons';
 import MyReviews from '../../components/MyReviews';
 import RewardWallet from '../../components/rewards/RewardWallet';
-// import Wishlist from '../Wishlist';
+import Wishlist from '../Wishlist';
 const Account = () => {
   const [activeTab, setActiveTab] = useState("profile")
   const [isCollapsed, setIsCollapsed] = useState(false) 
@@ -187,7 +188,7 @@ const Account = () => {
       case "coupons": return <MyCoupons />
       case "reviews": return <MyReviews />
       case "wallet": return <RewardWallet />
-      // case "wishlist": return <Wishlist />
+      case "wishlist": return <Wishlist />
       default: return <div className="p-10 text-gray-400">Coming Soon...</div>
     }
   }

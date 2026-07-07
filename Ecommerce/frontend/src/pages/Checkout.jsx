@@ -730,18 +730,18 @@ const CheckoutPage = () => {
               <hr className="border-gray-200 my-8" />
 
               <div className="space-y-6 bg-gray-50 p-6 rounded-lg border border-gray-100">
-                <div className="flex items-center gap-3">
-                  <input type="checkbox" id="wrap" disabled={paymentProcessing} className="w-[18px] h-[18px] border-2 border-gray-300 rounded-[2px] text-black bg-white focus:ring-0 focus:ring-offset-0 cursor-pointer accent-black transition-all" />
-                  <label htmlFor="wrap" className="text-gray-600 text-[13px] font-medium cursor-pointer select-none">
+                {/* <div className="flex items-center gap-3"> */}
+                  {/* <input type="checkbox" id="wrap" disabled={paymentProcessing} className="w-[18px] h-[18px] border-2 border-gray-300 rounded-[2px] text-black bg-white focus:ring-0 focus:ring-offset-0 cursor-pointer accent-black transition-all" /> */}
+                  {/* <label htmlFor="wrap" className="text-gray-600 text-[13px] font-medium cursor-pointer select-none">
                     For <span className="font-bold text-black">₹100</span> Please Wrap The Product
-                  </label>
-                </div>
+                  </label> */}
+                {/* </div> */}
 
-                <hr className="border-gray-200 my-6" />
+                {/* <hr className="border-gray-200 my-6" /> */}
 
                 {/* --- REWARD COINS UI --- */}
                 {rewardSettings?.isEnabled && walletBalance > 0 && rewardSettings?.isRedeemEnabled && (
-                  <div className="border-t border-gray-200 pt-6 mt-6">
+                  <div className="border-t border-gray-200 pt-1 mt-6">
                     <h3 className="text-[13px] font-bold uppercase tracking-widest text-gray-800 mb-4 flex items-center gap-2">
                       <Coins size={16} className="text-[#C8A253]" /> Use Reward Coins
                     </h3>
