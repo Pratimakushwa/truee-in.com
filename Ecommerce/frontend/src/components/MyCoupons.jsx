@@ -35,8 +35,7 @@ export default function MyCoupons() {
 
     return (
         <div className="w-full animate-fade-in-up">
-            <h2 className="text-2xl font-serif font-bold mb-6 text-black tracking-wide border-b pb-4">
-                My Coupons
+<h2 className="text-2xl font-serif font-bold mb-6 text-black tracking-wide border-b pb-4 pt-4 leading-normal">                My Coupons
             </h2>
             
             {coupons.length === 0 ? (

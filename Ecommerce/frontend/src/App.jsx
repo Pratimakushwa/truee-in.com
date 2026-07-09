@@ -58,6 +58,7 @@ import AdminProfile from './pages/Admin/AdminProfile';
 import RewardSettings from './pages/Admin/RewardSettings';
 import RewardAnalytics from './pages/Admin/RewardAnalytics';
 import ManagePolicies from './pages/Admin/ManagePolicies';
+import NewsletterSubscribers from './pages/Admin/NewsletterSubscribers';
 import ScrollToTop from './components/ScrollTop';
 
 // Layout wrapper for pages that DO NOT have their own header/footer (like Cart, Profile)
@@ -171,6 +172,7 @@ function App() {
               <Route path="reviews" element={<AdminReviews />} />
               <Route path="legal-policies" element={<ManagePolicies />} />
               <Route path="Legal & Policies" element={<ManagePolicies />} />
+              <Route path="newsletter" element={<NewsletterSubscribers />} />
             </Route>
 
             {/* ── Error / Fallback ──────────────────────────────────── */}

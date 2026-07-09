@@ -135,7 +135,7 @@
 
 import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { ShoppingBag, Settings, Box, CreditCard, Power, ChevronLeft, ChevronRight, X ,Heart} from "lucide-react"
+import { ShoppingBag, Settings, Box, CreditCard, Power, ChevronLeft, ChevronRight, X, Heart, Mail } from "lucide-react"
 import Sidebaritem from "./Sidebaritem"
 import axiosInstance from "../utils/axiosInstance"
 
@@ -225,7 +225,8 @@ const Sidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed, setIsMo
 
         <SectionHeader title="Collection" />
         <Sidebaritem icon={Box} label="My Coupons" id="coupons" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
-        <Sidebaritem icon={Box} label="Reviews" id="reviews" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
+        <Sidebaritem  icon={Mail}  label="Newsletter"  id="newsletter"  activeTab={activeTab}  setActiveTab={setActiveTab}  isCollapsed={isCollapsed} />
+        {/* <Sidebaritem icon={Box} label="Reviews" id="reviews" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} /> */}
         <Sidebaritem icon={Heart} label="Wishlist" id="wishlist" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />        
       </div>
 

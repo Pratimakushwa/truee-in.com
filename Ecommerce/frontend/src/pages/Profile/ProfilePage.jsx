@@ -175,6 +175,8 @@ import MyCoupons from '../../components/MyCoupons';
 import MyReviews from '../../components/MyReviews';
 import RewardWallet from '../../components/rewards/RewardWallet';
 import Wishlist from '../Wishlist';
+// ProfilePage.jsx ke top import mein change karo
+import NewsletterSubscribers from "../Admin/NewsletterSubscribers";
 const Account = () => {
   const [activeTab, setActiveTab] = useState("profile")
   const [isCollapsed, setIsCollapsed] = useState(false) 
@@ -189,6 +191,7 @@ const Account = () => {
       case "reviews": return <MyReviews />
       case "wallet": return <RewardWallet />
       case "wishlist": return <Wishlist />
+      case "newsletter": return <NewsletterSubscribers />;
       default: return <div className="p-10 text-gray-400">Coming Soon...</div>
     }
   }
@@ -199,7 +202,7 @@ const Account = () => {
   }
 
   return(
-    <div className="flex min-h-screen bg-[#f4f4f4] font-sans relative">
+    <div className="flex h-screen bg-[#f4f4f4] font-sans relative overflow-hidden">
       
       {/* ⚡ MOBILE OVERLAY (z-40) */}
       {isMobileOpen && (
@@ -211,7 +214,7 @@ const Account = () => {
 
       {/* ⚡ RESPONSIVE SIDEBAR (z-50 taaki sabke upar rahe) */}
       <div className={`
-        fixed md:sticky top-26 h-screen z-999 
+fixed md:relative md:h-screen z-50 md:z-0
         transition-transform duration-300 ease-in-out
         ${isMobileOpen ? 'translate-x-0' : '-translate-x-full md:translate-x-0'}
         ${isCollapsed ? 'md:w-[80px]' : 'md:w-[280px]'}
@@ -227,7 +230,7 @@ const Account = () => {
       </div>
 
       {/* RIGHT CONTENT AREA */}
-      <div className="flex-1 w-full p-4 md:p-10 lg:px-16 lg:py-12 overflow-x-hidden">
+      <div className="flex-1 w-full h-screen p-4 md:p-10 lg:px-16 lg:py-12 overflow-x-hidden overflow-y-auto">
         <div className="max-w-5xl mx-auto">
           
           <div className="mb-6 md:mb-8 flex items-center justify-between">

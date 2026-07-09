@@ -13,6 +13,8 @@ const legalRoutes = require('./src/routes/legalRoutes');
 const contactRoutes = require('./src/routes/contactRoutes');
 const reviewRoutes = require('./src/routes/reviewRoutes'); // ⚡ YE ADD KARO
 
+// Upar jahan saare routes import hote hain wahan ye likho:
+const newsletterRoutes = require('./src/routes/newsletterRoute');
 // DNS configuration
 dns.setServers(['8.8.8.8', '8.8.4.4']);
 
@@ -30,6 +32,7 @@ app.use('/api/legal', legalRoutes);
 app.use('/api/v1/contact', contactRoutes);
 app.use('/api/coupons', couponRoutes);
 app.use('/api/reviews', reviewRoutes);
+app.use('/api/newsletter', newsletterRoutes);
 
 app.use((err, req, res, next) => {
     // Isse humein terminal mein exact error dikhega
