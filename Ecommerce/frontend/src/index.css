@@ -33,6 +33,10 @@ html, body {
 .hide-scrollbar::-webkit-scrollbar {
   display: none;
 }
+.no-scrollbar {
+  -ms-overflow-style: none;  /* IE and Edge */
+  scrollbar-width: none;     /* Firefox */
+}
 
 /* ✅ YAHAN FIX KIYA HAI: 'hidden' ki jagah 'clip' kar diya */
 html, body {

@@ -247,9 +247,9 @@ fixed md:relative md:h-screen z-50 md:z-0
             </button>
           </div>
           
-          <div className="bg-white rounded-2xl md:rounded-[2rem] shadow-sm border border-gray-100 min-h-[600px] overflow-hidden">
+          {/* <div className="bg-white rounded-2xl md:rounded-[2rem] shadow-sm border border-gray-100 min-h-[600px] overflow-hidden"> */}
             {renderContent()}
-          </div>
+          {/* </div> */}
         </div>
       </div>
       
