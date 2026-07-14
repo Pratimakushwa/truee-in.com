@@ -925,7 +925,7 @@ export default function Header1() {
       <motion.header
         initial={{ y: 0, opacity: 1 }}
         animate={{ y: 0, opacity: 1 }}
-        className={`fixed top-0 left-0 w-full flex items-center justify-between px-6 md:px-12 h-[100px] flex-shrink-0 z-[999] transition-all duration-300 ${
+        className={`fixed top-0 left-0 w-full flex items-center justify-between px-6 md:px-12 h-[75px] flex-shrink-0 z-[999] transition-all duration-300 ${
           isTransparent
             ? "bg-transparent border-transparent"
             : "bg-white border-b border-gray-200"
