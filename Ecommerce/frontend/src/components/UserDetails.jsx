@@ -240,9 +240,7 @@
 // };
 
 // export default UserDetails;
-
 import React, { useState, useEffect } from "react";
-// ⚡ FIX: 'Pencil' icon import kiya 'Edit' text ki jagah use karne ke liye
 import { Check, X, Pencil } from "lucide-react"; 
 import axiosInstance from "../utils/axiosInstance"; 
 
@@ -323,20 +321,27 @@ const UserDetails = () => {
     return <div className="p-8 text-center text-sm text-gray-500">Loading profile...</div>;
   }
 
+  // ⚡ UI IMPROVEMENT: Input classes ko ek variable mein rakh diya taaki code clean rahe
+  const inputClass = `w-full p-3 text-sm border rounded-lg transition-all duration-300 outline-none ${
+    isEditingProfile
+      ? "bg-white border-gray-400 text-black focus:border-black focus:ring-1 focus:ring-black"
+      : "bg-gray-50/50 border-gray-200 text-gray-500 cursor-default"
+  }`;
+
+  const labelClass = "text-[11px] text-gray-500 uppercase font-bold tracking-widest mb-2 block";
+
   return (
-    <div className="p-6 md:p-8 bg-white h-full text-black">
+    <div className="p-6 md:p-8 h-full text-black">
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-6 border-b border-gray-200 pb-4">
-        {/* ⚡ FIX: Font size 'text-2xl' se kam karke 'text-xl' kiya */}
-        <h2 className="text-xl font-serif text-black">
+      <div className="flex items-center justify-between mb-8 border-b bg-black rounded-2xl  p-5  border-gray-200 pb-4">
+        <h2 className="text-2xl font-serif text-white">
           Personal Information
         </h2>
 
         {!isEditingProfile ? (
-          /* ⚡ FIX: Edit text hata kar Icon laga diya */
           <button
             onClick={() => setIsEditingProfile(true)}
-            className="text-gray-400 hover:text-black transition-colors cursor-pointer"
+            className="text-gray-400 hover:text-black transition-colors cursor-pointer p-2 hover:bg-gray-100 rounded-full"
             title="Edit Profile"
           >
             <Pencil size={18} />
@@ -346,7 +351,7 @@ const UserDetails = () => {
             <button
               onClick={handleProfileSave}
               disabled={saving}
-              className="text-green-600 font-bold text-[12px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+              className="text-green-600 font-bold text-[12px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer hover:bg-green-50 px-3 py-1.5 rounded-md transition-colors"
             >
               <Check size={14} /> {saving ? "Saving..." : "Save"}
             </button>
@@ -354,7 +359,7 @@ const UserDetails = () => {
             <button
               onClick={handleCancel}
               disabled={saving}
-              className="text-red-600 font-bold text-[12px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer"
+              className="text-red-600 font-bold text-[12px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer hover:bg-red-50 px-3 py-1.5 rounded-md transition-colors"
             >
               <X size={14} /> Cancel
             </button>
@@ -362,13 +367,10 @@ const UserDetails = () => {
         )}
       </div>
 
-      {/* NAME */}
+      {/* NAME SECTION */}
       <div className="grid md:grid-cols-2 gap-6 mb-8">
-        <div className="space-y-2">
-          {/* ⚡ FIX: Label size thoda aur chhota kiya (text-[11px]) */}
-          <label className="text-[11px] text-gray-500 uppercase font-bold">
-            First Name
-          </label>
+        <div>
+          <label className={labelClass}>First Name</label>
           <input
             type="text"
             readOnly={!isEditingProfile}
@@ -376,19 +378,12 @@ const UserDetails = () => {
             onChange={(e) =>
               setProfileData({ ...profileData, firstName: e.target.value })
             }
-            // ⚡ FIX: Input text size 'text-sm' kiya
-            className={`w-full p-2.5 text-sm border rounded-sm ${
-              isEditingProfile
-                ? "bg-gray-100 border-gray-400"
-                : "bg-transparent border-gray-200 text-gray-600"
-            }`}
+            className={inputClass}
           />
         </div>
 
-        <div className="space-y-2">
-          <label className="text-[11px] text-gray-500 uppercase font-bold">
-            Last Name
-          </label>
+        <div>
+          <label className={labelClass}>Last Name</label>
           <input
             type="text"
             readOnly={!isEditingProfile}
@@ -396,26 +391,20 @@ const UserDetails = () => {
             onChange={(e) =>
               setProfileData({ ...profileData, lastName: e.target.value })
             }
-            className={`w-full p-2.5 text-sm border rounded-sm ${
-              isEditingProfile
-                ? "bg-gray-100 border-gray-400"
-                : "bg-transparent border-gray-200 text-gray-600"
-            }`}
+            className={inputClass}
           />
         </div>
       </div>
 
-      {/* GENDER */}
-      <div className="mb-10">
-        <p className="text-[11px] font-bold text-gray-500 uppercase mb-4">
-          Gender
-        </p>
-        <div className="flex gap-10">
+      {/* GENDER SECTION */}
+      <div className="mb-8 border-b border-gray-100 pb-8">
+        <p className={labelClass}>Gender</p>
+        <div className="flex gap-10 mt-3">
           {["Male", "Female"].map((g) => (
             <label
               key={g}
-              className={`flex items-center gap-3 text-sm ${
-                profileData.gender === g ? "text-black" : "text-gray-600"
+              className={`flex items-center gap-3 text-sm cursor-pointer transition-colors ${
+                profileData.gender === g ? "text-black font-medium" : "text-gray-500"
               }`}
             >
               <input
@@ -425,7 +414,7 @@ const UserDetails = () => {
                 onChange={() =>
                   setProfileData({ ...profileData, gender: g })
                 }
-                className="accent-gray-600"
+                className="w-4 h-4 accent-black cursor-pointer disabled:cursor-default"
               />
               {g}
             </label>
@@ -433,51 +422,43 @@ const UserDetails = () => {
         </div>
       </div>
 
-      {/* EMAIL */}
-      <div className="mb-10">
-        {/* ⚡ FIX: Font size 'text-xl' se kam karke 'text-lg' kiya */}
-        <h2 className="text-lg font-serif text-black mb-4">
-          Email Address
-        </h2>
-        <input
-          type="email"
-          readOnly={!isEditingProfile}
-          value={profileData.email}
-          onChange={(e) =>
-            setProfileData({ ...profileData, email: e.target.value })
-          }
-          className={`w-full md:w-2/3 p-2.5 text-sm border rounded-sm ${
-            isEditingProfile
-              ? "bg-gray-100 border-gray-400"
-              : "bg-transparent border-gray-200 text-gray-600"
-          }`}
-        />
-      </div>
+      {/* CONTACT INFO SECTION */}
+      <div className="grid md:grid-cols-2 gap-6 mb-10">
+        {/* EMAIL */}
+        <div>
+          <label className={labelClass}>Email Address</label>
+          <input
+            type="email"
+            readOnly={!isEditingProfile}
+            value={profileData.email}
+            onChange={(e) =>
+              setProfileData({ ...profileData, email: e.target.value })
+            }
+            className={inputClass}
+          />
+        </div>
 
-      {/* PHONE */}
-      <div className="mb-10">
-        <h2 className="text-lg font-serif text-black mb-4">
-          Mobile Number
-        </h2>
-        <input
-          type="text"
-          readOnly={!isEditingProfile}
-          value={profileData.phone}
-          onChange={(e) =>
-            setProfileData({ ...profileData, phone: e.target.value })
-          }
-          className={`w-full md:w-2/3 p-2.5 text-sm border rounded-sm ${
-            isEditingProfile
-              ? "bg-gray-100 border-gray-400"
-              : "bg-transparent border-gray-200 text-gray-600"
-          }`}
-        />
+        {/* PHONE */}
+        <div>
+          <label className={labelClass}>Mobile Number</label>
+          <input
+            type="text"
+            readOnly={!isEditingProfile}
+            value={profileData.phone}
+            onChange={(e) =>
+              setProfileData({ ...profileData, phone: e.target.value })
+            }
+            className={inputClass}
+          />
+        </div>
       </div>
 
       {/* DELETE */}
-      <button className="text-red-600 font-bold text-[12px] uppercase cursor-pointer hover:underline">
-        Delete Account
-      </button>
+      <div className="pt-6 mt-6">
+        <button className="text-red-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-red-700 transition-colors">
+          Delete Account
+        </button>
+      </div>
     </div>
   );
 };

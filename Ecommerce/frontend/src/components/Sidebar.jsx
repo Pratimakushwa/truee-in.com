@@ -135,7 +135,7 @@
 
 import React, { useState, useEffect } from "react"
 import { useNavigate } from "react-router-dom"
-import { ShoppingBag, Settings, Box, CreditCard, Power, ChevronLeft, ChevronRight, X, Heart, Mail } from "lucide-react"
+import { ShoppingBag, Settings, Box, CreditCard, Power, ChevronLeft, ChevronRight, X, Heart, Mail ,MapPin} from "lucide-react"
 import Sidebaritem from "./Sidebaritem"
 import axiosInstance from "../utils/axiosInstance"
 
@@ -211,14 +211,14 @@ const Sidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed, setIsMo
       </div>
 
       {/* NAVIGATION ITEMS */}
-      <div className="flex-1 overflow-y-auto custom-scrollbar pb-6">
+      <div className="flex-1 overflow-y-auto  no-scrollbar pb-6">
         <SectionHeader title="Commerce" />
         <Sidebaritem icon={ShoppingBag} label="My Orders" id="orders" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
 
         <SectionHeader title="Account" />
         <Sidebaritem icon={Settings} label="Profile Info" id="profile" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
-        <Sidebaritem icon={Settings} label="Addresses" id="addresses" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
-
+        {/* <Sidebaritem icon={Settings} label="Addresses" id="addresses" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} /> */}
+<Sidebaritem icon={MapPin} label="Addresses" id="addresses" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
         <SectionHeader title="Payments" />
         <Sidebaritem icon={CreditCard} label="Reward Wallet" id="wallet" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
         <Sidebaritem icon={CreditCard} label="Gift Cards" id="gifts" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />

@@ -19,11 +19,12 @@
 
 const express = require('express');
 const router = express.Router();
-const { createCoupon, verifyCoupon, getAllCoupons, deleteCoupon,updateCouponStatus } = require('../controllers/couponController');
+const { createCoupon, verifyCoupon, getAllCoupons, deleteCoupon,updateCouponStatus ,updateCouponDate} = require('../controllers/couponController');
 
 router.post('/create', createCoupon);
 router.post('/verify', verifyCoupon);
 router.get('/all', getAllCoupons);
 router.delete('/:id', deleteCoupon);
 router.put('/update/:id', updateCouponStatus);
+router.put('/update-date/:id', updateCouponDate);
 module.exports = router;
