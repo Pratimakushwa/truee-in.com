@@ -97,7 +97,7 @@ export default function BrandsMarquee() {
   const duplicatedBrands = [...brands, ...brands];
 
   return (
-    <section className="py-10 bg-white overflow-hidden">
+    <section className="pb-2 bg-white overflow-hidden">
       <style>{`
         @keyframes scroll {
           0% { transform: translateX(0); }
@@ -116,7 +116,7 @@ export default function BrandsMarquee() {
               onClick={() => {
                 navigate('/shop', { state: { search: brand.name } });
               }}
-              className="flex-shrink-0 w-[140px] h-[70px] md:w-[160px] md:h-[80px] flex items-center justify-center cursor-pointer group px-2"
+              className="flex-shrink-0 w-[140px] h-[70px] md:w-[120px] md:h-[60px] flex items-center justify-center cursor-pointer group px-2"
             >
               <img 
                 src={brand.imgUrl} 

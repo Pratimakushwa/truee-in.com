@@ -434,10 +434,10 @@ const MarshallDesign = () => {
   const isAvailable = product?.variants?.some(v => checkStock(v.stock)) || false;
 
   return (
-    <div className="w-full flex flex-col items-center justify-center bg-white py-12 px-4 lg:px-12">
+    <div className="w-full flex flex-col items-center justify-center bg-white py-10 px-4 lg:px-12">
       
       {/* ⚡ FIX: Added md:gap-6 for that subtle, premium separation */}
-      <div className="w-full max-w-[1200px] flex flex-col md:flex-row justify-center items-stretch h-auto md:h-[450px] md:gap-6">
+      <div className="w-full max-w-[1200px] flex flex-col md:flex-row justify-center items-stretch h-auto md:h-[450px] md:gap-0">
 
         {/* LEFT SECTION (Image) */}
         <div 

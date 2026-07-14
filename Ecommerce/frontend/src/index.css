@@ -108,8 +108,17 @@ input:-webkit-autofill:focus ~ label {
 }
 
 /* Mobile bottom nav safe area */
-.pb-mobile-nav {
+/* .pb-mobile-nav {
   padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+} */
+ .pb-mobile-nav {
+  padding-bottom: 0;
+}
+
+@media (max-width: 768px) {
+  .pb-mobile-nav {
+    padding-bottom: calc(5.5rem + env(safe-area-inset-bottom));
+  }
 }
 
 /* Premium section title */

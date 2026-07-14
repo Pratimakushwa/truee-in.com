@@ -9,7 +9,7 @@ const features = [
 ];
 
 const FeatureBar = () => (
-  <section className="w-full bg-[#0A0A0A] py-12 px-4 md:px-8 relative overflow-hidden">
+  <section className="w-full bg-[#0A0A0A] py-12 px-4   md:px-8 relative overflow-hidden">
     <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[#C8A253]/50 to-transparent rounded-full" />
 
     <div className="max-w-[1250px] mx-auto grid grid-cols-2 lg:grid-cols-4 gap-8 md:gap-10">
