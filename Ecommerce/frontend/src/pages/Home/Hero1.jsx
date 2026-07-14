@@ -259,7 +259,6 @@
 //     </div>
 //   );
 // }
-
 import React, { useState, useEffect } from "react";
 import QuickModel from "../Product/ProductDetailModel";
 import axiosInstance from "../../utils/axiosInstance";
@@ -275,14 +274,15 @@ export default function Hero() {
       try {
         const res = await axiosInstance.get("/products");
         const list = res.data.products || res.data;
+        
         setMatchedProducts({
           monitor: list.find((p) => p.name?.toLowerCase().includes("monitor")),
           mode: list.find((p) => p.name?.toLowerCase().includes("mode")),
           acton: list.find((p) => p.name?.toLowerCase().includes("acton")),
           sonos: list.find((p) => p.name?.toLowerCase().includes("sonos")),
-          devialet: list.find((p) =>
-            p.name?.toLowerCase().includes("devialet"),
-          ),
+          // ⚡ FIX: Yahan humne "devialet" ki jagah "mania" kar diya hai 
+          // taaki ye specifically Devialet Mania hi open kare!
+          devialet: list.find((p) => p.name?.toLowerCase().includes("mania")),
         });
       } catch (err) {
         console.error("Error fetching hero products:", err);
@@ -294,7 +294,7 @@ export default function Hero() {
   useEffect(() => {
     const timer = setInterval(() => {
       setCurrentSlide((prev) => (prev === slides.length - 1 ? 0 : prev + 1));
-    }, 6000);
+    }, 3000);
     return () => clearInterval(timer);
   }, []);
 
@@ -343,6 +343,9 @@ export default function Hero() {
     if (product) {
       setSelectedProduct(product);
       setIsModalOpen(true);
+    } else {
+      // ⚡ FIX: Agar product na mile toh console me error dikhega
+      console.log(`Product not found in database for key: ${key}`);
     }
   };
 
