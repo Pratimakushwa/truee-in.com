@@ -126,7 +126,7 @@ export default function CuratedPrivileges({ products }) {
   };
 
   return (
-    <section className="w-full bg-white pt-8  pb-2 relative overflow-hidden font-sans">
+    <section className="w-full bg-white py-8 relative overflow-hidden font-sans">
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-2/3 truee-divider-line" />
 
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12 relative z-10">

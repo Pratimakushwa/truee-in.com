@@ -545,7 +545,7 @@ const MarshallDesign = () => {
                 <span className="text-base text-gray-400 line-through">
                   ₹{originalPrice.toLocaleString()}
                 </span>
-              )}
+              )}  
               <span className={`ml-2 text-[9px] font-bold px-3 py-1.5 rounded uppercase tracking-wider ${isAvailable ? 'bg-[#E0F2E9] text-[#299555]' : 'bg-red-100 text-red-700'}`}>
                 {isAvailable ? 'Available' : 'Out of Stock'}
               </span>

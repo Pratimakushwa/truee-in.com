@@ -200,9 +200,9 @@ export default function Home() {
 
           <TrustSection />
 
-          <TestimonialSlider />
 
           <CuratedPrivileges products={allProducts} />
+          <TestimonialSlider />
 
         </>
 
@@ -210,11 +210,11 @@ export default function Home() {
 
 
 
-      <Newsletter2 />
 
       <RecentlyViewed />
 
       {/* <FeatureBar /> */}
+      <Newsletter2 />
 
       <Footer />
 
