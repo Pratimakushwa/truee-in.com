@@ -242,7 +242,7 @@ export default function CategoryShowcase() {
         {/* Header Section */}
         <div className="flex flex-col items-center mb-8 md:mb-14">
           {/* Golden Tag */}
-          <span className="text-[10px] md:text-[11px] font-bold tracking-[0.2em] text-[#c9a15a] uppercase mb-2">
+          <span className="text-[9px] md:text-[11px] font-bold tracking-[0.2em] text-[#c9a15a] uppercase mb-2">
             Explore Our Range
           </span>
 
@@ -375,7 +375,7 @@ export default function CategoryShowcase() {
                   return (
                     <SwiperSlide key={p._id} className="h-auto">
                       <div
-                        className="relative bg-[#f7f5ef] w-full h-full rounded-2xl p-3.5 flex flex-col cursor-pointer"
+                        className="relative bg-white w-full h-full rounded-lg flex flex-col shadow-[0_2px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] p-3.5 cursor-pointer"
                         onClick={() => setQuickViewProduct(p)}
                       >
                         {savePercent > 0 && (

@@ -223,7 +223,7 @@ const RecentlyViewed = () => {
   };
 
   return (
-    <section className="bg-[#FAFAFA] py-10">
+    <section className="bg-white py-8 font-sans">
       {toastMessage && (
         <Toast
           type={toastMessage.type}
@@ -232,27 +232,29 @@ const RecentlyViewed = () => {
         />
       )}
 
-      <div className="max-w-[1400px] mx-auto px-4 sm:px-6 md:px-8">
+      <div className="max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12">
         {/* --- HEADER SECTION --- */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-4 gap-4">
+        <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <p className="text-[11px] font-bold uppercase tracking-widest text-[#C8A253] mb-2">
-              YOU MAY ALSO LIKE
-            </p>
-            <h2 className="text-2xl md:text-[34px] font-bold text-[#111] tracking-tight mb-1 font-serif">
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A253] mb-2 flex items-center gap-2">
+           
+              You May Also Like
+            </span>
+            <h2 className="text-xl sm:text-2xl md:text-[32px] font-serif font-bold text-[#111] mb-2">
               Related to items you've viewed
             </h2>
-            <p className="text-gray-500 text-sm md:text-base">
-              Discover more products that match your taste and elevate your
-              experience.
+            <div className="w-20 h-[2px] bg-[#C8A253] mb-2"></div>
+            <p className="text-gray-500 text-[12px] sm:text-[13px] leading-relaxed max-w-md">
+              Discover more products that match your taste and elevate your experience.
             </p>
           </div>
 
           <Link
             to="/shop"
-            className="inline-flex items-center gap-2 px-6 py-2.5 rounded-full border border-gray-200 bg-white text-xs font-bold uppercase tracking-widest text-gray-800 hover:border-black transition-colors shadow-sm hover:shadow-md"
+            className="inline-flex items-center gap-1.5 text-[12px] sm:text-sm font-semibold text-[#C8A253] hover:text-[#8B6914] transition-colors shrink-0 self-start sm:self-auto"
           >
-            VIEW ALL <ArrowRight size={16} />
+            View All
+            <ArrowRight size={15} />
           </Link>
         </div>
 
@@ -260,18 +262,15 @@ const RecentlyViewed = () => {
         <div className="relative group mb-2">
           <button
             onClick={() => scroll("left")}
-            className="absolute -left-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 hidden md:flex"
+            className="absolute -left-1.5 sm:-left-5 top-[38%] -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:border-[#C8A253]/50 hover:text-[#C8A253] text-gray-700 cursor-pointer"
+            aria-label="Scroll left"
           >
-            <ChevronLeft
-              size={24}
-              className="text-gray-700 -ml-0.5"
-              strokeWidth={2}
-            />
+            <ChevronLeft size={18} strokeWidth={2} />
           </button>
 
           <div
             ref={sliderRef}
-            className="flex gap-5 md:gap-6 overflow-x-auto pb-8 pt-2 snap-x snap-mandatory scroll-smooth hide-scrollbar px-2"
+            className="flex gap-3.5 sm:gap-4 md:gap-5 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth hide-scrollbar px-1"
           >
             <style>{`
               .hide-scrollbar::-webkit-scrollbar { display: none; }
@@ -284,11 +283,11 @@ const RecentlyViewed = () => {
               return (
                 <div
                   key={product._id}
-                  className="group min-w-[250px] max-w-[250px] flex-shrink-0 snap-start bg-white rounded-[24px] p-1.5 border border-gray-100 shadow-[0_4px_20px_rgba(0,0,0,0.03)] hover:shadow-[0_12px_40px_rgba(0,0,0,0.08)] transition-all duration-300 flex flex-col relative"
+                  className="group/card min-w-[168px] max-w-[168px] xs:min-w-[190px] xs:max-w-[190px] sm:min-w-[220px] sm:max-w-[220px] flex-shrink-0 snap-start bg-white rounded-2xl border border-gray-100 shadow-[0_2px_15px_rgba(0,0,0,0.03)] hover:border-[#C8A253]/25 hover:shadow-[0_10px_30px_rgba(0,0,0,0.07)] transition-all duration-300 ease-out flex flex-col relative overflow-hidden"
                 >
                   <Link
                     to={`/product/${product._id}`}
-                    className="relative bg-[#F9F9F9] h-[220px] rounded-[16px] p-5 mb-4 flex items-center justify-center overflow-hidden"
+                    className="relative bg-gradient-to-b from-[#FAFAFA] to-white aspect-square p-4 sm:p-5 flex items-center justify-center overflow-hidden"
                   >
                     <img
                       src={
@@ -296,42 +295,44 @@ const RecentlyViewed = () => {
                         "https://placehold.co/400x400/f5f5f5/cccccc?text=No+Image"
                       }
                       alt={product.name}
-                      className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover:scale-110"
+                      className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover/card:scale-105"
                     />
                   </Link>
 
-                  <div className="flex flex-col flex-1 p-2">
+                  <div className="flex flex-col flex-1 p-3 sm:p-4">
                     <Link to={`/product/${product._id}`}>
-                      <h3 className="text-[14px] font-semibold text-gray-900 line-clamp-2 leading-snug mb-0 hover:text-[#C8A253] transition-colors">
+                      <h3 className="text-[12px] sm:text-[13px] font-medium text-gray-900 line-clamp-2 leading-snug mb-2 min-h-[2.2rem] group-hover/card:text-[#8B6914] transition-colors">
                         {product.name}
                       </h3>
                     </Link>
 
-                    <div className="mt-auto flex items-center justify-between">
+                    <div className="mt-auto flex items-center justify-between gap-2">
                       {product.price && (
-                        <p className="text-[18px] font-bold text-gray-900 tracking-tight">
+                        <p className="text-[14px] sm:text-[16px] font-bold text-gray-900 tracking-tight">
                           ₹{product.price.toLocaleString("en-IN")}
                         </p>
                       )}
 
-                      <div className="flex items-center gap-3">
+                      <div className="flex items-center gap-1.5 sm:gap-2">
                         <button
                           onClick={(e) => handleAddToCart(e, product._id)}
-                          className="w-10 h-10 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white hover:border-black transition-all shadow-sm"
+                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white hover:border-black transition-all"
+                          aria-label="Add to cart"
                         >
-                          <ShoppingBag size={18} strokeWidth={1.5} />
+                          <ShoppingBag size={14} strokeWidth={1.5} />
                         </button>
 
                         <button
                           onClick={(e) => handleWishlist(e, product._id)}
-                          className={`w-10 h-10 rounded-full border flex items-center justify-center transition-all shadow-sm ${
+                          className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border flex items-center justify-center transition-all ${
                             isWishlisted
                               ? "border-red-500 bg-red-50 text-red-500 hover:bg-red-100"
                               : "border-gray-200 text-gray-500 hover:border-red-500 hover:text-red-500 hover:bg-red-50"
                           }`}
+                          aria-label="Toggle wishlist"
                         >
                           <Heart
-                            size={18}
+                            size={14}
                             strokeWidth={1.5}
                             className={
                               isWishlisted ? "fill-red-500 text-red-500" : ""
@@ -348,13 +349,8 @@ const RecentlyViewed = () => {
 
           <button
             onClick={() => scroll("right")}
-            className="absolute -right-6 top-1/2 -translate-y-1/2 z-20 w-12 h-12 rounded-full bg-white shadow-[0_4px_20px_rgba(0,0,0,0.08)] border border-gray-100 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-300 hover:scale-105 hidden md:flex"
-          >
-            <ChevronRight
-              size={24}
-              className="text-gray-700 -mr-0.5"
-              strokeWidth={2}
-            />
+            className="absolute -right-1.5 sm:-right-5 top-[38%] -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:border-[#C8A253]/50 hover:text-[#C8A253] text-gray-700 cursor-pointer">
+            <ChevronRight size={18} strokeWidth={2} />
           </button>
         </div>
 
@@ -436,4 +432,4 @@ const RecentlyViewed = () => {
 };
 
 export default RecentlyViewed;
-   
+          

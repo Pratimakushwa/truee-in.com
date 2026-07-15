@@ -271,16 +271,16 @@ export default function TestimonialSlider() {
 
   if (loading || error || testimonials.length === 0) {
     return (
-      <div className="bg-[#fafafa] flex flex-col items-center justify-center py-10 sm:py-10 overflow-hidden min-h-[500px] sm:min-h-[600px]">
-        <div className="text-center mb-4 px-6">
-          <h2 className="text-2xl sm:text-3xl md:text-[2.75rem] font-serif text-[#111] mb-1 tracking-tight">
+      <div className="bg-[#fafafa] flex flex-col items-center justify-center py-12 sm:py-14 px-4">
+        <div className="text-center mb-6 max-w-xl">
+          <h2 className="text-2xl sm:text-3xl md:text-[2.5rem] font-serif font-bold text-[#111] mb-2 tracking-tight">
             This Is What Our Customers Say
           </h2>
-          <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base">
+          <p className="text-gray-500 text-sm md:text-base">
             Real stories from people who use our platform every day.
           </p>
         </div>
-        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-8 sm:p-12 text-center text-gray-500 tracking-wide text-sm sm:text-base mx-4">
+        <div className="bg-white border border-gray-100 shadow-sm rounded-2xl p-8 sm:p-12 text-center text-gray-500 tracking-wide text-sm sm:text-base w-full max-w-lg">
           {loading
             ? "Loading testimonials..."
             : error || "No testimonials available yet."}
@@ -290,13 +290,22 @@ export default function TestimonialSlider() {
   }
 
   return (
-    <div className="bg-[#fafafa] flex flex-col items-center justify-center py-10 sm:py-10 overflow-hidden min-h-[500px] sm:min-h-[600px] font-sans">
-      {/* TRUEE Styled Header Section */}
-      <div className="text-center mb-4 sm:mb-2 px-6 z-30 relative">
-        <h2 className="text-2xl sm:text-3xl md:text-[2.75rem] font-serif text-[#111] mb-3 sm:mb-4 tracking-tight">
+     <div className="w-full bg-[#fafafa] flex flex-col items-center justify-center py-10 px-4 font-sans overflow-hidden">
+ 
+      {/* Header */}
+      <div className="flex items-center justify-center gap-3 mb-3">
+        <span className="w-6 sm:w-8 h-[1px] bg-[#c9a15a]"></span>
+        <span className="text-[10px] sm:text-[11px] font-semibold tracking-[0.2em] text-[#a97c2f] uppercase">
+          Customer Reviews
+        </span>
+        <span className="w-6 sm:w-8 h-[1px] bg-[#c9a15a]"></span>
+      </div>
+ 
+      <div className="text-center mb-8 sm:mb-10 max-w-xl">
+        <h2 className="text-2xl sm:text-3xl md:text-[32px] font-serif font-bold text-[#111] mb-2">
           This Is What Our Customers Say
         </h2>
-        <p className="text-gray-500 max-w-xl mx-auto text-sm md:text-base tracking-wide">
+        <p className="text-gray-500 text-sm md:text-base tracking-wide">
           Real stories from people who use our platform every day.
         </p>
       </div>
@@ -358,7 +367,7 @@ export default function TestimonialSlider() {
       </div>
 
       {/* TRUEE Styled Navigation Buttons - Added cursor-pointer and active/focus states */}
-      {testimonials.length > 1 && (
+      {/* {testimonials.length > 1 && (
         <div className="flex gap-4 sm:gap-5 mt-6 sm:mt-4 z-40 relative">
           <button
             onClick={prevSlide}
@@ -375,7 +384,7 @@ export default function TestimonialSlider() {
             <ChevronRight size={20} strokeWidth={1.5} />
           </button>
         </div>
-      )}
+      )} */}
     </div>
   );
 }

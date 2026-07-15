@@ -17,7 +17,7 @@ const TRUST_ITEMS = [
 
 export default function TrustSection() {
   return (
-    <section className="relative w-full py-16 md:py-20 overflow-hidden">
+    <section className="relative w-full py-10 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-b from-[#FCFAEF] via-white to-[#FAFAFA]" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[#C8A253]/40 to-transparent rounded-full" />
 
