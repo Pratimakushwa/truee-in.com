@@ -18,19 +18,25 @@ const TRUST_ITEMS = [
 export default function TrustSection() {
   return (
     <section className="relative w-full py-10 overflow-hidden">
-      <div className="absolute inset-0 bg-gradient-to-b from-[#FCFAEF] via-white to-[#FAFAFA]" />
+      <div className="absolute inset-0 bg-[#FCFBF8]" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[#C8A253]/40 to-transparent rounded-full" />
 
       <div className="relative max-w-7xl mx-auto px-4 md:px-8">
-        <div className="text-center mb-12">
-          <span className="inline-block text-[10px] font-bold uppercase tracking-[0.25em] text-[#8B6914] mb-3 px-4 py-1.5 rounded-full border border-[#C8A253]/25 bg-white/80">
-            Why TRUEE
-          </span>
-          <h2 className="text-2xl md:text-4xl font-serif text-gray-900 mb-3">
+        <div className="text-center mb-14">
+          <div className="flex items-center justify-center gap-4 mb-5">
+            <span className="w-10 h-[1px] bg-[#C8A253]/60"></span>
+            <span className=" text-[9px] md:text-[11px] font-bold uppercase tracking-[0.2em] text-[#C8A253]">
+              Why Truee
+            </span>
+            <span className="w-10 h-[1px] bg-[#C8A253]/60"></span>
+          </div>
+
+          <h2 className="text-xl sm:text-2xl md:text-[32px] font-serif font-bold text-[#111] mb-2">
             Shop with complete confidence
           </h2>
-          <p className="text-gray-500 text-sm md:text-base max-w-xl mx-auto leading-relaxed">
-            Premium electronics, authentic products, and a shopping experience built for trust — just like India&apos;s best retail brands.
+          <p className="text-gray-500 text-[14px] md:text-[15px] max-w-2xl mx-auto leading-relaxed">
+            Premium electronics, authentic products, and a shopping experience
+            built for trust — just like India's best retail brands.
           </p>
         </div>
 

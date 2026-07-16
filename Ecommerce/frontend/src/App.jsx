@@ -1,5 +1,3 @@
-
-
 import React from 'react';
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 import { AuthProvider } from './context/AuthContext';
@@ -103,10 +101,11 @@ function App() {
             <Route path="/cart" element={<PublicLayout><Cart standalone /></PublicLayout>} />
             <Route path="/checkout" element={<PublicLayout><Checkout /></PublicLayout>} />
             {/* ── Customer Private Routes ───────────────────────────── */}
-            {/* ⚡ FIX: Yahan 'user' aur 'admin' ko bhi allow kar diya hai */}
+            {/* ⚡ FIX: Header/Footer hata diya — ProfilePage ab standalone render hota hai,
+                iske andar apna khud ka close (X) button hai jo home par le jaata hai */}
             <Route path="/profile" element={
               <ProtectedRoute roles={['customer', 'user', 'admin', 'super-admin']}>
-                <PublicLayout><ProfilePage /></PublicLayout>
+                <ProfilePage />
               </ProtectedRoute>
             } />
             <Route path="/wishlist" element={<PublicLayout><Wishlist /></PublicLayout>} />

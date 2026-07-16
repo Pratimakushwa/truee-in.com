@@ -919,7 +919,7 @@ export default function Header1() {
       {/* ⚡ Yahan se ScrollProgress component hata diya gaya hai jo upar scroller aur gap de raha tha */}
 
       {!isTransparent && location.pathname !== "/" && (
-        <div className="h-[100px] w-full" />
+        <div className="h-[75px] w-full" />
       )}
 
       <motion.header

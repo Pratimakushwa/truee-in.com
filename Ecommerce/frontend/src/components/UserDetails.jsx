@@ -241,8 +241,8 @@
 
 // export default UserDetails;
 import React, { useState, useEffect } from "react";
-import { Check, X, Pencil } from "lucide-react"; 
-import axiosInstance from "../utils/axiosInstance"; 
+import { Check, X, Pencil, User } from "lucide-react";
+import axiosInstance from "../utils/axiosInstance";
 
 const UserDetails = () => {
   const [isEditingProfile, setIsEditingProfile] = useState(false);
@@ -254,14 +254,14 @@ const UserDetails = () => {
     lastName: "",
     email: "",
     phone: "",
-    gender: "Female" 
+    gender: "Female"
   });
 
   useEffect(() => {
     const fetchProfile = async () => {
       try {
         const { data } = await axiosInstance.get('/auth/profile');
-        
+
         if (data.success && data.user) {
           const fullName = data.user.name || "";
           const nameParts = fullName.trim().split(" ");
@@ -273,7 +273,7 @@ const UserDetails = () => {
             lastName: lName,
             email: data.user.email || "",
             phone: data.user.phone || "",
-            gender: data.user.gender || "Female" 
+            gender: data.user.gender || "Female"
           });
         }
       } catch (error) {
@@ -289,7 +289,7 @@ const UserDetails = () => {
   const handleProfileSave = async () => {
     try {
       setSaving(true);
-      
+
       const updatedName = `${profileData.firstName} ${profileData.lastName}`.trim();
 
       const payload = {
@@ -303,7 +303,7 @@ const UserDetails = () => {
 
       if (data.success) {
         setIsEditingProfile(false);
-        alert("Profile updated successfully!"); 
+        alert("Profile updated successfully!");
       }
     } catch (error) {
       console.error("Error updating profile:", error);
@@ -318,57 +318,69 @@ const UserDetails = () => {
   };
 
   if (loading) {
-    return <div className="p-8 text-center text-sm text-gray-500">Loading profile...</div>;
+    return (
+      <div className="p-8 text-center text-sm text-gray-500 animate-pulse h-full flex items-center justify-center">
+        Loading profile...
+      </div>
+    );
   }
 
-  // ⚡ UI IMPROVEMENT: Input classes ko ek variable mein rakh diya taaki code clean rahe
-  const inputClass = `w-full p-3 text-sm border rounded-lg transition-all duration-300 outline-none ${
+  const inputClass = `w-full px-4 py-3 text-sm border rounded-xl transition-all duration-300 outline-none ${
     isEditingProfile
-      ? "bg-white border-gray-400 text-black focus:border-black focus:ring-1 focus:ring-black"
-      : "bg-gray-50/50 border-gray-200 text-gray-500 cursor-default"
+      ? "bg-white border-gray-200 text-gray-900 focus:border-[#C8A253] focus:ring-2 focus:ring-[#C8A253]/15"
+      : "bg-gray-50/60 border-gray-100 text-gray-500 cursor-default"
   }`;
 
-  const labelClass = "text-[11px] text-gray-500 uppercase font-bold tracking-widest mb-2 block";
+  const labelClass = "text-[10.5px] text-gray-400 uppercase font-bold tracking-widest mb-2 block";
 
   return (
-    <div className="p-6 md:p-8 h-full text-black">
+    <div className="p-5 sm:p-6 md:p-8 h-full text-black">
+
       {/* HEADER */}
-      <div className="flex items-center justify-between mb-8 border-b bg-black rounded-2xl  p-5  border-gray-200 pb-4">
-        <h2 className="text-2xl font-serif text-white">
-          Personal Information
-        </h2>
+      <div className="flex items-center justify-between mb-6 md:mb-8 pb-4 border-b border-gray-100">
+        <div className="flex items-center gap-3">
+          <div className="w-10 h-10 sm:w-11 sm:h-11 shrink-0 rounded-full bg-[#FCFAEF] border border-[#C8A253]/25 flex items-center justify-center text-[#C8A253]">
+            <User size={18} />
+          </div>
+          <div>
+            <h2 className="text-lg sm:text-xl md:text-2xl font-serif text-gray-900 leading-tight">
+              Personal Information
+            </h2>
+            <p className="text-[11px] sm:text-xs text-gray-400 mt-0.5">Update your basic details</p>
+          </div>
+        </div>
 
         {!isEditingProfile ? (
           <button
             onClick={() => setIsEditingProfile(true)}
-            className="text-gray-400 hover:text-black transition-colors cursor-pointer p-2 hover:bg-gray-100 rounded-full"
-            title="Edit Profile"
+            className="shrink-0 flex items-center gap-1.5 text-[11px] sm:text-xs font-bold uppercase tracking-widest text-[#8B6914] bg-[#FCFAEF] hover:bg-[#F5EEDA] border border-[#C8A253]/25 px-3.5 sm:px-4 py-2 rounded-lg transition-colors cursor-pointer"
           >
-            <Pencil size={18} />
+            <Pencil size={13} />
+            <span className="hidden xs:inline">Edit</span>
           </button>
         ) : (
-          <div className="flex gap-4">
+          <div className="flex gap-2 shrink-0">
             <button
               onClick={handleProfileSave}
               disabled={saving}
-              className="text-green-600 font-bold text-[12px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer hover:bg-green-50 px-3 py-1.5 rounded-md transition-colors"
+              className="text-green-700 bg-green-50 hover:bg-green-100 font-bold text-[10px] sm:text-[11px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer px-2.5 sm:px-3 py-2 rounded-lg transition-colors"
             >
-              <Check size={14} /> {saving ? "Saving..." : "Save"}
+              <Check size={13} /> <span className="hidden xs:inline">{saving ? "Saving..." : "Save"}</span>
             </button>
 
             <button
               onClick={handleCancel}
               disabled={saving}
-              className="text-red-600 font-bold text-[12px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer hover:bg-red-50 px-3 py-1.5 rounded-md transition-colors"
+              className="text-red-600 bg-red-50 hover:bg-red-100 font-bold text-[10px] sm:text-[11px] uppercase flex items-center gap-1 disabled:opacity-50 cursor-pointer px-2.5 sm:px-3 py-2 rounded-lg transition-colors"
             >
-              <X size={14} /> Cancel
+              <X size={13} /> <span className="hidden xs:inline">Cancel</span>
             </button>
           </div>
         )}
       </div>
 
       {/* NAME SECTION */}
-      <div className="grid md:grid-cols-2 gap-6 mb-8">
+      <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-6 sm:mb-8">
         <div>
           <label className={labelClass}>First Name</label>
           <input
@@ -391,39 +403,39 @@ const UserDetails = () => {
             onChange={(e) =>
               setProfileData({ ...profileData, lastName: e.target.value })
             }
+            placeholder={!isEditingProfile ? "—" : ""}
             className={inputClass}
           />
         </div>
       </div>
 
       {/* GENDER SECTION */}
-      <div className="mb-8 border-b border-gray-100 pb-8">
+      <div className="mb-6 sm:mb-8 pb-6 sm:pb-8 border-b border-gray-100">
         <p className={labelClass}>Gender</p>
-        <div className="flex gap-10 mt-3">
-          {["Male", "Female"].map((g) => (
-            <label
-              key={g}
-              className={`flex items-center gap-3 text-sm cursor-pointer transition-colors ${
-                profileData.gender === g ? "text-black font-medium" : "text-gray-500"
-              }`}
-            >
-              <input
-                type="radio"
+        <div className="flex gap-3 mt-3">
+          {["Male", "Female"].map((g) => {
+            const selected = profileData.gender === g;
+            return (
+              <button
+                key={g}
+                type="button"
                 disabled={!isEditingProfile}
-                checked={profileData.gender === g}
-                onChange={() =>
-                  setProfileData({ ...profileData, gender: g })
-                }
-                className="w-4 h-4 accent-black cursor-pointer disabled:cursor-default"
-              />
-              {g}
-            </label>
-          ))}
+                onClick={() => setProfileData({ ...profileData, gender: g })}
+                className={`px-5 py-2.5 rounded-full text-sm font-medium border transition-all duration-200 ${
+                  selected
+                    ? "bg-[#111] text-white border-[#111]"
+                    : "bg-white text-gray-500 border-gray-200 hover:border-gray-300"
+                } ${!isEditingProfile ? "cursor-default opacity-80" : "cursor-pointer"}`}
+              >
+                {g}
+              </button>
+            );
+          })}
         </div>
       </div>
 
       {/* CONTACT INFO SECTION */}
-      <div className="grid md:grid-cols-2 gap-6 mb-10">
+      <div className="grid sm:grid-cols-2 gap-4 sm:gap-6 mb-8 sm:mb-10">
         {/* EMAIL */}
         <div>
           <label className={labelClass}>Email Address</label>
@@ -434,7 +446,7 @@ const UserDetails = () => {
             onChange={(e) =>
               setProfileData({ ...profileData, email: e.target.value })
             }
-            className={inputClass}
+            className={`${inputClass} truncate`}
           />
         </div>
 
@@ -454,8 +466,8 @@ const UserDetails = () => {
       </div>
 
       {/* DELETE */}
-      <div className="pt-6 mt-6">
-        <button className="text-red-500 font-bold text-[11px] uppercase tracking-wider cursor-pointer hover:text-red-700 transition-colors">
+      <div className="pt-4 sm:pt-6 border-t border-gray-100">
+        <button className="text-red-500 font-bold text-[10.5px] sm:text-[11px] uppercase tracking-wider cursor-pointer hover:text-red-700 transition-colors">
           Delete Account
         </button>
       </div>

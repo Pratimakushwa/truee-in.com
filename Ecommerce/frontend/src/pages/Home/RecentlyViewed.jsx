@@ -244,7 +244,7 @@ const RecentlyViewed = () => {
               Related to items you've viewed
             </h2>
             <div className="w-20 h-[2px] bg-[#C8A253] mb-2"></div>
-            <p className="text-gray-500 text-[12px] sm:text-[13px] leading-relaxed max-w-md">
+            <p className="text-gray-500 text-[12px] sm:text-[16px] leading-relaxed max-w-xl">
               Discover more products that match your taste and elevate your experience.
             </p>
           </div>
