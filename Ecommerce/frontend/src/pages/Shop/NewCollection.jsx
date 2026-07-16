@@ -875,7 +875,7 @@ export default function NewCollection() {
     };
 
     return (
-        <div className="min-h-screen bg-[#fafafa] font-sans text-[#111]">
+        <div className="min-h-screen bg-white  font-sans text-[#111]">
             <Header1 />
             <Toast toast={toastMessage} onClose={() => setToastMessage(null)} />
 
@@ -886,18 +886,27 @@ export default function NewCollection() {
                     transition={{ duration: 0.8, ease: "easeOut" }}
                     className="max-w-[1600px] mx-auto flex flex-col items-center text-center relative z-10"
                 >
+                    {/* Reverted to HOME / COLLECTION */}
                     <div className="text-[10px] font-bold tracking-[0.3em] uppercase mb-4 text-gray-400 flex items-center justify-center gap-2">
                         <Link to="/" className="hover:text-black transition-colors">HOME</Link>
                         <span className="opacity-40">/</span>
                         <span className="text-black">COLLECTION</span>
                     </div>
-                    <h1 className="text-4xl md:text-5xl lg:text-6xl tracking-tight text-black mb-4" style={{ fontFamily: "'Playfair Display', serif", fontWeight: '500' }}>
+
+                    <h1 className="text-2xl md:text-3xl lg:text-4xl tracking-tight text-black mb-4" style={{ fontFamily: "'Playfair Display', serif", fontWeight: '500' }}>
                         {searchTerm ? `Results for "${searchTerm}"` : 'The Collection'}
                     </h1>
+
+                    {/* Gold Decoration Line */}
+                    <div className="flex items-center gap-3 justify-center">
+                        <div className="h-[1px] w-12 bg-[#C8A253]"></div>
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#C8A253]"></div>
+                        <div className="h-[1px] w-12 bg-[#C8A253]"></div>
+                    </div>
                 </motion.div>
             </div>
             
-            <main className="relative w-full max-w-[1600px] mx-auto px-4 sm:px-6 md:px-12 py-12 flex flex-col lg:flex-row items-start gap-10 xl:gap-16">
+            <main className="relative w-full max-w-[1600px]   bg-[#fcfbfb] mx-auto px-4 sm:px-6 md:px-12 py-12 flex flex-col lg:flex-row items-start gap-10 xl:gap-16">
                  
                 <div className="lg:hidden fixed bottom-6 left-1/2 -translate-x-1/2 z-[100] w-[85%] max-w-[300px]">
                     <button
@@ -1046,11 +1055,11 @@ export default function NewCollection() {
                         <div className="py-20 text-center">Loading...</div>
                     ) : (
                         <>
-                            <div className="grid grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                                {displayedProducts.map(p => (
-                                    <ShopProductCard key={p._id} product={p} onQuickView={setSelectedProduct} />
-                                ))}
-                            </div>
+                            <div className="grid grid-cols-2 md:grid-cols-4 gap-4 md:gap-6 items-start">
+    {displayedProducts.map(p => (
+        <ShopProductCard key={p._id} product={p} onQuickView={setSelectedProduct} />
+    ))}
+</div>
 
                             {totalPages > 1 && (
                                 <div className="flex justify-center items-center gap-3 mt-16 mb-24 lg:mb-8">

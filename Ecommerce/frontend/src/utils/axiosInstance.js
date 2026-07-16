@@ -64,6 +64,58 @@
 
 // export default api;
 
+// import axios from 'axios';
+
+// const api = axios.create({ 
+//   baseURL: (import.meta.env.VITE_BACKEND_URL || '/api').replace(/\/$/, ''), 
+//   withCredentials: true 
+// }); 
+
+// api.interceptors.response.use(
+//   (res) => res,
+//   (err) => {
+//     const status = err.response?.status;
+//     const url = err.config.url;
+
+//     if (status === 401) {
+//       if (url.includes('/history')) {
+//         return Promise.reject(err);
+//       }
+
+//       console.warn("Unauthorized or Invalid Token. Cleaning up session...");
+//       localStorage.removeItem('authUser');
+//       localStorage.removeItem('token'); 
+
+//       const protectedPaths = ['/profile', '/orders', '/admin', '/superadmin'];
+//       const isProtectedPage = protectedPaths.some(path => window.location.pathname.startsWith(path));
+
+//       if (isProtectedPage) {
+//         window.location.href = '/login';
+//       }
+//       // ⚡ FIX: Yahan se maine else block aur window.location.reload() hamesha ke liye HATA DIYA HAI.
+//       // Ab ye chup-chap page ko refresh nahi karega aur Toast ko error dikhane dega!
+//     }
+    
+//     return Promise.reject(err);
+//   }
+// );
+
+// api.interceptors.request.use((config) => {
+//   const guestId = localStorage.getItem('guestId');
+//   if (guestId) {
+//     config.headers['X-Guest-ID'] = guestId;
+//   }
+
+//   const token = localStorage.getItem('token');
+//   if (token && token !== 'null' && token !== 'undefined') {
+//     config.headers.Authorization = `Bearer ${token}`;
+//   }
+
+//   return config;
+// });
+
+// export default api;
+
 import axios from 'axios';
 
 const api = axios.create({ 
@@ -75,7 +127,8 @@ api.interceptors.response.use(
   (res) => res,
   (err) => {
     const status = err.response?.status;
-    const url = err.config.url;
+    // ⚡ FIX: Added '?.' to prevent app crash if network request completely fails
+    const url = err.config?.url || '';
 
     if (status === 401) {
       if (url.includes('/history')) {
@@ -92,8 +145,9 @@ api.interceptors.response.use(
       if (isProtectedPage) {
         window.location.href = '/login';
       }
-      // ⚡ FIX: Yahan se maine else block aur window.location.reload() hamesha ke liye HATA DIYA HAI.
-      // Ab ye chup-chap page ko refresh nahi karega aur Toast ko error dikhane dega!
+      
+      // ⚡ FIX: Silent event fire hoga taaki React Context (Header wagera) turant update ho jaye bina refresh ke
+      window.dispatchEvent(new Event('auth_expired'));
     }
     
     return Promise.reject(err);

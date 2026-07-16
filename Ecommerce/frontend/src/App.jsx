@@ -175,7 +175,7 @@ function App() {
               <Route path="newsletter" element={<NewsletterSubscribers />} />
             </Route>
 
-            {/* ── Error / Fallback ──────────────────────────────────── */}
+            /* ── Error / Fallback ──────────────────────────────────── */
             <Route path="/unauthorized" element={
               <div className="min-h-screen flex items-center justify-center bg-[var(--theme-bg-dark)]">
                 <p className="font-serif text-xl text-[var(--theme-primary)] tracking-widest uppercase">
