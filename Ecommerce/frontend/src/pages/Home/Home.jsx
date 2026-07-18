@@ -164,7 +164,7 @@ export default function Home() {
 
 
 
-      <TrustBar />
+      {/* <TrustBar /> */}
 
 
 

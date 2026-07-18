@@ -42,7 +42,9 @@ const sendAdminEmail = async (subject, htmlBody) => {
 };
 
 const FRONTEND_URL = process.env.VITE_FRONTEND_URL || 'https://truee.in';
-const LOGO_URL = process.env.EMAIL_LOGO_URL || `${FRONTEND_URL}/Truee_Luxury_Logo.png`;
+// const LOGO_URL = process.env.EMAIL_LOGO_URL || `${FRONTEND_URL}/Truee_Luxury_Logo.png`;
+// Bas itna change karo
+const LOGO_URL = process.env.EMAIL_LOGO_URL || `${FRONTEND_URL}`;
 
 const emailTemplate = (name, heading, body) => `
   <div style="font-family:Arial,sans-serif;background:#f4f6f9;padding:30px 0;">

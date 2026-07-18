@@ -308,20 +308,134 @@
 //   res.status(200).json({ success: true, data: order });
 // });
 
+// const Order = require('../models/orderModel'); 
+// const Product = require('../models/ProductModel'); 
+// // ⚡ NAYE IMPORTS ADD KIYE
+// const User = require('../models/userModel');
+// const Coupon = require('../models/Coupon'); 
+// const wrapAsync = require('../utils/wrapAsync');
+// const ExpressError = require('../utils/expressError'); // Error handling ke liye
+// const mongoose = require('mongoose');
+
+// // ==========================================
+// // 1. ORDER CREATE KARNA
+// // ==========================================
+// exports.instantCheckout = wrapAsync(async (req, res) => {
+//   // ⚡ Frontend se aane wale couponApplied aur discountAmount ko nikal liya
+//   const { cartItems, totalAmount, couponApplied, discountAmount, shippingAddress, paymentInfo } = req.body;
+//   const userId = req.user ? req.user._id : new mongoose.Types.ObjectId();
+
+//   if (!cartItems || cartItems.length === 0) {
+//     throw new ExpressError(400, "Cart is empty");
+//   }
+
+//   const formattedOrderItems = cartItems.map(item => ({
+//     product: item.productId || item.product, 
+//     name: item.name,
+//     image: item.image || 'default-image.jpg',
+//     price: item.price,
+//     quantity: item.quantity
+//   }));
+
+//   const newOrder = await Order.create({
+//     user: userId,
+//     orderItems: formattedOrderItems,
+//     itemsPrice: totalAmount + (discountAmount || 0), // Discount se pehle ka price
+//     totalAmount: totalAmount, // Final price
+//     discountAmount: discountAmount || 0, // ⚡ Naya add kiya
+//     couponApplied: couponApplied || null, // ⚡ Naya add kiya
+//     paymentInfo: paymentInfo || { method: 'COD', paymentStatus: 'Paid' },
+//     shippingAddress: shippingAddress || {
+//       fullName: req.user ? req.user.name : "Luxury VIP Guest",
+//       phone: "9876543210",
+//       addressLine1: "123 Truee Luxury Avenue",
+//       city: "Mumbai",
+//       state: "Maharashtra",
+//       pincode: "400001" 
+//     }
+//   });
+
+//   for (let item of cartItems) {
+//     if(item.productId || item.product) {
+//        await Product.findByIdAndUpdate(item.productId || item.product, {
+//           $inc: { soldCount: item.quantity }
+//        });
+//     }
+//   }
+
+//   // ==========================================
+//   // ⚡ COUPON USED LOGIC (Sabse Zaroori)
+//   // ==========================================
+//   if (couponApplied) {
+//       // 1. Admin Dashboard ke liye: Coupon ka 'usedCount' +1 kar do
+//       await Coupon.findOneAndUpdate(
+//           { code: couponApplied }, 
+//           { $inc: { usedCount: 1 } }
+//       );
+
+//       // 2. User Profile ke liye: Agar user login hai, toh uske account se coupon nikal do
+//       if (req.user) {
+//           await User.findByIdAndUpdate(req.user._id, {
+//               $pull: { coupons: couponApplied } // $pull array se value remove karta hai
+//           });
+//       }
+//   }
+//   // ==========================================
+
+//   res.status(200).json({ 
+//     success: true, 
+//     message: "Order placed successfully!",
+//     orderId: newOrder._id 
+//   });
+// });
+
+// // ==========================================
+// // 2. MY ORDERS FETCH KARNA (User Dashboard)
+// // ==========================================
+// exports.getMyOrders = wrapAsync(async (req, res) => {
+//   if (!req.user) {
+//     throw new ExpressError(401, "Please login to view orders.");
+//   }
+//   const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
+//   res.status(200).json({ success: true, orders });
+// });
+
+// // ==========================================
+// // 3. GET ORDER BY ID (Premium Tracking Page ke liye)
+// // ==========================================
+// exports.getOrderById = wrapAsync(async (req, res) => {
+//   const order = await Order.findById(req.params.id);
+  
+//   if (!order) {
+//     throw new ExpressError(404, "Order not found");
+//   }
+  
+//   // Security Check: Kya ye order usi user ka hai jo login hai?
+//   if (req.user && order.user.toString() !== req.user._id.toString()) {
+//     throw new ExpressError(403, "You are not authorized to view this order");
+//   }
+
+//   res.status(200).json({ success: true, data: order });
+// });
+
 const Order = require('../models/orderModel'); 
 const Product = require('../models/ProductModel'); 
-// ⚡ NAYE IMPORTS ADD KIYE
 const User = require('../models/userModel');
 const Coupon = require('../models/Coupon'); 
 const wrapAsync = require('../utils/wrapAsync');
-const ExpressError = require('../utils/expressError'); // Error handling ke liye
+const ExpressError = require('../utils/expressError'); 
 const mongoose = require('mongoose');
+
+const { 
+  createShiprocketOrder, 
+  generateShiprocketAWB, 
+  requestShiprocketPickup 
+} = require('../services/shiprocketService');
 
 // ==========================================
 // 1. ORDER CREATE KARNA
 // ==========================================
 exports.instantCheckout = wrapAsync(async (req, res) => {
-  // ⚡ Frontend se aane wale couponApplied aur discountAmount ko nikal liya
   const { cartItems, totalAmount, couponApplied, discountAmount, shippingAddress, paymentInfo } = req.body;
   const userId = req.user ? req.user._id : new mongoose.Types.ObjectId();
 
@@ -337,13 +451,14 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     quantity: item.quantity
   }));
 
+  // 1. Order ko pehle apne Database mein save karo
   const newOrder = await Order.create({
     user: userId,
     orderItems: formattedOrderItems,
-    itemsPrice: totalAmount + (discountAmount || 0), // Discount se pehle ka price
-    totalAmount: totalAmount, // Final price
-    discountAmount: discountAmount || 0, // ⚡ Naya add kiya
-    couponApplied: couponApplied || null, // ⚡ Naya add kiya
+    itemsPrice: totalAmount + (discountAmount || 0),
+    totalAmount: totalAmount,
+    discountAmount: discountAmount || 0,
+    couponApplied: couponApplied || null,
     paymentInfo: paymentInfo || { method: 'COD', paymentStatus: 'Paid' },
     shippingAddress: shippingAddress || {
       fullName: req.user ? req.user.name : "Luxury VIP Guest",
@@ -355,6 +470,7 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     }
   });
 
+  // 2. Product ka stock/sold count update karo
   for (let item of cartItems) {
     if(item.productId || item.product) {
        await Product.findByIdAndUpdate(item.productId || item.product, {
@@ -363,22 +479,83 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     }
   }
 
-  // ==========================================
-  // ⚡ COUPON USED LOGIC (Sabse Zaroori)
-  // ==========================================
+  // 3. Coupon Logic
   if (couponApplied) {
-      // 1. Admin Dashboard ke liye: Coupon ka 'usedCount' +1 kar do
       await Coupon.findOneAndUpdate(
           { code: couponApplied }, 
           { $inc: { usedCount: 1 } }
       );
-
-      // 2. User Profile ke liye: Agar user login hai, toh uske account se coupon nikal do
       if (req.user) {
           await User.findByIdAndUpdate(req.user._id, {
-              $pull: { coupons: couponApplied } // $pull array se value remove karta hai
+              $pull: { coupons: couponApplied } 
           });
       }
+  }
+
+  // ==========================================
+  // ⚡ SHIPROCKET FULL AUTOMATION (FIXED)
+  // ==========================================
+  try {
+    // FIX: Shiprocket requires a Last Name, so we split the fullName
+    const nameParts = newOrder.shippingAddress.fullName.split(' ');
+    const fName = nameParts[0];
+    const lName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'Customer';
+
+    const shiprocketPayload = {
+      order_id: newOrder._id.toString(), 
+      order_date: new Date().toISOString().replace('T', ' ').substring(0, 16),
+      pickup_location: "Primary", // <-- ⚠️ Dhyan rakhna, dashboard me naam 'Primary' hona chahiye
+      billing_customer_name: fName,
+      billing_last_name: lName, // Ab ye empty nahi jayega
+      billing_address: newOrder.shippingAddress.addressLine1,
+      billing_city: newOrder.shippingAddress.city,
+      billing_pincode: newOrder.shippingAddress.pincode,
+      billing_state: newOrder.shippingAddress.state,
+      billing_country: "India",
+      billing_email: req.user ? req.user.email : "guest@trueeluxury.com",
+      billing_phone: newOrder.shippingAddress.phone,
+      shipping_is_billing: true, 
+      order_items: formattedOrderItems.map(item => ({
+        name: item.name,
+        sku: item.product.toString(),
+        units: item.quantity,
+        selling_price: item.price
+      })),
+      payment_method: newOrder.paymentInfo.method === 'COD' ? 'COD' : 'Prepaid',
+      sub_total: totalAmount,
+      length: 10, breadth: 10, height: 10, weight: 1
+    };
+
+    // STEP A: Order Bhejo
+    const shiprocketResponse = await createShiprocketOrder(shiprocketPayload);
+    
+    if(shiprocketResponse && shiprocketResponse.order_id && shiprocketResponse.shipment_id) {
+      newOrder.shiprocketOrderId = shiprocketResponse.order_id;
+      
+      // STEP B: AWB (Tracking Number) Generate karo
+      const awbResponse = await generateShiprocketAWB(shiprocketResponse.shipment_id);
+      
+      if (awbResponse && awbResponse.awb_code) {
+        // Database mein tracking details save kar lo
+        newOrder.trackingDetails = {
+          courierPartner: awbResponse.courier_name || 'Assigned Courier',
+          awbNumber: awbResponse.awb_code,
+          shippedAt: new Date()
+        };
+        
+        // STEP C: Delivery boy ko Pickup ke liye bulao
+        await requestShiprocketPickup(shiprocketResponse.shipment_id);
+      }
+      
+      await newOrder.save();
+    }
+
+  } catch (error) {
+    // ⚡ DEBUGGER: Ye ab Shiprocket ka asli error batayega
+    console.error("⚠️ Shiprocket Automation Failed:", error.message);
+    if (error.response && error.response.data) {
+       console.error("🔴 SHIPROCKET API ERROR REASON:", JSON.stringify(error.response.data, null, 2));
+    }
   }
   // ==========================================
 
@@ -410,10 +587,55 @@ exports.getOrderById = wrapAsync(async (req, res) => {
     throw new ExpressError(404, "Order not found");
   }
   
-  // Security Check: Kya ye order usi user ka hai jo login hai?
   if (req.user && order.user.toString() !== req.user._id.toString()) {
     throw new ExpressError(403, "You are not authorized to view this order");
   }
 
   res.status(200).json({ success: true, data: order });
+});
+
+// ==========================================
+// ⚡ 4. SHIPROCKET WEBHOOK (AUTOMATIC STATUS UPDATE)
+// ==========================================
+exports.shiprocketWebhook = wrapAsync(async (req, res) => {
+  const { awb, current_status, order_id } = req.body;
+
+  console.log(`📦 Webhook Received for Order: ${order_id} | Status: ${current_status}`);
+
+  const order = await Order.findById(order_id);
+  
+  if (!order) {
+    return res.status(200).send('Order not found, but webhook received.');
+  }
+
+  let newStatus = order.orderStatus;
+  const statusUpper = current_status.toUpperCase();
+
+  if (statusUpper.includes('DELIVERED')) {
+    newStatus = 'Delivered';
+    order.deliveredAt = new Date();
+  } else if (statusUpper.includes('OUT FOR DELIVERY')) {
+    newStatus = 'Out for Delivery';
+  } else if (statusUpper.includes('IN TRANSIT') || statusUpper.includes('SHIPPED')) {
+    newStatus = 'Shipped';
+  } else if (statusUpper.includes('CANCELED') || statusUpper.includes('CANCELLED')) {
+    newStatus = 'Cancelled';
+  } else if (statusUpper.includes('RETURN')) {
+    newStatus = 'Returned';
+  }
+
+  if (newStatus !== order.orderStatus) {
+    order.orderStatus = newStatus;
+    
+    order.statusHistory.push({
+      status: newStatus,
+      note: `Status auto-updated via Shiprocket. (AWB: ${awb})`,
+      updatedAt: new Date()
+    });
+
+    await order.save();
+    console.log(`✅ Order ${order_id} successfully auto-updated to ${newStatus}`);
+  }
+
+  res.status(200).json({ success: true, message: "Webhook processed" });
 });

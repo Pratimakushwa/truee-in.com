@@ -86,6 +86,140 @@
 //   );
 // }
 
+// import React, { useState, useEffect } from 'react';
+// import { Star, CheckCircle, XCircle, StarHalf } from 'lucide-react';
+// import axiosInstance from '../../utils/axiosInstance';
+
+// export default function AdminReviews() {
+//   const [reviews, setReviews] = useState([]);
+
+//   useEffect(() => {
+//     fetchReviews();
+//   }, []);
+
+//   const fetchReviews = async () => {
+//     try {
+//       const { data } = await axiosInstance.get('/reviews/admin/all'); 
+//       setReviews(data.reviews);
+//     } catch (err) {
+//       console.error("Error fetching reviews:", err);
+//     }
+//   };
+
+//   const handleAction = async (id, actionType, value) => {
+//     try {
+//       if (actionType === 'status') await axiosInstance.put(`/reviews/admin/${id}/status`, { status: value });
+//       if (actionType === 'feature') await axiosInstance.put(`/reviews/admin/${id}/feature`, { isFeatured: value });
+//       fetchReviews(); // Refresh list
+//     } catch (err) { alert("Error: " + err.message); }
+//   };
+
+//   // Helper to format date
+//   const formatDate = (dateString) => {
+//     const options = { year: 'numeric', month: 'short', day: 'numeric' };
+//     return new Date(dateString).toLocaleDateString(undefined, options);
+//   };
+
+//   return (
+//     <div className="flex min-h-screen rounded-2xl  bg-[#0a0a0a] text-gray-300 font-sans">
+//       <div className="flex-1 p-8 lg:px-12">
+//         <h1 className="text-3xl font-serif mb-8 text-white tracking-wide">Customer Reviews</h1>
+        
+//         <div className="bg-[#121212] rounded-[1.5rem] p-6 shadow-lg border border-[#2a2a2a] overflow-x-auto">
+//           <table className="w-full text-left border-collapse">
+//             <thead>
+//               <tr className="text-gray-500 uppercase text-[10px] font-bold tracking-[0.15em] border-b border-[#2a2a2a]">
+//                 <th className="p-4 pl-6 font-medium">Customer</th>
+//                 <th className="p-4 font-medium">Product</th>
+//                 <th className="p-4 font-medium">Rating</th>
+//                 <th className="p-4 font-medium w-1/3">Review Message</th>
+//                 <th className="p-4 font-medium text-center">Status</th>
+//                 <th className="p-4 font-medium text-center">Featured</th>
+//                 <th className="p-4 font-medium">Date</th>
+//                 <th className="p-4 text-center font-medium pr-6">Actions</th>
+//               </tr>
+//             </thead>
+//             <tbody>
+//               {reviews.map(rev => (
+//                 <tr key={rev._id} className="border-b border-[#2a2a2a] hover:bg-[#1a1a1a] transition-colors duration-200">
+//                   <td className="p-4 pl-6 text-sm font-medium text-white">{rev.user?.name || "Unknown User"}</td>
+//                   <td className="p-4 text-sm">{rev.productName || "Product"}</td>
+                  
+//                   {/* Rating Stars */}
+//                   <td className="p-4">
+//                     <div className="flex items-center gap-1">
+//                       {[...Array(5)].map((_, i) => (
+//                         <Star 
+//                           key={i} 
+//                           size={14} 
+//                           className={i < rev.rating ? 'fill-[#C8A253] text-[#C8A253]' : 'text-[#333] fill-[#1a1a1a]'} 
+//                         />
+//                       ))}
+//                     </div>
+//                   </td>
+                  
+//                   {/* Review Text */}
+//                   <td className="p-4 text-sm text-gray-400 italic">"{rev.comment}"</td>
+                  
+//                   {/* Status Badge */}
+//                   <td className="p-4 text-center">
+//                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
+//                       rev.status === 'Approved' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 
+//                       rev.status === 'Rejected' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
+//                       'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20'
+//                     }`}>
+//                       {rev.status}
+//                     </span>
+//                   </td>
+                  
+//                   {/* Featured Toggle */}
+//                   <td className="p-4 text-center">
+//                     <button
+//                       onClick={() => handleAction(rev._id, 'feature', !rev.isFeatured)}
+//                       className={`p-1.5 rounded-md transition-colors ${rev.isFeatured ? 'bg-[#C8A253]/10 text-[#C8A253]' : 'text-gray-600 hover:text-gray-400'}`}
+//                       title={rev.isFeatured ? "Unfeature Review" : "Feature Review"}
+//                     >
+//                       <StarHalf size={18} className={rev.isFeatured ? "fill-[#C8A253]" : ""} />
+//                     </button>
+//                   </td>
+                  
+//                   <td className="p-4 text-xs text-gray-500 whitespace-nowrap">{formatDate(rev.createdAt)}</td>
+                  
+//                   {/* Action Buttons (Approve / Reject / Pending) */}
+//                   <td className="p-4 pr-6">
+//                      <div className="flex items-center justify-center gap-2">
+//                        {/* Approve Button */}
+//                        {rev.status !== 'Approved' && (
+//                          <button
+//                            onClick={() => handleAction(rev._id, 'status', 'Approved')}
+//                            className="flex items-center justify-center p-2 rounded-lg text-green-500 hover:bg-green-500/10 transition-colors"
+//                            title="Approve Review"
+//                          >
+//                            <CheckCircle size={18} />
+//                          </button>
+//                        )}
+                       
+//                        {/* Reject/Unapprove Button */}
+//                        {rev.status !== 'Pending' && (
+//                          <button
+//                            onClick={() => handleAction(rev._id, 'status', 'Pending')}
+//                            className="flex items-center justify-center p-2 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
+//                            title="Move to Pending"
+//                          >
+//                            <XCircle size={18} />
+//                          </button>
+//                        )}
+//                      </div>
+//                   </td>
+//                 </tr>
+//               ))}
+//             </tbody>
+//           </table>
+//         </div>
+//       </div>
+//     </div>
+//   );
+// }
 import React, { useState, useEffect } from 'react';
 import { Star, CheckCircle, XCircle, StarHalf } from 'lucide-react';
 import axiosInstance from '../../utils/axiosInstance';
@@ -121,14 +255,14 @@ export default function AdminReviews() {
   };
 
   return (
-    <div className="flex min-h-screen bg-[#0a0a0a] text-gray-300 font-sans">
+    <div className="flex min-h-screen rounded-2xl bg-gray-50 text-gray-800 font-sans">
       <div className="flex-1 p-8 lg:px-12">
-        <h1 className="text-3xl font-serif mb-8 text-white tracking-wide">Customer Reviews</h1>
+        <h1 className="text-3xl font-serif mb-8 text-gray-900 tracking-wide">Customer Reviews</h1>
         
-        <div className="bg-[#121212] rounded-[1.5rem] p-6 shadow-lg border border-[#2a2a2a] overflow-x-auto">
+        <div className="bg-white rounded-[1.5rem] p-6 shadow-sm border border-gray-200 overflow-x-auto">
           <table className="w-full text-left border-collapse">
             <thead>
-              <tr className="text-gray-500 uppercase text-[10px] font-bold tracking-[0.15em] border-b border-[#2a2a2a]">
+              <tr className="text-gray-500 uppercase text-[10px] font-bold tracking-[0.15em] border-b border-gray-200">
                 <th className="p-4 pl-6 font-medium">Customer</th>
                 <th className="p-4 font-medium">Product</th>
                 <th className="p-4 font-medium">Rating</th>
@@ -141,9 +275,9 @@ export default function AdminReviews() {
             </thead>
             <tbody>
               {reviews.map(rev => (
-                <tr key={rev._id} className="border-b border-[#2a2a2a] hover:bg-[#1a1a1a] transition-colors duration-200">
-                  <td className="p-4 pl-6 text-sm font-medium text-white">{rev.user?.name || "Unknown User"}</td>
-                  <td className="p-4 text-sm">{rev.productName || "Product"}</td>
+                <tr key={rev._id} className="border-b border-gray-100 hover:bg-gray-50 transition-colors duration-200">
+                  <td className="p-4 pl-6 text-sm font-medium text-gray-900">{rev.user?.name || "Unknown User"}</td>
+                  <td className="p-4 text-sm text-gray-700">{rev.productName || "Product"}</td>
                   
                   {/* Rating Stars */}
                   <td className="p-4">
@@ -152,21 +286,21 @@ export default function AdminReviews() {
                         <Star 
                           key={i} 
                           size={14} 
-                          className={i < rev.rating ? 'fill-[#C8A253] text-[#C8A253]' : 'text-[#333] fill-[#1a1a1a]'} 
+                          className={i < rev.rating ? 'fill-[#C8A253] text-[#C8A253]' : 'text-gray-300 fill-gray-100'} 
                         />
                       ))}
                     </div>
                   </td>
                   
                   {/* Review Text */}
-                  <td className="p-4 text-sm text-gray-400 italic">"{rev.comment}"</td>
+                  <td className="p-4 text-sm text-gray-600 italic">"{rev.comment}"</td>
                   
                   {/* Status Badge */}
                   <td className="p-4 text-center">
                     <span className={`px-3 py-1 rounded-full text-xs font-semibold ${
-                      rev.status === 'Approved' ? 'bg-green-500/10 text-green-500 border border-green-500/20' : 
-                      rev.status === 'Rejected' ? 'bg-red-500/10 text-red-500 border border-red-500/20' :
-                      'bg-yellow-500/10 text-yellow-500 border border-yellow-500/20'
+                      rev.status === 'Approved' ? 'bg-emerald-50 text-emerald-600' : 
+                      rev.status === 'Rejected' ? 'bg-red-50 text-red-600' :
+                      'bg-amber-50 text-amber-600'
                     }`}>
                       {rev.status}
                     </span>
@@ -176,7 +310,7 @@ export default function AdminReviews() {
                   <td className="p-4 text-center">
                     <button
                       onClick={() => handleAction(rev._id, 'feature', !rev.isFeatured)}
-                      className={`p-1.5 rounded-md transition-colors ${rev.isFeatured ? 'bg-[#C8A253]/10 text-[#C8A253]' : 'text-gray-600 hover:text-gray-400'}`}
+                      className={`p-1.5 rounded-md transition-colors ${rev.isFeatured ? 'bg-[#C8A253]/10 text-[#C8A253]' : 'text-gray-400 hover:text-gray-600'}`}
                       title={rev.isFeatured ? "Unfeature Review" : "Feature Review"}
                     >
                       <StarHalf size={18} className={rev.isFeatured ? "fill-[#C8A253]" : ""} />
@@ -192,7 +326,7 @@ export default function AdminReviews() {
                        {rev.status !== 'Approved' && (
                          <button
                            onClick={() => handleAction(rev._id, 'status', 'Approved')}
-                           className="flex items-center justify-center p-2 rounded-lg text-green-500 hover:bg-green-500/10 transition-colors"
+                           className="flex items-center justify-center p-2 rounded-lg text-emerald-500 hover:bg-emerald-50 transition-colors"
                            title="Approve Review"
                          >
                            <CheckCircle size={18} />
@@ -203,7 +337,7 @@ export default function AdminReviews() {
                        {rev.status !== 'Pending' && (
                          <button
                            onClick={() => handleAction(rev._id, 'status', 'Pending')}
-                           className="flex items-center justify-center p-2 rounded-lg text-red-500 hover:bg-red-500/10 transition-colors"
+                           className="flex items-center justify-center p-2 rounded-lg text-red-500 hover:bg-red-50 transition-colors"
                            title="Move to Pending"
                          >
                            <XCircle size={18} />

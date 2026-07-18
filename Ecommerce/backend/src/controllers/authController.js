@@ -419,6 +419,7 @@
 
 //   res.status(200).json({ success: true, message: 'Password Changed Successfully! You can now login.' });
 // });
+
 const User = require('../models/userModel');
 const Cart = require('../models/cartModel');
 const Coupon = require('../models/Coupon'); 

@@ -19,7 +19,7 @@ function Field({ label, value, onChange, type = 'text', full = false }) {
         value={value || ''}
         onChange={(e) => onChange(e.target.value)}
         placeholder=" "
-        className="peer w-full bg-[#1A1A1A] border border-[#C8A253]/20 rounded-lg px-4 pt-5 pb-2 text-white text-sm outline-none focus:border-[#C8A253]/60 transition-colors"
+        className="peer w-full bg-white border border-[#C8A253]/20 rounded-lg px-4 pt-5 pb-2 text-white text-sm outline-none focus:border-[#C8A253]/60 transition-colors"
       />
       <label className="absolute left-4 top-1 text-[10px] text-[#C8A253] uppercase tracking-widest pointer-events-none">
         {label}

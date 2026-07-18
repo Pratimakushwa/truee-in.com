@@ -93,25 +93,22 @@ import {
   ShoppingBag,
   Heart,
   ArrowRight,
-  Truck,
-  ShieldCheck,
-  RefreshCcw,
-  Headphones,
 } from "lucide-react";
 import axiosInstance from "../../utils/axiosInstance";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "../../components/Toast";
+import QuickModel from "../Product/ProductDetailModel"; // ⚡ Import Added
 
 const RecentlyViewed = () => {
   const [recentProducts, setRecentProducts] = useState([]);
-  const [wishlistedItems, setWishlistedItems] = useState([]); // ⚡ NAYI STATE: Heart icon ka color track karne ke liye
+  const [wishlistedItems, setWishlistedItems] = useState([]);
   const [toastMessage, setToastMessage] = useState(null);
+  const [quickViewProduct, setQuickViewProduct] = useState(null); // ⚡ QuickView State
   const sliderRef = useRef(null);
 
   const { user } = useAuth();
   const navigate = useNavigate();
 
-  // 1. Fetch Recently Viewed from LocalStorage
   useEffect(() => {
     try {
       const items = JSON.parse(localStorage.getItem("recentlyViewed")) || [];
@@ -121,14 +118,12 @@ const RecentlyViewed = () => {
     }
   }, []);
 
-  // ⚡ 2. NAYA EFFECT: Jab user login ho, uski wishlist database se fetch kar lo
   useEffect(() => {
     if (user) {
       const fetchWishlist = async () => {
         try {
           const { data } = await axiosInstance.get("/wishlist");
           if (data.success && data.wishlist) {
-            // Un sabhi products ki IDs nikal lo jo user ne wishlist kiye hain
             const ids = data.wishlist.map((item) => item._id || item);
             setWishlistedItems(ids);
           }
@@ -142,9 +137,7 @@ const RecentlyViewed = () => {
     }
   }, [user]);
 
-  if (recentProducts.length === 0) {
-    return null;
-  }
+  if (recentProducts.length === 0) return null;
 
   const scroll = (direction) => {
     if (sliderRef.current) {
@@ -153,66 +146,34 @@ const RecentlyViewed = () => {
     }
   };
 
-  // ⚡ ADD TO CART FUNCTIONALITY
   const handleAddToCart = async (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
-
     try {
-      const { data } = await axiosInstance.post("/cart/add", {
-        productId: productId,
-        quantity: 1,
-      });
-
+      const { data } = await axiosInstance.post("/cart/add", { productId, quantity: 1 });
       if (data.success) {
-        window.dispatchEvent(
-          new CustomEvent("cartUpdated", { detail: { increase: 1 } }),
-        );
-        setToastMessage({
-          type: "success",
-          message: "Added to cart successfully!",
-        });
+        window.dispatchEvent(new CustomEvent("cartUpdated", { detail: { increase: 1 } }));
+        setToastMessage({ type: "success", message: "Added to cart successfully!" });
       }
     } catch (err) {
-      setToastMessage({
-        type: "error",
-        message: err.response?.data?.message || "Failed to add to cart",
-      });
+      setToastMessage({ type: "error", message: err.response?.data?.message || "Failed to add to cart" });
     }
   };
 
-  // ⚡ WISHLIST FUNCTIONALITY (Now With Instant UI Update)
   const handleWishlist = async (e, productId) => {
     e.preventDefault();
     e.stopPropagation();
-
-    if (!user) {
-      navigate("/login");
-      return;
-    }
-
-    // ⚡ OPTIMISTIC UI UPDATE: Button dabaate hi dil laal/safed ho jayega
+    if (!user) { navigate("/login"); return; }
     const isCurrentlyWishlisted = wishlistedItems.includes(productId);
     if (isCurrentlyWishlisted) {
       setWishlistedItems((prev) => prev.filter((id) => id !== productId));
     } else {
       setWishlistedItems((prev) => [...prev, productId]);
     }
-
     try {
-      const { data } = await axiosInstance.post("/wishlist/toggle", {
-        productId,
-      });
-      if (data.success) {
-        setToastMessage({
-          type: "success",
-          message: isCurrentlyWishlisted
-            ? "Removed from wishlist"
-            : "Added to wishlist!",
-        });
-      }
+      await axiosInstance.post("/wishlist/toggle", { productId });
+      setToastMessage({ type: "success", message: isCurrentlyWishlisted ? "Removed from wishlist" : "Added to wishlist!" });
     } catch (err) {
-      // ⚡ Agar error aayi toh wapas purani color state me kar do
       if (isCurrentlyWishlisted) {
         setWishlistedItems((prev) => [...prev, productId]);
       } else {
@@ -224,121 +185,49 @@ const RecentlyViewed = () => {
 
   return (
     <section className="bg-white py-8 font-sans">
-      {toastMessage && (
-        <Toast
-          type={toastMessage.type}
-          message={toastMessage.message}
-          onClose={() => setToastMessage(null)}
-        />
-      )}
+      {toastMessage && <Toast type={toastMessage.type} message={toastMessage.message} onClose={() => setToastMessage(null)} />}
 
       <div className="max-w-[1500px] mx-auto px-4 sm:px-6 md:px-12">
-        {/* --- HEADER SECTION --- */}
         <div className="flex flex-col sm:flex-row sm:items-end justify-between mb-6 sm:mb-8 gap-4">
           <div>
-            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A253] mb-2 flex items-center gap-2">
-           
-              You May Also Like
-            </span>
-            <h2 className="text-xl sm:text-2xl md:text-[32px] font-serif font-bold text-[#111] mb-2">
-              Related to items you've viewed
-            </h2>
+            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-[#C8A253] mb-2 flex items-center gap-2">You May Also Like</span>
+            <h2 className="text-xl sm:text-2xl md:text-[32px] font-serif font-bold text-[#111] mb-2">Related to items you've viewed</h2>
             <div className="w-20 h-[2px] bg-[#C8A253] mb-2"></div>
-            <p className="text-gray-500 text-[12px] sm:text-[16px] leading-relaxed max-w-xl">
-              Discover more products that match your taste and elevate your experience.
-            </p>
           </div>
-
-          <Link
-            to="/shop"
-            className="inline-flex items-center gap-1.5 text-[12px] sm:text-sm font-semibold text-[#C8A253] hover:text-[#8B6914] transition-colors shrink-0 self-start sm:self-auto"
-          >
-            View All
-            <ArrowRight size={15} />
-          </Link>
         </div>
 
-        {/* --- PRODUCT SLIDER SECTION --- */}
         <div className="relative group mb-2">
-          <button
-            onClick={() => scroll("left")}
-            className="absolute -left-1.5 sm:-left-5 top-[38%] -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:border-[#C8A253]/50 hover:text-[#C8A253] text-gray-700 cursor-pointer"
-            aria-label="Scroll left"
-          >
-            <ChevronLeft size={18} strokeWidth={2} />
+          <button onClick={() => scroll("left")} className="absolute -left-1.5 sm:-left-5 top-[38%] -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:text-[#C8A253] cursor-pointer">
+            <ChevronLeft size={18} />
           </button>
 
-          <div
-            ref={sliderRef}
-            className="flex gap-3.5 sm:gap-4 md:gap-5 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth hide-scrollbar px-1"
-          >
-            <style>{`
-              .hide-scrollbar::-webkit-scrollbar { display: none; }
-              .hide-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
-            `}</style>
-
-            {recentProducts.map((product, index) => {
-              const isWishlisted = wishlistedItems.includes(product._id); // ⚡ Check if this product is liked
-
+          <div ref={sliderRef} className="flex gap-3.5 sm:gap-4 md:gap-5 overflow-x-auto pb-4 pt-1 snap-x snap-mandatory scroll-smooth hide-scrollbar px-1">
+            {recentProducts.map((product) => {
+              const isWishlisted = wishlistedItems.includes(product._id);
               return (
                 <div
                   key={product._id}
-                  className="group/card min-w-[168px] max-w-[168px] xs:min-w-[190px] xs:max-w-[190px] sm:min-w-[220px] sm:max-w-[220px] flex-shrink-0 snap-start bg-white rounded-2xl border border-gray-100 shadow-[0_2px_15px_rgba(0,0,0,0.03)] hover:border-[#C8A253]/25 hover:shadow-[0_10px_30px_rgba(0,0,0,0.07)] transition-all duration-300 ease-out flex flex-col relative overflow-hidden"
+                  onClick={() => setQuickViewProduct(product)} // ⚡ Click Opens Modal
+                  className="group/card min-w-[168px] max-w-[168px] xs:min-w-[190px] xs:max-w-[190px] sm:min-w-[220px] sm:max-w-[220px] flex-shrink-0 snap-start bg-white rounded-2xl border border-gray-100 shadow-[0_2px_15px_rgba(0,0,0,0.03)] hover:border-[#C8A253]/25 hover:shadow-[0_10px_30px_rgba(0,0,0,0.07)] transition-all duration-300 ease-out flex flex-col relative overflow-hidden cursor-pointer"
                 >
-                  <Link
-                    to={`/product/${product._id}`}
-                    className="relative bg-gradient-to-b from-[#FAFAFA] to-white aspect-square p-4 sm:p-5 flex items-center justify-center overflow-hidden"
-                  >
+                  <div className="relative bg-gradient-to-b from-[#FAFAFA] to-white aspect-square p-4 sm:p-5 flex items-center justify-center overflow-hidden">
                     <img
-                      src={
-                        product.image ||
-                        "https://placehold.co/400x400/f5f5f5/cccccc?text=No+Image"
-                      }
+                      src={product.image || "https://placehold.co/400x400/f5f5f5/cccccc?text=No+Image"}
                       alt={product.name}
                       className="w-full h-full object-contain mix-blend-multiply transition-transform duration-500 ease-out group-hover/card:scale-105"
                     />
-                  </Link>
+                  </div>
 
                   <div className="flex flex-col flex-1 p-3 sm:p-4">
-                    <Link to={`/product/${product._id}`}>
-                      <h3 className="text-[12px] sm:text-[13px] font-medium text-gray-900 line-clamp-2 leading-snug mb-2 min-h-[2.2rem] group-hover/card:text-[#8B6914] transition-colors">
-                        {product.name}
-                      </h3>
-                    </Link>
+                    <h3 className="text-[12px] sm:text-[13px] font-medium text-gray-900 line-clamp-2 leading-snug mb-2 min-h-[2.2rem] group-hover/card:text-[#8B6914] transition-colors">
+                      {product.name}
+                    </h3>
 
                     <div className="mt-auto flex items-center justify-between gap-2">
-                      {product.price && (
-                        <p className="text-[14px] sm:text-[16px] font-bold text-gray-900 tracking-tight">
-                          ₹{product.price.toLocaleString("en-IN")}
-                        </p>
-                      )}
-
+                      {product.price && <p className="text-[14px] sm:text-[16px] font-bold text-gray-900 tracking-tight">₹{product.price.toLocaleString("en-IN")}</p>}
                       <div className="flex items-center gap-1.5 sm:gap-2">
-                        <button
-                          onClick={(e) => handleAddToCart(e, product._id)}
-                          className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white hover:border-black transition-all"
-                          aria-label="Add to cart"
-                        >
-                          <ShoppingBag size={14} strokeWidth={1.5} />
-                        </button>
-
-                        <button
-                          onClick={(e) => handleWishlist(e, product._id)}
-                          className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border flex items-center justify-center transition-all ${
-                            isWishlisted
-                              ? "border-red-500 bg-red-50 text-red-500 hover:bg-red-100"
-                              : "border-gray-200 text-gray-500 hover:border-red-500 hover:text-red-500 hover:bg-red-50"
-                          }`}
-                          aria-label="Toggle wishlist"
-                        >
-                          <Heart
-                            size={14}
-                            strokeWidth={1.5}
-                            className={
-                              isWishlisted ? "fill-red-500 text-red-500" : ""
-                            }
-                          />
-                        </button>
+                        <button onClick={(e) => handleAddToCart(e, product._id)} className="w-8 h-8 sm:w-9 sm:h-9 rounded-full border border-gray-200 flex items-center justify-center text-gray-600 hover:bg-black hover:text-white transition-all"><ShoppingBag size={14} /></button>
+                        <button onClick={(e) => handleWishlist(e, product._id)} className={`w-8 h-8 sm:w-9 sm:h-9 rounded-full border flex items-center justify-center transition-all ${isWishlisted ? "border-red-500 bg-red-50 text-red-500" : "border-gray-200 text-gray-500"}`}><Heart size={14} className={isWishlisted ? "fill-red-500" : ""} /></button>
                       </div>
                     </div>
                   </div>
@@ -347,89 +236,22 @@ const RecentlyViewed = () => {
             })}
           </div>
 
-          <button
-            onClick={() => scroll("right")}
-            className="absolute -right-1.5 sm:-right-5 top-[38%] -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center opacity-100 md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:border-[#C8A253]/50 hover:text-[#C8A253] text-gray-700 cursor-pointer">
-            <ChevronRight size={18} strokeWidth={2} />
+          <button onClick={() => scroll("right")} className="absolute -right-1.5 sm:-right-5 top-[38%] -translate-y-1/2 z-20 w-8 h-8 sm:w-11 sm:h-11 rounded-full bg-white shadow-md border border-gray-200 flex items-center justify-center md:opacity-0 md:group-hover:opacity-100 transition-all duration-300 hover:text-[#C8A253] cursor-pointer">
+            <ChevronRight size={18} />
           </button>
         </div>
-
-        {/* --- BOTTOM TRUST BADGES --- */}
-        {/* <div className="bg-[#FDFDFD] border border-gray-100 rounded-3xl p-6 md:p-8 flex flex-col md:flex-row justify-between items-start md:items-center gap-8 shadow-sm">
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full border border-[#C8A253]/30 bg-[#FCFAEF] flex items-center justify-center shrink-0">
-              <Truck size={20} className="text-[#C8A253]" strokeWidth={1.5} />
-            </div>
-            <div>
-              <h4 className="text-[13px] font-bold text-gray-900">
-                Free Shipping
-              </h4>
-              <p className="text-[12px] text-gray-500">
-                On all orders above ₹999
-              </p>
-            </div>
-          </div>
-
-          <div className="hidden md:block w-px h-10 bg-gray-200"></div>
-
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full border border-[#C8A253]/30 bg-[#FCFAEF] flex items-center justify-center shrink-0">
-              <ShieldCheck
-                size={20}
-                className="text-[#C8A253]"
-                strokeWidth={1.5}
-              />
-            </div>
-            <div>
-              <h4 className="text-[13px] font-bold text-gray-900">
-                100% Original
-              </h4>
-              <p className="text-[12px] text-gray-500">
-                Authentic products only
-              </p>
-            </div>
-          </div>
-
-          <div className="hidden md:block w-px h-10 bg-gray-200"></div>
-
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full border border-[#C8A253]/30 bg-[#FCFAEF] flex items-center justify-center shrink-0">
-              <RefreshCcw
-                size={20}
-                className="text-[#C8A253]"
-                strokeWidth={1.5}
-              />
-            </div>
-            <div>
-              <h4 className="text-[13px] font-bold text-gray-900">
-                Easy Returns
-              </h4>
-              <p className="text-[12px] text-gray-500">Hassle-free returns</p>
-            </div>
-          </div>
-
-          <div className="hidden md:block w-px h-10 bg-gray-200"></div>
-
-          <div className="flex items-center gap-4">
-            <div className="w-12 h-12 rounded-full border border-[#C8A253]/30 bg-[#FCFAEF] flex items-center justify-center shrink-0">
-              <Headphones
-                size={20}
-                className="text-[#C8A253]"
-                strokeWidth={1.5}
-              />
-            </div>
-            <div>
-              <h4 className="text-[13px] font-bold text-gray-900">
-                24/7 Support
-              </h4>
-              <p className="text-[12px] text-gray-500">We're here to help</p>
-            </div>
-          </div>
-        </div> */}
       </div>
+
+      {/* ⚡ QuickView Modal Rendered */}
+      {quickViewProduct && (
+        <QuickModel
+          isOpen={!!quickViewProduct}
+          onClose={() => setQuickViewProduct(null)}
+          product={quickViewProduct}
+        />
+      )}
     </section>
   );
 };
 
 export default RecentlyViewed;
-          
