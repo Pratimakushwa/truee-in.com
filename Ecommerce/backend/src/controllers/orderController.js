@@ -307,117 +307,6 @@
 
 //   res.status(200).json({ success: true, data: order });
 // });
-
-// const Order = require('../models/orderModel'); 
-// const Product = require('../models/ProductModel'); 
-// // ⚡ NAYE IMPORTS ADD KIYE
-// const User = require('../models/userModel');
-// const Coupon = require('../models/Coupon'); 
-// const wrapAsync = require('../utils/wrapAsync');
-// const ExpressError = require('../utils/expressError'); // Error handling ke liye
-// const mongoose = require('mongoose');
-
-// // ==========================================
-// // 1. ORDER CREATE KARNA
-// // ==========================================
-// exports.instantCheckout = wrapAsync(async (req, res) => {
-//   // ⚡ Frontend se aane wale couponApplied aur discountAmount ko nikal liya
-//   const { cartItems, totalAmount, couponApplied, discountAmount, shippingAddress, paymentInfo } = req.body;
-//   const userId = req.user ? req.user._id : new mongoose.Types.ObjectId();
-
-//   if (!cartItems || cartItems.length === 0) {
-//     throw new ExpressError(400, "Cart is empty");
-//   }
-
-//   const formattedOrderItems = cartItems.map(item => ({
-//     product: item.productId || item.product, 
-//     name: item.name,
-//     image: item.image || 'default-image.jpg',
-//     price: item.price,
-//     quantity: item.quantity
-//   }));
-
-//   const newOrder = await Order.create({
-//     user: userId,
-//     orderItems: formattedOrderItems,
-//     itemsPrice: totalAmount + (discountAmount || 0), // Discount se pehle ka price
-//     totalAmount: totalAmount, // Final price
-//     discountAmount: discountAmount || 0, // ⚡ Naya add kiya
-//     couponApplied: couponApplied || null, // ⚡ Naya add kiya
-//     paymentInfo: paymentInfo || { method: 'COD', paymentStatus: 'Paid' },
-//     shippingAddress: shippingAddress || {
-//       fullName: req.user ? req.user.name : "Luxury VIP Guest",
-//       phone: "9876543210",
-//       addressLine1: "123 Truee Luxury Avenue",
-//       city: "Mumbai",
-//       state: "Maharashtra",
-//       pincode: "400001" 
-//     }
-//   });
-
-//   for (let item of cartItems) {
-//     if(item.productId || item.product) {
-//        await Product.findByIdAndUpdate(item.productId || item.product, {
-//           $inc: { soldCount: item.quantity }
-//        });
-//     }
-//   }
-
-//   // ==========================================
-//   // ⚡ COUPON USED LOGIC (Sabse Zaroori)
-//   // ==========================================
-//   if (couponApplied) {
-//       // 1. Admin Dashboard ke liye: Coupon ka 'usedCount' +1 kar do
-//       await Coupon.findOneAndUpdate(
-//           { code: couponApplied }, 
-//           { $inc: { usedCount: 1 } }
-//       );
-
-//       // 2. User Profile ke liye: Agar user login hai, toh uske account se coupon nikal do
-//       if (req.user) {
-//           await User.findByIdAndUpdate(req.user._id, {
-//               $pull: { coupons: couponApplied } // $pull array se value remove karta hai
-//           });
-//       }
-//   }
-//   // ==========================================
-
-//   res.status(200).json({ 
-//     success: true, 
-//     message: "Order placed successfully!",
-//     orderId: newOrder._id 
-//   });
-// });
-
-// // ==========================================
-// // 2. MY ORDERS FETCH KARNA (User Dashboard)
-// // ==========================================
-// exports.getMyOrders = wrapAsync(async (req, res) => {
-//   if (!req.user) {
-//     throw new ExpressError(401, "Please login to view orders.");
-//   }
-//   const orders = await Order.find({ user: req.user._id }).sort({ createdAt: -1 });
-//   res.status(200).json({ success: true, orders });
-// });
-
-// // ==========================================
-// // 3. GET ORDER BY ID (Premium Tracking Page ke liye)
-// // ==========================================
-// exports.getOrderById = wrapAsync(async (req, res) => {
-//   const order = await Order.findById(req.params.id);
-  
-//   if (!order) {
-//     throw new ExpressError(404, "Order not found");
-//   }
-  
-//   // Security Check: Kya ye order usi user ka hai jo login hai?
-//   if (req.user && order.user.toString() !== req.user._id.toString()) {
-//     throw new ExpressError(403, "You are not authorized to view this order");
-//   }
-
-//   res.status(200).json({ success: true, data: order });
-// });
-
 const Order = require('../models/orderModel'); 
 const Product = require('../models/ProductModel'); 
 const User = require('../models/userModel');
@@ -426,6 +315,8 @@ const wrapAsync = require('../utils/wrapAsync');
 const ExpressError = require('../utils/expressError'); 
 const mongoose = require('mongoose');
 
+// ⚡ EMAIL & SHIPROCKET SERVICES IMPORTS
+const { sendOrderPlacedEmail } = require('../services/emailService'); 
 const { 
   createShiprocketOrder, 
   generateShiprocketAWB, 
@@ -433,7 +324,7 @@ const {
 } = require('../services/shiprocketService');
 
 // ==========================================
-// 1. ORDER CREATE KARNA
+// 1. ORDER CREATE KARNA (INSTANT CHECKOUT)
 // ==========================================
 exports.instantCheckout = wrapAsync(async (req, res) => {
   const { cartItems, totalAmount, couponApplied, discountAmount, shippingAddress, paymentInfo } = req.body;
@@ -451,14 +342,14 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     quantity: item.quantity
   }));
 
-  // 1. Order ko pehle apne Database mein save karo
+  // Step A: Order ko apne Database mein save karo
   const newOrder = await Order.create({
     user: userId,
     orderItems: formattedOrderItems,
-    itemsPrice: totalAmount + (discountAmount || 0),
-    totalAmount: totalAmount,
-    discountAmount: discountAmount || 0,
-    couponApplied: couponApplied || null,
+    itemsPrice: totalAmount + (discountAmount || 0), 
+    totalAmount: totalAmount, 
+    discountAmount: discountAmount || 0, 
+    couponApplied: couponApplied || null, 
     paymentInfo: paymentInfo || { method: 'COD', paymentStatus: 'Paid' },
     shippingAddress: shippingAddress || {
       fullName: req.user ? req.user.name : "Luxury VIP Guest",
@@ -470,7 +361,7 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     }
   });
 
-  // 2. Product ka stock/sold count update karo
+  // Step B: Product ka sold count update karo
   for (let item of cartItems) {
     if(item.productId || item.product) {
        await Product.findByIdAndUpdate(item.productId || item.product, {
@@ -479,12 +370,13 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     }
   }
 
-  // 3. Coupon Logic
+  // Step C: Coupon Logic (Admin count & User Profile sync)
   if (couponApplied) {
       await Coupon.findOneAndUpdate(
           { code: couponApplied }, 
           { $inc: { usedCount: 1 } }
       );
+
       if (req.user) {
           await User.findByIdAndUpdate(req.user._id, {
               $pull: { coupons: couponApplied } 
@@ -493,10 +385,9 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
   }
 
   // ==========================================
-  // ⚡ SHIPROCKET FULL AUTOMATION (FIXED)
+  // ⚡ SHIPROCKET FULL AUTOMATION
   // ==========================================
   try {
-    // FIX: Shiprocket requires a Last Name, so we split the fullName
     const nameParts = newOrder.shippingAddress.fullName.split(' ');
     const fName = nameParts[0];
     const lName = nameParts.length > 1 ? nameParts.slice(1).join(' ') : 'Customer';
@@ -504,15 +395,15 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
     const shiprocketPayload = {
       order_id: newOrder._id.toString(), 
       order_date: new Date().toISOString().replace('T', ' ').substring(0, 16),
-      pickup_location: "Primary", // <-- ⚠️ Dhyan rakhna, dashboard me naam 'Primary' hona chahiye
+      pickup_location: "Primary", 
       billing_customer_name: fName,
-      billing_last_name: lName, // Ab ye empty nahi jayega
+      billing_last_name: lName, 
       billing_address: newOrder.shippingAddress.addressLine1,
       billing_city: newOrder.shippingAddress.city,
       billing_pincode: newOrder.shippingAddress.pincode,
       billing_state: newOrder.shippingAddress.state,
       billing_country: "India",
-      billing_email: req.user ? req.user.email : "guest@trueeluxury.com",
+      billing_email: req.user ? req.user.email : (req.body.email || "guest@trueeluxury.com"),
       billing_phone: newOrder.shippingAddress.phone,
       shipping_is_billing: true, 
       order_items: formattedOrderItems.map(item => ({
@@ -526,39 +417,66 @@ exports.instantCheckout = wrapAsync(async (req, res) => {
       length: 10, breadth: 10, height: 10, weight: 1
     };
 
-    // STEP A: Order Bhejo
     const shiprocketResponse = await createShiprocketOrder(shiprocketPayload);
     
     if(shiprocketResponse && shiprocketResponse.order_id && shiprocketResponse.shipment_id) {
       newOrder.shiprocketOrderId = shiprocketResponse.order_id;
       
-      // STEP B: AWB (Tracking Number) Generate karo
       const awbResponse = await generateShiprocketAWB(shiprocketResponse.shipment_id);
       
       if (awbResponse && awbResponse.awb_code) {
-        // Database mein tracking details save kar lo
         newOrder.trackingDetails = {
           courierPartner: awbResponse.courier_name || 'Assigned Courier',
           awbNumber: awbResponse.awb_code,
           shippedAt: new Date()
         };
         
-        // STEP C: Delivery boy ko Pickup ke liye bulao
         await requestShiprocketPickup(shiprocketResponse.shipment_id);
       }
       
       await newOrder.save();
+      console.log("🚀 Shiprocket Order, AWB, and Pickup Automated Successfully!");
     }
-
-  } catch (error) {
-    // ⚡ DEBUGGER: Ye ab Shiprocket ka asli error batayega
-    console.error("⚠️ Shiprocket Automation Failed:", error.message);
-    if (error.response && error.response.data) {
-       console.error("🔴 SHIPROCKET API ERROR REASON:", JSON.stringify(error.response.data, null, 2));
+  } catch (shiprocketError) {
+    console.error("⚠️ Shiprocket Automation Failed:", shiprocketError.message);
+    if (shiprocketError.response && shiprocketError.response.data) {
+       console.error("🔴 SHIPROCKET API ERROR REASON:", JSON.stringify(shiprocketError.response.data, null, 2));
     }
   }
-  // ==========================================
 
+  // ==========================================
+  // 📨 AUTOMATIC EMAIL NOTIFICATION CODE
+  // ==========================================
+  
+  // 1. CUSTOMER KO EMAIL BHEJNA
+  try {
+    let customerData = req.user ? req.user : {
+      name: newOrder.shippingAddress.fullName,
+      email: req.body.email || "customer@truee.in"
+    };
+    
+    await sendOrderPlacedEmail(newOrder, customerData);
+    console.log(`✅ Confirmation email sent to CUSTOMER (${customerData.email})`);
+  } catch (mailError) {
+    console.error("❌ Customer Email trigger failed:", mailError.message);
+  }
+
+  // 2. ⚡ ADMIN KO EMAIL BHEJNA 
+  try {
+    // Agar env me ADMIN_EMAIL nahi mili, toh direct ye wali id use hogi
+    let adminEmailId = process.env.ADMIN_EMAIL || "pratimaku6267@gmail.com"; 
+    
+    await sendOrderPlacedEmail(newOrder, {
+      name: "Truee Luxury Admin",
+      email: adminEmailId, 
+      isAdminAlert: true
+    });
+    console.log(`✅ Alert email sent to ADMIN (${adminEmailId})`);
+  } catch (adminMailError) {
+    console.error("❌ Admin Email trigger failed:", adminMailError.message);
+  }
+
+  // Final Success Response
   res.status(200).json({ 
     success: true, 
     message: "Order placed successfully!",
@@ -578,7 +496,7 @@ exports.getMyOrders = wrapAsync(async (req, res) => {
 });
 
 // ==========================================
-// 3. GET ORDER BY ID (Premium Tracking Page ke liye)
+// 3. GET ORDER BY ID (Premium Tracking Page)
 // ==========================================
 exports.getOrderById = wrapAsync(async (req, res) => {
   const order = await Order.findById(req.params.id);

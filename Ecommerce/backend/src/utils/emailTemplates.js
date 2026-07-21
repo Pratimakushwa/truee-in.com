@@ -8,7 +8,7 @@ const forgotPasswordTemplate = (userName, otpCode) => {
         
         <!-- Header -->
         <div style="background-color: #0a0a0a; padding: 35px 20px; text-align: center;">
-          <h1 style="color: #C8A253; margin: 0; font-family: Georgia, serif; letter-spacing: 6px; font-size: 26px; text-transform: uppercase;">TRUEE</h1>
+          <h1 style="color: #C8A253; margin: 0; font-family: Georgia, serif; letter-spacing: 6px; font-size: 36px; text-transform: uppercase;">TRUEE LUXURY</h1>
           <p style="color: #888888; font-size: 12px; letter-spacing: 2px; margin-top: 5px; text-transform: uppercase;">Premium Experience</p>
         </div>
         
