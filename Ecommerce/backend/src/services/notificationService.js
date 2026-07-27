@@ -42,7 +42,7 @@ const sendAdminEmail = async (subject, htmlBody) => {
 };
 
 const FRONTEND_URL = process.env.VITE_FRONTEND_URL || 'https://truee.in';
-// const LOGO_URL = process.env.EMAIL_LOGO_URL || `${FRONTEND_URL}/Truee_Luxury_Logo.png`;
+const LOGO_URL = process.env.EMAIL_LOGO_URL || `${FRONTEND_URL}/Truee_Luxury_Logo.png`;
 // Bas itna change karo
 // const LOGO_URL = "https://truee.in/Truee_Luxury_Logo.png";
 
@@ -51,8 +51,10 @@ const emailTemplate = (name, heading, body) => `
     <table width="600" cellpadding="0" cellspacing="0" style="margin:auto;background:#fff;border-radius:8px;overflow:hidden;">
       <tr><td style="background:#0A0A0A;padding:24px;text-align:center;border-bottom:4px solid #C8A253;">
         <a href="${FRONTEND_URL}" style="text-decoration:none;">
-          <img src="${LOGO_URL}" alt="TRUEE" width="120" style="display:block;margin:0 auto;max-width:120px;height:auto;border:0;" />
+          <img src="${LOGO_URL}" alt="TRUEE" width="80" style="display:block;margin:0 auto;max-width:120px;height:auto;border:0;" />
         </a>
+         <h1 style="color: #C8A253; font-size: 28px; letter-spacing: 4px; margin: 0; font-family: 'Helvetica Neue', Arial, sans-serif;">TRUEE LUXURY</h1>
+
         <p style="margin:10px 0 0;color:#9ca3af;font-size:11px;letter-spacing:0.2em;text-transform:uppercase;">Truee Rewards</p>
       </td></tr>
       <tr><td style="padding:30px;color:#333;">

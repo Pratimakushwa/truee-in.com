@@ -25,6 +25,7 @@
 // };
 
 // export default Deals;
+
 import React from 'react';
 import TextContent from './TextContent';
 import ImageSlider from './ImageSlider';
