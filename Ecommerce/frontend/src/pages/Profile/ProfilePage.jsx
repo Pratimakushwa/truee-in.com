@@ -105,7 +105,7 @@ import MyReviews from '../../components/MyReviews';
 import RewardWallet from '../../components/rewards/RewardWallet';
 import Wishlist from '../Wishlist';
 import MyNewsletterStatus from "../../components/MyNewsletterStatus";
-import NewsletterSubscribers from "../Admin/NewsletterSubscribers";
+// import NewsletterSubscribers from "../Admin/NewsletterSubscribers";
 import axiosInstance from "../../utils/axiosInstance";
 
 // ⚡ Har tab ka apna title/subtitle — ab hardcoded "My Account" sabhi page par nahi dikhega
@@ -154,7 +154,7 @@ const Account = () => {
       case "wallet": return <RewardWallet />
       case "wishlist": return <Wishlist />
       // ⚡ FIX: Admin ko sabhi subscribers dikhenge, normal user ko sirf apni subscription status
-      case "newsletter": return isAdmin ? <NewsletterSubscribers /> : <MyNewsletterStatus />;
+      // case "newsletter": return isAdmin ? <NewsletterSubscribers /> : <MyNewsletterStatus />;
       default: return <div className="p-10 text-gray-400">Coming Soon...</div>
     }
   }

@@ -206,7 +206,7 @@ const Sidebar = ({ activeTab, setActiveTab, isCollapsed, setIsCollapsed, setIsMo
 
         <SectionHeader title="Collection" />
         <Sidebaritem icon={Box} label="My Coupons" id="coupons" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
-        <Sidebaritem icon={Mail} label="Newsletter" id="newsletter" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
+        {/* <Sidebaritem icon={Mail} label="Newsletter" id="newsletter" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} /> */}
         <Sidebaritem icon={Heart} label="Wishlist" id="wishlist" activeTab={activeTab} setActiveTab={setActiveTab} isCollapsed={isCollapsed} />
       </div>
 
