@@ -132,6 +132,7 @@
 //     </div>
 //   );
 // }
+
 import React, { useState, useEffect } from 'react';
 import { motion } from 'framer-motion';
 import { Trash2, ShoppingBag, ArrowRight, X, Heart, ShoppingCart } from 'lucide-react';
