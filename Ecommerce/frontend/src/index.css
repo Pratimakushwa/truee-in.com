@@ -25,9 +25,9 @@
 }
 
 /* ── 1. Global Font Setup ───────────────────────────────────────── */
-html, body {
+/* html, body {
   font-family: 'Inter', sans-serif !important;
-}
+} */
 
 /* ── 2. Hide Scrollbar Utilities (For Categories & Sliders) ─────── */
 .hide-scrollbar::-webkit-scrollbar {
@@ -127,7 +127,7 @@ input:-webkit-autofill:focus ~ label {
 
 /* Premium section title */
 .truee-section-title {
-  font-family: 'Playfair Display', Georgia, serif;
+  /* font-family: 'Playfair Display', Georgia, serif; */
   @apply text-2xl md:text-3xl font-bold text-gray-900 tracking-tight;
 }
 
