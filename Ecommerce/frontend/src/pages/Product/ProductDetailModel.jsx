@@ -497,24 +497,24 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
           </div>
 
           <div className="w-full lg:w-[55%] flex flex-col pt-2 lg:pt-4 lg:pl-10">
-            <h1 className="text-3xl md:text-5xl font-medium tracking-tight mb-4 leading-tight">{fullProduct?.name}</h1>
+            <h1 className="text-2xl md:text-3xl font-medium tracking-tight mb-4 leading-tight">{fullProduct?.name}</h1>
             
             <div className="flex items-center gap-3 md:gap-4 mb-6 border-b border-gray-100 pb-6 flex-wrap">
               <div className="flex items-center gap-2 md:gap-3">
                 {discountPercentage > 0 && (
-                  <span className="text-2xl md:text-[28px] font-black text-[#0f763e] flex items-center leading-none">
+                  <span className="text-2xl md:text-[20px] font-black text-[#0f763e] flex items-center leading-none">
                     <span className="text-lg md:text-xl mr-0.5">↓</span>
                     {discountPercentage}%
                   </span>
                 )}
 
                 {showStrikethrough && (
-                  <span className="text-xl md:text-[26px] text-gray-500 line-through decoration-1 opacity-80 leading-none mt-1">
+                  <span className="text-2xl md:text-[16px] text-gray-500 line-through decoration-1 opacity-80 leading-none mt-1">
                     ₹{originalPrice.toLocaleString()}
                   </span>
                 )}
 
-                <span className="text-3xl md:text-4xl font-extrabold text-[#222222] leading-none ml-1">
+                <span className="text-2xl md:text-2xl font-bold text-[#222222] leading-none ml-1">
                   ₹{mainPrice.toLocaleString()}
                 </span>
               </div>
@@ -659,9 +659,9 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
   </span>
 
   {/* Main Heading */}
-  <h2 className="text-4xl md:text-5xl lg:text-[58px] font-bold tracking-tight text-[#111] leading-[1.05]">
+  <h2 className="text-2xl md:text-2xl lg:text-[38px] font-bold tracking-tight text-[#111] leading-[1.05]">
     Technical <br className="hidden lg:block" />
-    <span className="font-serif italic font-normal text-gray-800">Details</span>
+    <span className="font-serif  font-normal text-gray-800">Details</span>
     <span className="text-[#C8A253]">.</span>
   </h2>
 </div>
@@ -797,7 +797,7 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
         {/* ⚡⚡ CURATED RECOMMENDATIONS - FASHION E-COMMERCE STYLE ⚡⚡ */}
         <section id="curated-section" className="py-16 md:py-32 bg-[#FAFAFA] border-t border-gray-100 relative z-10">
           <div className="max-w-[1340px] mx-auto px-6 md:px-12">
-            <h2 className="text-2xl md:text-5xl font-medium tracking-tighter mb-8 md:mb-12 text-center md:text-left text-gray-900">Recommended for you.</h2>
+            <h2 className="text-2xl md:text-4xl font-medium tracking-tighter mb-8 md:mb-12 text-center md:text-left text-gray-900">Recommended for you.</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
               {relatedProducts.slice(0, 4).map((p) => (
                 <div key={p._id} className="group cursor-pointer relative flex flex-col gap-3 md:gap-4" style={{ touchAction: 'manipulation' }} onClick={async (e) => { e.preventDefault(); if (modalRef.current) modalRef.current.scrollTo({ top: 0, behavior: 'smooth' }); setLoading(true); setActiveImgIdx(0); setSelectedVariantIdx(0); setExpandDescription(false); try { const { data } = await axiosInstance.get(`/products/${p._id}`); if (data?.success && data?.product) { setFullProduct(data.product); setRelatedProducts(data.relatedProducts || []); if (data.product.techSpecs?.length > 0) setActiveSpecTab(data.product.techSpecs[0].category); } } catch (e) { console.error(e); } finally { setLoading(false); } }}>
@@ -821,7 +821,7 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
               {[1, 2, 3, 4, 5].map((i) => (<Star key={i} fill="currentColor" size={18} className="md:w-[20px] md:h-[20px]" />))}
             </div>
             
-            <h2 className="text-3xl md:text-7xl font-medium tracking-tighter mb-4 md:mb-6 leading-tight capitalize text-gray-900">
+            <h2 className="text-2xl md:text-4xl font-medium tracking-tighter mb-4 md:mb-6 leading-tight capitalize text-gray-900">
               {fullProduct?.brand ? `${fullProduct.brand} Signature .` : "Premium Signature ."}
             </h2>            
             <p className="text-[10px] md:text-[12px] font-bold uppercase tracking-[0.25em] text-gray-400 mb-12 md:mb-20">
