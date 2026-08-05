@@ -1,3 +1,4 @@
+
 // import { Link } from 'react-router-dom';
 // import {
 //   ShieldCheck, Truck, RotateCcw, BadgeCheck, Lock, IndianRupee,
@@ -17,7 +18,10 @@
 
 // export default function TrustSection() {
 //   return (
-//     <section className="relative w-full py-10 overflow-hidden">
+//     <section 
+//       className="relative w-full py-10 overflow-hidden font-sans"
+//       style={{ fontFamily: "'Inter', sans-serif" }} // ⚡ Applied Inter font globally
+//     >
 //       <div className="absolute inset-0 bg-[#FCFBF8]" />
 //       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[#C8A253]/40 to-transparent rounded-full" />
 
@@ -31,7 +35,8 @@
 //             <span className="w-10 h-[1px] bg-[#C8A253]/60"></span>
 //           </div>
 
-//           <h2 className="text-xl sm:text-2xl md:text-[32px] font-serif font-bold text-[#111] mb-2">
+//           {/* ⚡ Changed font-serif to font-sans */}
+//           <h2 className="text-xl sm:text-2xl md:text-[32px] font-sans font-bold text-[#111] mb-2">
 //             Shop with complete confidence
 //           </h2>
 //           <p className="text-gray-500 text-[14px] md:text-[15px] max-w-2xl mx-auto leading-relaxed">
@@ -83,6 +88,7 @@
 //     </section>
 //   );
 // }
+
 import { Link } from 'react-router-dom';
 import {
   ShieldCheck, Truck, RotateCcw, BadgeCheck, Lock, IndianRupee,
@@ -104,7 +110,8 @@ export default function TrustSection() {
   return (
     <section 
       className="relative w-full py-10 overflow-hidden font-sans"
-      style={{ fontFamily: "'Inter', sans-serif" }} // ⚡ Applied Inter font globally
+      // ⚡ Only Font Family changed to Apple SF Pro
+      style={{ fontFamily: '"SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif' }} 
     >
       <div className="absolute inset-0 bg-[#FCFBF8]" />
       <div className="absolute top-0 left-1/2 -translate-x-1/2 w-3/4 h-px bg-gradient-to-r from-transparent via-[#C8A253]/40 to-transparent rounded-full" />

@@ -1,162 +1,4 @@
-// import React, { useState, useEffect } from 'react';
-// import { useNavigate } from 'react-router-dom';
-// import axiosInstance from '../../utils/axiosInstance';
-// import { Swiper, SwiperSlide } from 'swiper/react';
-// import { Autoplay } from 'swiper/modules';
-// import 'swiper/css';
-// import QuickModel from '../Product/ProductDetailModel';
 
-// export default function CategoryShowcase() {
-//   const navigate = useNavigate();
-//   const [products, setProducts] = useState([]);
-//   const [activeCategory, setActiveCategory] = useState('ALL');
-//   const [loading, setLoading] = useState(true);
-//   const [quickViewProduct, setQuickViewProduct] = useState(null);
-
-//   const getProductImg = (p) => {
-//     if (p.variants?.[0]?.images?.[0]?.url) return p.variants[0].images[0].url;
-//     if (p.images?.[0]?.url) return p.images[0].url;
-//     return 'https://placehold.co/400x400/f9f9f9/C8A253?text=No+Image';
-//   };
-
-//   useEffect(() => {
-//     const fetchProducts = async () => {
-//       try {
-//         setLoading(true);
-//         const { data } = await axiosInstance.get('/products');
-//         if (data.success) {
-//           setProducts(data.products);
-//         }
-//       } catch (error) {
-//         console.error("Error fetching showcase products:", error);
-//       } finally {
-//         setLoading(false);
-//       }
-//     };
-//     fetchProducts();
-//   }, []);
-
-//   const formatPrice = (price) => {
-//     if (price === undefined || price === null) return '';
-//     return new Intl.NumberFormat('en-IN', {
-//       style: 'currency', currency: 'INR', maximumFractionDigits: 0
-//     }).format(price);
-//   };
-
-//   // ⚡ FIX: Sabhi brand names ko pehle uppercase kiya, aage-peeche ke spaces hataye (trim), phir unique Set banaya
-//   const availableBrands = ['ALL', ...new Set(
-//     products
-//       .map(p => p.brand ? p.brand.trim().toUpperCase() : null)
-//       .filter(Boolean)
-//   )];
-
-//   const displayBrands = products.length > 0 ? availableBrands : ['ALL', 'APPLE', 'SONY', 'MARSHALL', 'SAMSUNG', 'LOGITECH'];
-//   const currentCategory = activeCategory === 'ALL' && products.length > 0 ? availableBrands[0] : activeCategory;
-
-//   // ⚡ FIX: Filter karte waqt bhi product ke brand ko uppercase karke match karwaya
-//   const displayProducts = products
-//     .filter(p => activeCategory === 'ALL' || (p.brand && p.brand.trim().toUpperCase() === activeCategory))
-//     .slice(0, 6);
-
-//   return (
-//     <section className="w-full bg-[#fbfbfb] py-6 md:py-10 px-4 md:px-12 font-sans" style={{ fontFamily: "'Inter', sans-serif" }}>
-//       <div className="w-full xl:max-w-[89%] mx-auto flex flex-col items-center">
-
-//         <h2 className="text-2xl md:text-4xl font-serif font-medium text-[#111] mb-2 md:mb-4">Categories</h2>
-//         <p className="text-gray-500 text-[10px] md:text-sm text-center max-w-xl mb-6 md:mb-10 leading-relaxed px-2">
-//           Discover a wide range of premium products tailored precisely for your personal setup.
-//         </p>
-
-//         <div className="flex overflow-x-auto hide-scrollbar w-full max-w-6xl justify-start gap-3 md:gap-4 mb-8 md:mb-14 relative pb-2 md:pb-4 px-2 md:px-0">
-//           <div className="flex gap-4 min-w-max">
-//             {displayBrands.map((brandLabel) => (
-//               <button
-//                 key={brandLabel}
-//                 onClick={() => setActiveCategory(brandLabel)}
-//                 className={`px-6 py-2 rounded-md text-[10px] md:text-[11px] font-bold tracking-[0.15em] transition-all duration-300 uppercase shadow-sm cursor-pointer ${
-//                   activeCategory === brandLabel || currentCategory === brandLabel
-//                     ? 'bg-black text-white shadow-md'
-//                     : 'bg-white text-gray-500 hover:text-black hover:bg-gray-50 border border-gray-100'
-//                 }`}
-//               >
-//                 {brandLabel}
-//               </button>
-//             ))}
-//           </div>
-//         </div>
-
-//         {loading ? (
-//            <div className="flex justify-center items-center h-48"><div className="w-8 h-8 border-2 border-black border-t-transparent rounded-full animate-spin"></div></div>
-//         ) : (
-//           <div className="w-full">
-//             {/* Desktop Grid */}
-//             <div className="hidden md:grid grid-cols-3 gap-x-6 gap-y-12 w-full mb-10 justify-items-center">
-//               {displayProducts.map((p) => {
-//                   const originalPrice = Number(p.price) || 0;
-//                   const discount = Number(p.discountPrice) || 0;
-//                   const finalPrice = originalPrice - discount;
-//                   const savePercent = discount > 0 ? Math.round((discount / originalPrice) * 100) : 0;
-//                   const imgSrc = getProductImg(p);
-
-//                   return (
-//                     <div key={p._id} className="bg-white w-full max-w-[340px] rounded-lg p-4 flex flex-col shadow-[0_2px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] transition-all duration-300 cursor-pointer overflow-hidden border border-gray-50 relative" onClick={() => setQuickViewProduct(p)}>
-
-//                       <div className="w-full h-[220px] rounded-md mb-5 flex items-center justify-center p-6 bg-white">
-//                         <img src={imgSrc} alt={p.name} className="max-w-full max-h-full object-contain hover:scale-105 transition-transform duration-500" />
-//                       </div>
-
-//                       <div className="flex flex-col flex-1 px-1">
-//                         <h3 className="text-[12px] font-[800] text-[#111] tracking-wider uppercase mb-1 truncate">{p.category || p.name}</h3>
-//                       </div>
-//                     </div>
-//                   );
-//               })}
-//             </div>
-
-//             {/* Mobile Slider */}
-//             <div className="block md:hidden w-full mb-6">
-//               <Swiper modules={[Autoplay]} spaceBetween={20} slidesPerView={1.2} loop={true} autoplay={{ delay: 3000, disableOnInteraction: false }} className="w-full pb-8 pt-2">
-//                 {displayProducts.map((p) => {
-//                     const originalPrice = Number(p.price) || 0;
-//                     const discount = Number(p.discountPrice) || 0;
-//                     const finalPrice = originalPrice - discount;
-//                     const savePercent = discount > 0 ? Math.round((discount / originalPrice) * 100) : 0;
-//                     const imgSrc = getProductImg(p);
-
-//                     return (
-//                       <SwiperSlide key={p._id} className="flex justify-center">
-//                         <div className="bg-white w-full cursor-pointer rounded-lg p-4 flex flex-col shadow-[0_2px_15px_rgb(0,0,0,0.06)] overflow-hidden border border-gray-50 relative" onClick={() => setQuickViewProduct(p)}>
-
-//                           <div className="w-full h-[200px] rounded-md mb-4 flex items-center justify-center p-6 bg-white">
-//                             <img src={imgSrc} alt={p.name} className="max-w-full max-h-full object-contain" />
-//                           </div>
-
-//                           <div className="flex flex-col flex-1 px-1">
-//                             <h3 className="text-[11px] font-[800] text-[#111] tracking-wider uppercase mb-1 truncate">{p.category || p.name}</h3>
-//                           </div>
-//                         </div>
-//                       </SwiperSlide>
-//                     );
-//                 })}
-//               </Swiper>
-//             </div>
-//           </div>
-//         )}
-
-//         {!loading && (
-//           <div className="flex justify-center w-full mt-2 md:mt-[-10px]">
-//           <button onClick={() => navigate('/shop')} className="bg-black text-white text-[10px] md:text-[11px] font-[800] tracking-[0.2em] uppercase px-8 py-3 rounded-[6px] hover:bg-gray-800 transition-colors shadow-lg cursor-pointer">View More</button>
-//             {/* <button onClick={() => navigate('/shop')} className="bg-black text-white text-[10px] md:text-[11px] font-[800] tracking-[0.2em] uppercase px-8 py-3 rounded-[6px] hover:bg-gray-800 transition-colors shadow-lg cursor-pointer">View More</button> */}
-//           </div>
-//         )}
-//       </div>
-
-//       {quickViewProduct && (
-//         <QuickModel isOpen={!!quickViewProduct} onClose={() => setQuickViewProduct(null)} product={quickViewProduct} />
-//       )}
-//     </section>
-//   );
-// }
 
 // import React, { useState, useEffect } from "react";
 // import { useNavigate } from "react-router-dom";
@@ -205,7 +47,7 @@
 //     }).format(price);
 //   };
 
-//   // ⚡ FIX: Sabhi brand names ko pehle uppercase kiya, aage-peeche ke spaces hataye (trim), phir unique Set banaya
+//   // Unique Brand List
 //   const availableBrands = [
 //     "ALL",
 //     ...new Set(
@@ -219,12 +61,12 @@
 //     products.length > 0
 //       ? availableBrands
 //       : ["ALL", "APPLE", "SONY", "MARSHALL", "SAMSUNG", "LOGITECH"];
+      
 //   const currentCategory =
 //     activeCategory === "ALL" && products.length > 0
 //       ? availableBrands[0]
 //       : activeCategory;
 
-//   // ⚡ FIX: Filter karte waqt bhi product ke brand ko uppercase karke match karwaya
 //   const displayProducts = products
 //     .filter(
 //       (p) =>
@@ -241,30 +83,29 @@
 //       <div className="w-full xl:max-w-[89%] mx-auto flex flex-col items-center">
 //         {/* Header Section */}
 //         <div className="flex flex-col items-center mb-8 md:mb-14">
-//           {/* Golden Tag */}
 //           <span className="text-[9px] md:text-[11px] font-bold tracking-[0.2em] text-[#c9a15a] uppercase mb-2">
 //             Explore Our Range
 //           </span>
 
-//           {/* Categories Title */}
-//           <h2 className="text-2xl sm:text-3xl md:text-[32px] font-serif font-bold text-[#111] mb-2 md:mb-2">
+//           <h2 className="text-2xl sm:text-3xl md:text-[32px] font-sans font-bold text-[#111] mb-2 md:mb-2">
 //             Categories
 //           </h2>
 
-//           {/* Description */}
 //           <p className="text-gray-500 text-[10px] md:text-sm text-center max-w-2xl leading-relaxed px-4">
 //             Discover a wide range of premium products tailored precisely for
 //             your personal setup.
 //           </p>
 //         </div>
 
-//         <div className="flex overflow-x-auto hide-scrollbar w-full max-w-6xl justify-start gap-3 md:gap-4 mb-8 md:mb-14 relative pb-2 md:pb-4 px-2 md:px-0">
-//           <div className="flex gap-4 min-w-max">
+//         {/* Brand Filter Buttons */}
+//         <div className="flex overflow-x-auto hide-scrollbar w-full max-w-6xl justify-start gap-2 md:gap-4 mb-8 md:mb-14 relative pb-2 md:pb-4 px-2 md:px-0">
+//           <div className="flex gap-2 md:gap-4 min-w-max">
 //             {displayBrands.map((brandLabel) => (
 //               <button
 //                 key={brandLabel}
+//                 title={brandLabel}
 //                 onClick={() => setActiveCategory(brandLabel)}
-//                 className={`px-6 py-2 rounded-md text-[10px] md:text-[11px] font-bold tracking-[0.15em] transition-all duration-300 uppercase shadow-sm cursor-pointer ${
+//                 className={`px-4 md:px-6 py-2 rounded-md text-[10px] md:text-[11px] font-bold tracking-[0.12em] transition-all duration-300 uppercase shadow-sm cursor-pointer whitespace-nowrap ${
 //                   activeCategory === brandLabel ||
 //                   currentCategory === brandLabel
 //                     ? "bg-black text-white shadow-md"
@@ -298,7 +139,7 @@
 //                 return (
 //                   <div
 //                     key={p._id}
-//                     className="relative bg-white  rounded-lg p-4 flex flex-col shadow-[0_2px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] w-full rounded-2xl p-4 lg:p-5 flex flex-col cursor-pointer group border border-transparent hover:border-[#c9a15a]/40 transition-all duration-300"
+//                     className="relative bg-white shadow-[0_2px_15px_rgb(0,0,0,0.03)] hover:shadow-[0_8px_30px_rgb(0,0,0,0.08)] w-full rounded-2xl p-4 lg:p-5 flex flex-col cursor-pointer group border border-transparent hover:border-[#c9a15a]/40 transition-all duration-300"
 //                     onClick={() => setQuickViewProduct(p)}
 //                   >
 //                     {savePercent > 0 && (
@@ -315,8 +156,12 @@
 //                       />
 //                     </div>
 
-//                     <h3 className="text-[11px] lg:text-[12px] font-extrabold text-[#111] tracking-wide uppercase leading-snug mb-1 line-clamp-2 min-h-[28px]">
-//                       {p.category || p.name}
+//                     {/* ⚡ FIX: Displaying p.name instead of p.category */}
+//                     <h3 
+//                       className="text-[11px] lg:text-[12px] font-extrabold text-[#111] tracking-wide uppercase leading-snug mb-1 line-clamp-2 min-h-[28px]" 
+//                       title={p.name || p.category}
+//                     >
+//                       {p.name || p.category}
 //                     </h3>
 
 //                     {finalPrice > 0 && (
@@ -392,8 +237,12 @@
 //                           />
 //                         </div>
 
-//                         <h3 className="text-[10px] font-extrabold text-[#111] tracking-wide uppercase leading-snug mb-1 line-clamp-2 min-h-[24px]">
-//                           {p.category || p.name}
+//                         {/* ⚡ FIX: Displaying p.name instead of p.category */}
+//                         <h3 
+//                           className="text-[10px] font-extrabold text-[#111] tracking-wide uppercase leading-snug mb-1 line-clamp-2 min-h-[24px]" 
+//                           title={p.name || p.category}
+//                         >
+//                           {p.name || p.category}
 //                         </h3>
 
 //                         {finalPrice > 0 && (
@@ -534,7 +383,8 @@ export default function CategoryShowcase() {
   return (
     <section
       className="w-full bg-[#fbfbfb] py-6 md:py-10 px-4 md:px-12 font-sans"
-      style={{ fontFamily: "'Inter', sans-serif" }}
+      // ⚡ Apple font applied globally here
+      style={{ fontFamily: '"SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif' }}
     >
       <div className="w-full xl:max-w-[89%] mx-auto flex flex-col items-center">
         {/* Header Section */}

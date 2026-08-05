@@ -24,10 +24,10 @@
   --theme-gradient: linear-gradient(135deg, #C8A253 0%, #E8D5A3 100%);
 }
 
-/* ── 1. Global Font Setup ───────────────────────────────────────── */
-/* html, body {
-  font-family: 'Inter', sans-serif !important;
-} */
+/* ── 1. Global Font Setup (APPLE SF PRO) ────────────────────────── */
+html, body {
+  font-family: "SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif !important;
+}
 
 /* ── 2. Hide Scrollbar Utilities (For Categories & Sliders) ─────── */
 .hide-scrollbar::-webkit-scrollbar {

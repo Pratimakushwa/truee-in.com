@@ -645,105 +645,119 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
           </section>
         )}
 
-        {/* ⚡⚡ TECH SPECS - LUXURY HORIZONTAL CARDS ⚡⚡ */}
-      <section id="tech-specs-section" className="py-16 md:py-28 bg-[#FAFAFA] border-y border-gray-100">
-  <div className="max-w-[1340px] mx-auto px-6 md:px-12">
-    <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
-      
-      {/* Left Sidebar - Title & Tabs */}
-      <div className="w-full lg:w-[30%] shrink-0">
-      <div className="mb-10 md:mb-16">
-  {/* Small Accent Tag */}
-  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#C8A253] block mb-2">
-    Specifications
-  </span>
+       {/* ⚡⚡ TECH SPECS - LUXURY HORIZONTAL CARDS (BUG FIXED) ⚡⚡ */}
+        <section id="tech-specs-section" className="py-16 md:py-28 bg-[#FAFAFA] border-y border-gray-100">
+          <div className="max-w-[1340px] mx-auto px-6 md:px-12">
+            <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+              
+              {/* Left Sidebar - Title & Tabs */}
+              <div className="w-full lg:w-[30%] shrink-0">
+                <div className="mb-10 md:mb-16">
+                  <span className="text-[10px] font-bold uppercase tracking-[0.3em] text-[#C8A253] block mb-2">
+                    Specifications
+                  </span>
+                  <h2 className="text-2xl md:text-2xl lg:text-[38px] font-bold tracking-tight text-[#111] leading-[1.05]">
+                    Technical <br className="hidden lg:block" />
+                    <span className="font-serif font-normal text-gray-800">Details</span>
+                    <span className="text-[#C8A253]">.</span>
+                  </h2>
+                </div>
+                
+                <div className="flex flex-row lg:flex-col gap-4 md:gap-6 overflow-x-auto [&::-webkit-scrollbar]:hidden border-b lg:border-b-0 lg:border-l lg:border-gray-200 pb-4 lg:pb-0 lg:pl-8 relative">
+                  {fullProduct?.techSpecs?.map((spec, idx) => {
+                    const isActive = activeSpecTab === spec.category;
+                    return (
+                      <button 
+                        key={spec.category || idx} 
+                        onClick={() => setActiveSpecTab(spec.category)} 
+                        className={`pb-3 lg:pb-0 lg:py-2 text-sm md:text-[15px] font-bold uppercase tracking-[0.2em] transition-all duration-300 relative whitespace-nowrap text-left cursor-pointer group flex items-center ${
+                          isActive ? 'text-[#111]' : 'text-gray-400 hover:text-gray-800'
+                        }`}
+                      >
+                        <span className="relative z-10">{spec.category}</span>
+                        
+                        {/* Active Line Indicators */}
+                        {isActive && (
+                          <>
+                            <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#111] lg:hidden animate-in slide-in-from-left duration-300" />
+                            <div className="absolute top-1/2 -translate-y-1/2 -left-[33px] w-[2px] h-[80%] bg-[#111] hidden lg:block animate-in fade-in duration-300" />
+                          </>
+                        )}
+                      </button>
+                    );
+                  })}
+                </div>
+              </div>
 
-  {/* Main Heading */}
-  <h2 className="text-2xl md:text-2xl lg:text-[38px] font-bold tracking-tight text-[#111] leading-[1.05]">
-    Technical <br className="hidden lg:block" />
-    <span className="font-serif  font-normal text-gray-800">Details</span>
-    <span className="text-[#C8A253]">.</span>
-  </h2>
-</div>
-        
-        <div className="flex flex-row lg:flex-col gap-4 md:gap-6 overflow-x-auto [&::-webkit-scrollbar]:hidden border-b lg:border-b-0 lg:border-l lg:border-gray-200 pb-4 lg:pb-0 lg:pl-8 relative">
-          {fullProduct?.techSpecs?.map((spec, idx) => {
-            const isActive = activeSpecTab === spec.category;
-            return (
-              <button 
-                key={spec.category || idx} 
-                onClick={() => setActiveSpecTab(spec.category)} 
-                className={`pb-3 lg:pb-0 lg:py-2 text-sm md:text-[15px] font-bold uppercase tracking-[0.2em] transition-all duration-300 relative whitespace-nowrap text-left cursor-pointer group flex items-center ${
-                  isActive ? 'text-[#111]' : 'text-gray-400 hover:text-gray-800'
-                }`}
-              >
-                <span className="relative z-10">{spec.category}</span>
-                
-                {/* Active Line Indicators */}
-                {isActive && (
-                  <>
-                    <div className="absolute bottom-0 left-0 w-full h-[2px] bg-[#111] lg:hidden animate-in slide-in-from-left duration-300" />
-                    <div className="absolute top-1/2 -translate-y-1/2 -left-[33px] w-[2px] h-[80%] bg-[#111] hidden lg:block animate-in fade-in duration-300" />
-                  </>
-                )}
-              </button>
-            );
-          })}
-        </div>
-      </div>
+              {/* Right Content - Ultra Premium Cards (UNIVERSAL EXTRACTOR) */}
+              <div className="w-full lg:w-[70%]">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 text-left">
+                  {fullProduct?.techSpecs?.filter(s => s.category === activeSpecTab)?.map((spec, specIdx) => {
+                    
+                    // ⚡ SMART FALLBACK: Handle nested arrays OR flat objects
+                    let itemsToRender = [];
+                    if (spec.details && Array.isArray(spec.details)) {
+                      itemsToRender = spec.details;
+                    } else if (spec.specs && Array.isArray(spec.specs)) {
+                      itemsToRender = spec.specs;
+                    } else if (spec.description || spec.value || spec.title || spec.name) {
+                      itemsToRender = [spec]; // Agar data direct property me hai
+                    } else if (typeof spec === 'string') {
+                      itemsToRender = [spec];
+                    }
 
-      {/* Right Content - Ultra Premium Cards */}
-      <div className="w-full lg:w-[70%]">
-        <div className="grid grid-cols-1 sm:grid-cols-2 gap-5 md:gap-6 text-left">
-          {fullProduct?.techSpecs?.filter(s => s.category === activeSpecTab)?.map((spec) => (
-            spec.details?.map((detail, idx) => {
-              // Extract title and description
-              const title = detail.title || (typeof detail === 'string' ? detail.split(':')[0] : 'Spec');
-              let rawDesc = detail.desc || (typeof detail === 'string' ? detail.split(':').slice(1).join(':') : detail);
-              
-              if (!detail.desc && typeof detail === 'string' && !detail.includes(':')) {
-                rawDesc = detail;
-              }
+                    if (itemsToRender.length === 0) return null;
 
-              // Text Formatting: Convert ALL CAPS to elegant Sentence Case
-              const formattedDesc = rawDesc 
-                ? rawDesc.charAt(0).toUpperCase() + rawDesc.slice(1).toLowerCase() 
-                : '';
+                    return itemsToRender.map((detail, idx) => {
+                      // Extract title and description intelligently
+                      const title = detail.title || detail.name || detail.label || (typeof detail === 'string' && detail.includes(':') ? detail.split(':')[0] : 'Feature');
+                      
+                      let rawDesc = detail.desc || detail.description || detail.value || (typeof detail === 'string' && detail.includes(':') ? detail.split(':').slice(1).join(':') : detail);
+                      
+                      if (!rawDesc && typeof detail === 'string' && !detail.includes(':')) {
+                        rawDesc = detail;
+                      }
 
-              return (
-                <div 
-                  key={`${spec.category}-${idx}`} 
-                  className="group relative bg-white rounded-[20px] p-6 md:p-8 flex items-center gap-6 border border-gray-100/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:border-gray-200 hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-default overflow-hidden"
-                >
-                  {/* Subtle Background Glow on Hover */}
-                  <div className="absolute inset-0 bg-gradient-to-br from-transparent to-gray-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
+                      // Convert to elegant Sentence Case
+                      const formattedDesc = rawDesc 
+                        ? String(rawDesc).charAt(0).toUpperCase() + String(rawDesc).slice(1)
+                        : '';
 
-                  {/* Circular Icon Container */}
-                  <div className="relative z-10 w-[60px] h-[60px] shrink-0 rounded-full bg-[#F8F8F8] border border-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-[#111] group-hover:text-white group-hover:border-[#111] group-hover:scale-105 transition-all duration-500">
-                    {getIcon('', title)}
-                  </div>
-                  
-                  {/* Text Content */}
-                  <div className="relative z-10 flex-1">
-                    {/* Small Accent Title (Optional - un-comment if you want a tiny sub-heading) */}
-                    {/* <h4 className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#C8A253] mb-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
-                      {title}
-                    </h4> */}
-                    
-                    <p className="text-[14px] md:text-[15px] font-medium text-gray-600 leading-relaxed group-hover:text-gray-900 transition-colors duration-300">
-                      {formattedDesc}
-                    </p>
-                  </div>
-                </div>
-              )
-            })
-          ))}
-        </div>
-      </div>
+                      return (
+                        <div 
+                          key={`${specIdx}-${idx}`} 
+                          className="group relative bg-white rounded-[20px] p-6 md:p-8 flex items-center gap-6 border border-gray-100/60 shadow-[0_4px_20px_rgba(0,0,0,0.02)] hover:border-gray-200 hover:shadow-[0_15px_40px_rgba(0,0,0,0.06)] hover:-translate-y-1 transition-all duration-500 ease-[cubic-bezier(0.25,1,0.5,1)] cursor-default overflow-hidden"
+                        >
+                          {/* Subtle Background Glow on Hover */}
+                          <div className="absolute inset-0 bg-gradient-to-br from-transparent to-gray-50/50 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
-    </div>
-  </div>
-</section>
+                          {/* Circular Icon Container */}
+                          <div className="relative z-10 w-[60px] h-[60px] shrink-0 rounded-full bg-[#F8F8F8] border border-gray-100 flex items-center justify-center text-gray-600 group-hover:bg-[#111] group-hover:text-[#C8A253] group-hover:border-[#111] group-hover:scale-105 transition-all duration-500 shadow-inner group-hover:shadow-[#C8A253]/20">
+                            {getIcon(detail.icon || '', title)}
+                          </div>
+                          
+                          {/* Text Content */}
+                          <div className="relative z-10 flex-1">
+                            {title && title !== 'Feature' && title !== 'Spec' && (
+                              <h4 className="text-[10px] font-extrabold uppercase tracking-[0.25em] text-[#C8A253] mb-1.5 opacity-80 group-hover:opacity-100 transition-opacity">
+                                {title}
+                              </h4>
+                            )}
+                            
+                            <p className="text-[14px] md:text-[15px] font-medium text-gray-600 leading-relaxed group-hover:text-gray-900 transition-colors duration-300">
+                              {formattedDesc}
+                            </p>
+                          </div>
+                        </div>
+                      );
+                    });
+                  })}
+                </div>
+              </div>
+
+            </div>
+          </div>
+        </section>
 
         {/* ⚡⚡ THE TRUEE PROMISE - LIGHT LUXURY THEME ⚡⚡ */}
         <section id="brand-promise" className="py-16 md:py-24 bg-white relative overflow-hidden">
