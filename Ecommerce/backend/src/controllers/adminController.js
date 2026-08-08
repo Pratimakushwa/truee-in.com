@@ -299,7 +299,7 @@
 
 const User = require('../models/userModel');
 const Order = require('../models/orderModel');
-const Product = require('../models/productModel');
+const Product = require('../models/ProductModel');
 const Coupon = require('../models/Coupon');
 const WalletTransaction = require('../models/WalletTransaction');
 const Wallet = require('../models/Wallet');
