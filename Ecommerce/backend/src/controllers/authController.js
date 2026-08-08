@@ -1241,8 +1241,8 @@ const ExpressError = require('../utils/expressError');
 const otpGenerator = require('otp-generator');
 const sendEmail = require('../utils/sendEmail');
 
-// ⚡ 1. Bloom Filter Import ⚡
-const { emailFilter } = require('../utils/bloomFilter'); 
+// // ⚡ 1. Bloom Filter Import ⚡
+// const { emailFilter } = require('../utils/bloomFilter'); 
 
 const FRONTEND_URL = process.env.VITE_FRONTEND_URL || 'https://truee.in';
 const LOGO_URL = process.env.EMAIL_LOGO_URL || `${FRONTEND_URL}/Truee_Luxury_Logo.png`;
@@ -1389,12 +1389,16 @@ exports.registerCustomer = wrapAsync(async (req, res) => {
   }
 
   // ⚡ 2. BLOOM FILTER CHECK LOGIC ⚡
-  if (emailFilter.has(email)) {
-    // Agar filter ko lagta hai ki email hai, sirf tabhi DB check karo
-    const existingUser = await User.findOne({ email });
-    if (existingUser) {
-      throw new ExpressError(400, 'Email is already registered.');
-    }
+  // if (emailFilter.has(email)) {
+  //   // Agar filter ko lagta hai ki email hai, sirf tabhi DB check karo
+  //   const existingUser = await User.findOne({ email });
+  //   if (existingUser) {
+  //     throw new ExpressError(400, 'Email is already registered.');
+  //   }
+  // }
+  const existingUser = await User.findOne({ email });
+  if (existingUser) {
+    throw new ExpressError(400, 'Email is already registered.');
   }
 
   const salt = await bcrypt.genSalt(10);
@@ -1425,7 +1429,7 @@ exports.registerCustomer = wrapAsync(async (req, res) => {
   await newUser.save();
 
   // ⚡ 3. Add new user email to Bloom Filter ⚡
-  emailFilter.add(email);
+  // emailFilter.add(email);
 
   const guestId = req.headers['x-guest-id'];
   if (guestId) {
