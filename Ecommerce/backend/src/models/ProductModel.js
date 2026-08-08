@@ -196,6 +196,157 @@
 
 // // Check if model already exists to avoid OverwriteModelError
 // module.exports = mongoose.models.Product || mongoose.model('Product', productSchema);
+
+// const mongoose = require('mongoose');
+
+// const productSchema = new mongoose.Schema({
+//     name: { type: String, required: true },
+//     description: { type: String, required: true }, 
+//     brand: { type: String },
+//     category: { type: String },
+    
+//     // ⚡ CHANGE: Yahan se required: true hata diya hai
+//     price: { type: Number }, 
+    
+//     discountPrice: { type: Number, default: 0 },
+    
+//     // Main stock as String (Text)
+//     stock: { type: String, default: 'Available' }, 
+    
+//     isActive: { type: Boolean, default: true },
+//     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+//     images: [{ public_id: String, url: String }],
+    
+//     // Variants stock as String (Text)
+//     variants: [{ 
+//         color: String, 
+//         size: String, 
+//         stock: String, 
+//         price: Number, 
+//         images: [{ public_id: String, url: String }] 
+//     }],
+    
+//     flashDeal: { 
+//         isActive: Boolean, 
+//         dealPrice: Number, 
+//         startTime: Date, 
+//         endTime: Date 
+//     },
+    
+//     techSpecs: [{ 
+//       category: String, 
+//       description: String, 
+//       details: [String]    
+//     }], 
+    
+//     lifestyleFeatures: [{ 
+//         title: String, 
+//         description: String, 
+//         imageUrl: String 
+//     }], 
+    
+//     highlights: [{ 
+//         iconName: String, 
+//         title: String 
+//     }], 
+    
+//     // ⚡ FIX: Promotional Video fields (matching Controller)
+//     promotionalVideo: { 
+//         videoUrl: { type: String, default: '' }, 
+//         thumbnailUrl: { type: String, default: '' } 
+//     }, 
+    
+//     inTheBox: [String], 
+
+//     boughtTogether: [{ 
+//       type: mongoose.Schema.Types.ObjectId, 
+//       ref: 'Product' 
+//     }],
+    
+// }, { timestamps: true });
+
+// // Check if model already exists to avoid OverwriteModelError
+// module.exports = mongoose.models.Product || mongoose.model('Product', productSchema);
+
+
+// const mongoose = require('mongoose');
+
+// const productSchema = new mongoose.Schema({
+//     name: { type: String, required: true },
+//     description: { type: String, required: true }, 
+//     brand: { type: String },
+//     category: { type: String },
+    
+//     // ⚡ CHANGE: Yahan se required: true hata diya hai
+//     price: { type: Number }, 
+    
+//     discountPrice: { type: Number, default: 0 },
+    
+//     // Main stock as String (Text)
+//     stock: { type: String, default: 'Available' }, 
+    
+//     isActive: { type: Boolean, default: true },
+//     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+//     images: [{ public_id: String, url: String }],
+    
+//     // ⚡ NEW: Lifestyle/Banner Images added here
+//     lifestyleImages: [{ 
+//         public_id: String, 
+//         url: String 
+//     }],
+    
+//     // Variants stock as String (Text)
+//     variants: [{ 
+//         color: String, 
+//         size: String, 
+//         stock: String, 
+//         price: Number, 
+//         images: [{ public_id: String, url: String }] 
+//     }],
+    
+//     flashDeal: { 
+//         isActive: Boolean, 
+//         dealPrice: Number, 
+//         startTime: Date, 
+//         endTime: Date 
+//     },
+    
+//     techSpecs: [{ 
+//       category: String, 
+//       description: String, 
+//       details: [String]    
+//     }], 
+    
+//     lifestyleFeatures: [{ 
+//         title: String, 
+//         description: String, 
+//         imageUrl: String 
+//     }], 
+    
+//     highlights: [{ 
+//         iconName: String, 
+//         title: String 
+//     }], 
+    
+//     // ⚡ FIX: Promotional Video fields (matching Controller)
+//     promotionalVideo: { 
+//         videoUrl: { type: String, default: '' }, 
+//         thumbnailUrl: { type: String, default: '' } 
+//     }, 
+    
+//     inTheBox: [String], 
+
+//     boughtTogether: [{ 
+//       type: mongoose.Schema.Types.ObjectId, 
+//       ref: 'Product' 
+//     }],
+    
+// }, { timestamps: true });
+
+// // Check if model already exists to avoid OverwriteModelError
+// module.exports = mongoose.models.Product || mongoose.model('Product', productSchema);
+
+
 const mongoose = require('mongoose');
 
 const productSchema = new mongoose.Schema({
@@ -203,20 +354,20 @@ const productSchema = new mongoose.Schema({
     description: { type: String, required: true }, 
     brand: { type: String },
     category: { type: String },
-    
-    // ⚡ CHANGE: Yahan se required: true hata diya hai
     price: { type: Number }, 
-    
     discountPrice: { type: Number, default: 0 },
-    
-    // Main stock as String (Text)
     stock: { type: String, default: 'Available' }, 
-    
     isActive: { type: Boolean, default: true },
     seller: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
     images: [{ public_id: String, url: String }],
     
-    // Variants stock as String (Text)
+    // ⚡ UPDATED: Lifestyle Images with Title & Description Support
+    lifestyleImages: [{ 
+        image: { public_id: String, url: String },
+        title: { type: String, default: '' },
+        description: { type: String, default: '' }
+    }],
+    
     variants: [{ 
         color: String, 
         size: String, 
@@ -249,7 +400,6 @@ const productSchema = new mongoose.Schema({
         title: String 
     }], 
     
-    // ⚡ FIX: Promotional Video fields (matching Controller)
     promotionalVideo: { 
         videoUrl: { type: String, default: '' }, 
         thumbnailUrl: { type: String, default: '' } 
@@ -264,5 +414,4 @@ const productSchema = new mongoose.Schema({
     
 }, { timestamps: true });
 
-// Check if model already exists to avoid OverwriteModelError
 module.exports = mongoose.models.Product || mongoose.model('Product', productSchema);

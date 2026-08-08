@@ -645,9 +645,94 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
           </section>
         )}
 
+{/* ⚡⚡ FINAL LUXURY MARSHALL PATTERN (SINGLE IMAGE 100% FULL WIDTH) ⚡⚡ */}
+{fullProduct?.lifestyleImages?.length > 0 && (
+  <section 
+    className="w-full bg-[#FAFAFA] text-black py-16 md:py-24 overflow-hidden"
+    style={{ fontFamily: '"SF Pro Display", "SF Pro Icons", "Helvetica Neue", Helvetica, Arial, sans-serif' }}
+  >
+    <div className="max-w-[1500px] mx-auto flex flex-col gap-24 md:gap-40">
+      {fullProduct.lifestyleImages.map((item, i) => {
+        
+        // 1. Har dusri image Single aayegi
+        // 2. Side-by-side mein text left-right change hoga
+        const isCenteredSingle = i % 2 !== 0; 
+        const isTextRight = i % 4 === 2; 
+
+        if (isCenteredSingle) {
+          // 📱 SINGLE LAYOUT (Beech wala design - 100% FULL WIDTH)
+          return (
+            <div key={i} className="flex flex-col items-center text-center w-full gap-8 md:gap-14">
+              {/* Text Hissa */}
+              <div className="max-w-4xl flex flex-col items-center space-y-5 px-6">
+                {item.title && (
+                  <h3 className="text-2xl md:text-[36px] font-black uppercase tracking-wider text-black leading-tight">
+                    {item.title}
+                  </h3>
+                )}
+                {item.description && (
+                  <p className="text-gray-600 text-base md:text-xl leading-relaxed max-w-2xl">
+                    {item.description}
+                  </p>
+                )}
+              </div>
+              {/* Image Hissa - 100% FULL WIDTH BINA KATE */}
+              <div className="w-full px-0 md:px-4"> 
+                <img 
+                  src={item.image?.url || item.image} 
+                  alt={item.title || 'Lifestyle Banner'} 
+                  // ⚡ w-full aur h-auto lagaya hai taaki poori chaudaai (width) le aur kate nahi.
+                  className="w-full h-auto object-contain md:rounded-2xl" 
+                />
+              </div>
+            </div>
+          );
+        }
+
+        // 💻 SIDE-BY-SIDE LAYOUT
+        return (
+          <div key={i} className={`flex flex-col md:flex-row items-center w-full gap-10 md:gap-20 px-6 md:px-16 ${isTextRight ? 'md:flex-row-reverse' : 'md:flex-row'}`}>
+            
+            {/* Text Block */}
+            <div className="w-full md:w-1/2 flex flex-col justify-center text-left space-y-5">
+              {item.title && (
+                <h3 className="text-2xl md:text-[32px] font-black uppercase tracking-wider text-black leading-tight">
+                  {item.title}
+                </h3>
+              )}
+              {item.description && (
+                <p className="text-gray-600 text-base md:text-lg leading-relaxed">
+                  {item.description}
+                </p>
+              )}
+            </div>
+            
+            {/* Image Block */}
+            <div className="w-full md:w-1/2">
+              <img 
+                src={item.image?.url || item.image} 
+                alt={item.title || 'Lifestyle Banner'} 
+                className="w-full h-auto max-h-[70vh] object-contain rounded-xl" 
+              />
+            </div>
+
+          </div>
+        );
+      })}
+    </div>
+  </section>
+)}
+
+
+
+
+
+
+
+
        {/* ⚡⚡ TECH SPECS - LUXURY HORIZONTAL CARDS (BUG FIXED) ⚡⚡ */}
-        <section id="tech-specs-section" className="py-16 md:py-28 bg-[#FAFAFA] border-y border-gray-100">
-          <div className="max-w-[1340px] mx-auto px-6 md:px-12">
+        <section id="tech-specs-section" className="py-16 md:py-18 bg-[#FAFAFA] border-y border-gray-100">
+          <div className="max-w-[1340px] mx-auto px-6 md:px-2">
             <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
               
               {/* Left Sidebar - Title & Tabs */}
@@ -760,7 +845,9 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
         </section>
 
         {/* ⚡⚡ THE TRUEE PROMISE - LIGHT LUXURY THEME ⚡⚡ */}
-        <section id="brand-promise" className="py-16 md:py-24 bg-white relative overflow-hidden">
+       {/* Pehle ye tha: className="py-16 md:py-24 ..." */}
+{/* Ab ise aise change kar dijiye: */}
+<section id="brand-promise" className="pt-8 pb-16 md:pt-8 md:pb-24 bg-white relative overflow-hidden">
           {/* Subtle Glow */}
           <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[70%] h-[70%] bg-[#C8A253]/5 blur-[120px] pointer-events-none rounded-full" />
           
@@ -809,7 +896,7 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
         </section>
 
         {/* ⚡⚡ CURATED RECOMMENDATIONS - FASHION E-COMMERCE STYLE ⚡⚡ */}
-        <section id="curated-section" className="py-16 md:py-32 bg-[#FAFAFA] border-t border-gray-100 relative z-10">
+        <section id="curated-section" className="py-10 md:py-10 bg-[#FAFAFA] border-t border-gray-100 relative z-10">
           <div className="max-w-[1340px] mx-auto px-6 md:px-12">
             <h2 className="text-2xl md:text-4xl font-medium tracking-tighter mb-8 md:mb-12 text-center md:text-left text-gray-900">Recommended for you.</h2>
             <div className="grid grid-cols-2 lg:grid-cols-4 gap-4 md:gap-8">
@@ -829,18 +916,18 @@ export default function QuickViewModal({ product: initialProduct, onClose }) {
         </section>
 
         {/* ⚡⚡ REVIEWS - HIGH-END EDITORIAL STYLE ⚡⚡ */}
-        <section id="reviews-section" className="py-16 md:py-28 bg-white">
+        <section id="reviews-section" className="py-11 md:py-18 bg-white">
           <div className="max-w-5xl mx-auto px-6 text-center">
-            <div className="flex justify-center gap-1 mb-5 md:mb-6 text-[#C8A253]">
+{/*             <div className="flex justify-center gap-1 mb-5 md:mb-6 text-[#C8A253]">
               {[1, 2, 3, 4, 5].map((i) => (<Star key={i} fill="currentColor" size={18} className="md:w-[20px] md:h-[20px]" />))}
-            </div>
+            </div> */}
             
             <h2 className="text-2xl md:text-4xl font-medium tracking-tighter mb-4 md:mb-6 leading-tight capitalize text-gray-900">
               {fullProduct?.brand ? `${fullProduct.brand} Signature .` : "Premium Signature ."}
             </h2>            
-            <p className="text-[10px] md:text-[12px] font-bold uppercase tracking-[0.25em] text-gray-400 mb-12 md:mb-20">
+{/*             <p className="text-[10px] md:text-[12px] font-bold uppercase tracking-[0.25em] text-gray-400 mb-12 md:mb-20">
               {fullProduct?.reviewsCount || "843"} Verified Audiophiles &nbsp;•&nbsp; 4.9 Rating
-            </p>
+            </p> */}
             
             <div className="grid grid-cols-3 gap-3 md:gap-8 pb-8 md:pb-12 px-2 md:px-0">
               {galleryImages.slice(0, 3).map((img, i) => (

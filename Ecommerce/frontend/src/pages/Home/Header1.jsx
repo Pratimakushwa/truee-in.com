@@ -1386,6 +1386,10 @@ const NAV_CATEGORIES = [
     sub: [
       { label: "Beauty", keyword: "Beauty" },
       { label: "Wellness", keyword: "Wellness" },
+      { label: "Foam Roller", keyword: "Foam Roller" },
+      { label: "Massager", keyword: "Massager" },
+      { label: "Muscle Stimulator", keyword: "Muscle Stimulator" },
+      { label: "Roller Table", keyword: "Roller Table" },
     ],
   },
   {
