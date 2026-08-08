@@ -29,7 +29,7 @@ import AboutUs from './pages/AboutUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
 import Terms from './pages/Terms';
 import RefundPolicy from './pages/RefundPolicy';
-import ContactUS from './pages/ContactUs';
+import ContactUS from './pages/ContactUS';
 import ShippingPolicy from './pages/ShippingPolicy';
 
 // ── Customer Protected Pages
@@ -100,9 +100,7 @@ function App() {
             <Route path="/brands" element={<PublicLayout><BrandsSection /></PublicLayout>} />
             <Route path="/cart" element={<PublicLayout><Cart standalone /></PublicLayout>} />
             <Route path="/checkout" element={<PublicLayout><Checkout /></PublicLayout>} />
-            {/* ── Customer Private Routes ───────────────────────────── */}
-            {/* ⚡ FIX: Header/Footer hata diya — ProfilePage ab standalone render hota hai,
-                iske andar apna khud ka close (X) button hai jo home par le jaata hai */}
+          
             <Route path="/profile" element={
               <ProtectedRoute roles={['customer', 'user', 'admin', 'super-admin']}>
                 <ProfilePage />
@@ -111,7 +109,6 @@ function App() {
             <Route path="/wishlist" element={<PublicLayout><Wishlist /></PublicLayout>} />
 
 
-            {/* ⚡ NAYA ROUTE: Single Order Details aur Track karne ke liye ⚡ */}
             <Route path="/profile/order/:id" element={
               <ProtectedRoute roles={['customer', 'user', 'admin', 'super-admin']}>
                 <PublicLayout><OrderDetails /></PublicLayout>
