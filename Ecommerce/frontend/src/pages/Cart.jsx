@@ -260,7 +260,6 @@ export default function Cart({ isOpen, onClose, standalone = false }) {
 
             <div className="flex items-center gap-3 mb-6 mt-4">
                <input type="checkbox" className="w-[18px] h-[18px] border-2 border-gray-300 rounded-[2px] text-black bg-white focus:ring-0 focus:ring-offset-0 cursor-pointer accent-black transition-all" />
-               <span className="text-[13px] text-gray-500 tracking-wide font-medium">For <span className="font-bold text-[#111]">₹100</span> Please Wrap The Product</span>
             </div>
 
             <div className="flex justify-between items-center mb-4 border-t border-gray-200 pt-5">

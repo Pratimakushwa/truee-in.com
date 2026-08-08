@@ -23,7 +23,7 @@ import NewCollection from './pages/Shop/NewCollection';
 import Cart from './pages/Cart';
 import Checkout from './pages/Checkout';
 import BrandsSection from './components/Brands';
-import Wishlist from './pages/Wishlist'; // Make sure the path is correct!
+import Wishlist from './pages/Wishlist'; 
 // about us
 import AboutUs from './pages/AboutUs';
 import PrivacyPolicy from './pages/PrivacyPolicy';
